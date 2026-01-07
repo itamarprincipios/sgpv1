@@ -53,14 +53,14 @@
                 <?php 
                     $photoUrl = !empty($user['profile_photo']) ? url('uploads/avatars/' . $user['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($user['name']) . '&background=random'; 
                 ?>
-                <img src="<?= $photoUrl ?>" alt="Perfil" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <img src="<?= $photoUrl ?>" alt="Perfil" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                 
                 <form action="<?= url('professor/photo/upload') ?>" method="POST" enctype="multipart/form-data" id="photo-form" style="display:none;">
                     <input type="file" name="photo" id="photo-input" accept="image/png, image/jpeg" onchange="document.getElementById('photo-form').submit()">
                 </form>
                 
-                <button onclick="document.getElementById('photo-input').click()" title="Alterar Foto" style="position: absolute; bottom: 0; right: 0; width: 24px; height: 24px; border-radius: 50%; padding: 0; border: none; background: #007bff; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                    <i class="fas fa-camera" style="font-size: 10px;"></i>
+                <button onclick="document.getElementById('photo-input').click()" title="Alterar Foto" style="position: absolute; bottom: 5px; right: 0; width: 32px; height: 32px; border-radius: 50%; padding: 0; border: none; background: #007bff; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    <i class="fas fa-camera" style="font-size: 14px;"></i>
                 </button>
             </div>
 
