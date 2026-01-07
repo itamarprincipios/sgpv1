@@ -28,12 +28,40 @@ class ProfessorController extends Controller {
             }
         }
 
+        // --- NEW: Fetch School, Class and Coordinator Info ---
+        require_once __DIR__ . '/../Models/School.php';
+        $schoolModel = new School();
+        $schoolData = $schoolModel->findById($user['school_id']);
+        
+        $className = 'Não vinculada';
+        if (!empty($user['class_id'])) {
+            require_once __DIR__ . '/../Models/ClassModel.php';
+            $classModel = new ClassModel();
+            $classData = $classModel->findById($user['class_id']);
+            if ($classData) {
+                $className = $classData['name'];
+            }
+        }
+
+        // Get Coordinator Phone (First found for this school)
+        $coordinators = $schoolModel->getCoordinators($user['school_id']);
+        $coordinatorPhone = null;
+        foreach ($coordinators as $coord) {
+            if (!empty($coord['whatsapp'])) {
+                $coordinatorPhone = $coord['whatsapp'];
+                break;
+            }
+        }
+
         $this->view('dashboard/professor', [
             'user' => $user,
             'documents' => $documents,
             'periods' => $periods,
             'medals' => $medals,
-            'totalPoints' => $totalPoints
+            'totalPoints' => $totalPoints,
+            'schoolData' => $schoolData,
+            'className' => $className,
+            'coordinatorPhone' => $coordinatorPhone
         ]);
     }
 
