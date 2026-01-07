@@ -314,4 +314,16 @@
     // No tabs needed anymore
 </script>
 
+<div class="card">
+    <h3>Configurações do Sistema</h3>
+    <p>Ações avançadas de manutenção.</p>
+    <form action="<?= url('admin/reset-year') ?>" method="POST" onsubmit="return confirm('ATENÇÃO: Isso irá desvincular TODAS as turmas dos professores para iniciar um novo ano letivo. O histórico de planejamentos será mantido. Tem certeza absoluta?');">
+        <button type="submit" class="btn btn-danger btn-block"><i class="fas fa-exclamation-triangle"></i> Iniciar Novo Ano Letivo</button>
+    </form>
+    <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+        <a href="<?= url('admin/reports') ?>" class="btn btn-primary btn-block">Ver Relatórios</a>
+        <a href="<?= url('admin/history') ?>" class="btn btn-secondary btn-block">Banco de Planejamentos</a>
+    </div>
+</div>
+
 <?php require __DIR__ . '/../layouts/footer.php'; ?>

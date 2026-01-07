@@ -213,12 +213,19 @@ class ProfessorController extends Controller {
 
             if (move_uploaded_file($file['tmp_name'], $targetFile)) {
                 // Remove old photo
-                require_once __DIR__ . '/../Models/User.php';
-                $userModel = new User();
-                $freshUser = $userModel->findById($user['id']);
-                if ($freshUser['profile_photo']) {
-                    $oldFile = $uploadDir . $freshUser['profile_photo'];
-                    if (file_exists($oldFile)) unlink($oldFile);
+                try {
+                    require_once __DIR__ . '/../Models/User.php';
+                    $userModel = new User();
+                    $freshUser = $userModel->findById($user['id']);
+                    
+                    if (!empty($freshUser['profile_photo'])) {
+                        $oldFilePath = $uploadDir . $freshUser['profile_photo'];
+                        if (file_exists($oldFilePath) && is_file($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
+                    }
+                } catch (Exception $e) {
+                    // Fail silently on deletion to allow update to proceed
                 }
 
                 // Update DB

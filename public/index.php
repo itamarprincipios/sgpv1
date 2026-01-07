@@ -93,9 +93,9 @@ $routes = [
     'admin/coordinators' => 'AdminController@coordinators',
     'admin/professors' => 'AdminController@professors',
     'admin/reports' => 'AdminController@reports',
-
-
-
+    'admin/history' => 'HistoryController@index', // NEW
+    'admin/reset-year' => 'AdminController@resetSchoolYear', // NEW
+    'semed/history' => 'HistoryController@index', // NEW
 ];
 
 if (array_key_exists($uri, $routes)) {

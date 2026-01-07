@@ -232,16 +232,20 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 30px;">
     <h2>Visão Geral da Rede (SEMED)</h2>
-    <form action="" method="GET" class="filter-container" style="margin: 0; width: auto; min-width: 250px;">
-        <div class="filter-group" style="margin: 0; flex: 1;">
-            <label class="filter-label">Período</label>
-            <select name="filter" id="filter" onchange="this.form.submit()" class="filter-select">
-                <option value="annual" <?= ($filter == 'annual') ? 'selected' : '' ?>>Anual</option>
-                <option value="bimestral" <?= ($filter == 'bimestral') ? 'selected' : '' ?>>Bimestral</option>
-                <option value="monthly" <?= ($filter == 'monthly') ? 'selected' : '' ?>>Mensal</option>
-            </select>
-        </div>
-    </form>
+    <div style="display:flex; gap: 10px; align-items:center;">
+        <a href="<?= url('semed/history') ?>" class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;">
+            <i class="fas fa-history"></i> Banco de Planejamentos
+        </a>
+        <form action="" method="GET" class="filter-container" style="margin: 0; width: auto; min-width: 200px;">
+            <div class="filter-group" style="margin: 0; flex: 1;">
+                <select name="filter" id="filter" onchange="this.form.submit()" class="filter-select">
+                    <option value="annual" <?= ($filter == 'annual') ? 'selected' : '' ?>>Anual</option>
+                    <option value="bimestral" <?= ($filter == 'bimestral') ? 'selected' : '' ?>>Bimestral</option>
+                    <option value="monthly" <?= ($filter == 'monthly') ? 'selected' : '' ?>>Mensal</option>
+                </select>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="stats-grid">

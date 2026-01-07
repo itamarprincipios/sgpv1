@@ -278,4 +278,31 @@ class AdminController extends Controller {
             'selectedId' => $id
         ]);
     }
+
+    public function resetSchoolYear() {
+        checkAuth('admin');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Logic to reset school year:
+            // 1. Unlink all professors from their classes (set class_id = NULL)
+            // 2. Keep documents (they are linked to periods and users, so history is preserved)
+            // 3. Keep periods (they have dates, so they become "past")
+            
+            $db = (new User())->getDb();
+            
+            try {
+                $db->beginTransaction();
+                
+                // Update all users with role 'professor' to have class_id = NULL
+                $sql = "UPDATE users SET class_id = NULL WHERE role = 'professor'";
+                $db->query($sql);
+                
+                $db->commit();
+                $_SESSION['success'] = "Ano letivo reiniciado com sucesso! Todos os professores foram desvinculados de suas turmas.";
+            } catch (Exception $e) {
+                $db->rollBack();
+                $_SESSION['error'] = "Erro ao reiniciar ano letivo: " . $e->getMessage();
+            }
+        }
+        redirect('admin/dashboard');
+    }
 }
