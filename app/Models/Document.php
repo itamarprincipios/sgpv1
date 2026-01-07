@@ -305,4 +305,38 @@ class Document extends Model {
                 ORDER BY avg_score DESC";
         return $this->db->query($sql)->fetchAll();
     }
+    public function search($filters = []) {
+        $sql = "SELECT d.*, u.name as professor_name, s.name as school_name, p.name as period_name, p.opening_date 
+                FROM documents d 
+                JOIN users u ON d.user_id = u.id 
+                LEFT JOIN schools s ON u.school_id = s.id 
+                JOIN periods p ON d.period_id = p.id 
+                WHERE 1=1";
+        
+        $params = [];
+
+        if (!empty($filters['year'])) {
+            $sql .= " AND YEAR(p.opening_date) = :year";
+            $params['year'] = $filters['year'];
+        }
+
+        if (!empty($filters['school_id'])) {
+            $sql .= " AND u.school_id = :school_id";
+            $params['school_id'] = $filters['school_id'];
+        }
+
+        if (!empty($filters['professor_id'])) {
+            $sql .= " AND d.user_id = :professor_id";
+            $params['professor_id'] = $filters['professor_id'];
+        }
+
+        if (!empty($filters['class_id'])) {
+            $sql .= " AND u.class_id = :class_id";
+            $params['class_id'] = $filters['class_id'];
+        }
+
+        $sql .= " ORDER BY d.submitted_at DESC";
+
+        return $this->db->query($sql, $params)->fetchAll();
+    }
 }
