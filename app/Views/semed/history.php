@@ -11,6 +11,12 @@
     </div>
 
     <!-- Filters -->
+    <style>
+        .table th, .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
+        }
+    </style>
     <div class="dashboard-cards" style="grid-template-columns: 1fr;">
         <div class="card">
             <form method="GET" action="<?= url('semed/history') ?>" class="d-flex gap-2 align-items-end flex-wrap">
