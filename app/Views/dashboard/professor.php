@@ -48,7 +48,13 @@
 <div class="dashboard-header">
     <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
         <h2>Meus Envios e Solicitações</h2>
-        <button onclick="document.getElementById('password-form').style.display = document.getElementById('password-form').style.display == 'none' ? 'block' : 'none'" class="btn btn-secondary" style="width:auto; font-size:0.8rem;">Alterar Senha</button>
+        <div style="font-size: 0.9rem; color: #555; margin-top: 5px;">
+            <i class="fas fa-school"></i> <strong>Escola:</strong> <?= htmlspecialchars($schoolData['name'] ?? 'Não informada') ?> 
+            <span style="font-weight: normal; margin-left: 20px;">
+                <i class="fas fa-chalkboard"></i> <strong>Turma:</strong> <?= htmlspecialchars($className ?? 'Não vinculada') ?>
+            </span>
+        </div>
+        <button onclick="document.getElementById('password-form').style.display = document.getElementById('password-form').style.display == 'none' ? 'block' : 'none'" class="btn btn-secondary" style="width:auto; font-size:0.8rem; margin-top: 10px;">Alterar Senha</button>
     </div>
     
     <div id="password-form" style="display:none; background:var(--card-bg); padding:15px; border:1px solid var(--border-color); margin-top:10px; border-radius:5px;">
@@ -292,6 +298,12 @@
 </div>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
+
+<?php if (!empty($coordinatorPhone)): ?>
+    <a href="https://wa.me/55<?= preg_replace('/\D/', '', $coordinatorPhone) ?>" target="_blank" style="position: fixed; bottom: 20px; right: 20px; background-color: #25D366; color: white; padding: 15px 20px; border-radius: 50px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; z-index: 1000; font-family: sans-serif;">
+        <i class="fab fa-whatsapp" style="font-size: 1.5rem;"></i> Falar com Coordenação
+    </a>
+<?php endif; ?>
 
 <script>
     // Password Toggle
