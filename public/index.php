@@ -16,9 +16,18 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// Router simples
+// Router dinâmico
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = trim(str_replace('/public', '', $uri), '/'); // Ajuste para rodar em subpasta se necessário ou root
+$scriptName = dirname($_SERVER['SCRIPT_NAME']);
+$scriptName = str_replace('\\', '/', $scriptName); // Normalizar windows
+
+// Se o script estiver rodando em subpasta (ex: /sgp/public), remover da URI
+if (strpos($uri, $scriptName) === 0 && $scriptName !== '/') {
+    $uri = substr($uri, strlen($scriptName));
+}
+
+$uri = trim(str_replace('/public', '', $uri), '/'); 
+
 
 // Rotas
 $routes = [
