@@ -36,11 +36,10 @@ class HistoryController extends Controller {
             // But Document::search logic currently takes single school_id.
             // Let's rely on Semed users picking a school from dropdown. 
             
-            $schools = $schoolModel->getAvailableSchools($user['id']); // Actually need getAssignedSchools
-            // SemedSchools logic reuse? 
-            $schools = $schoolModel->getSemedSchools($user['id']); // Need to ensure this method exists or similar
+            // Get schools managed by this SEMED user
+            $schools = $userModel->getManagedSchools($user['id']);
         } else {
-            $schools = $schoolModel->all();
+            $schools = $schoolModel->all(); // Admin sees all
         }
 
         $filters = [
