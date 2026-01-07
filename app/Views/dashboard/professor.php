@@ -46,15 +46,36 @@
 </style>
 
 <div class="dashboard-header">
-    <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-        <h2>Meus Envios e Solicitações</h2>
-        <div style="font-size: 0.9rem; color: #555; margin-top: 5px;">
-            <i class="fas fa-school"></i> <strong>Escola:</strong> <?= htmlspecialchars($schoolData['name'] ?? 'Não informada') ?> 
-            <span style="font-weight: normal; margin-left: 20px;">
-                <i class="fas fa-chalkboard"></i> <strong>Turma:</strong> <?= htmlspecialchars($className ?? 'Não vinculada') ?>
-            </span>
+    <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;">
+        <div style="display:flex; align-items:center;">
+             <!-- Avatar Section -->
+            <div style="position: relative; margin-right: 15px;">
+                <?php 
+                    $photoUrl = !empty($user['profile_photo']) ? url('uploads/avatars/' . $user['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($user['name']) . '&background=random'; 
+                ?>
+                <img src="<?= $photoUrl ?>" alt="Perfil" style="width:70px; height:70px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                
+                <form action="<?= url('professor/photo/upload') ?>" method="POST" enctype="multipart/form-data" id="photo-form" style="display:none;">
+                    <input type="file" name="photo" id="photo-input" accept="image/png, image/jpeg" onchange="document.getElementById('photo-form').submit()">
+                </form>
+                
+                <button onclick="document.getElementById('photo-input').click()" title="Alterar Foto" style="position: absolute; bottom: 0; right: 0; width: 24px; height: 24px; border-radius: 50%; padding: 0; border: none; background: #007bff; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    <i class="fas fa-camera" style="font-size: 10px;"></i>
+                </button>
+            </div>
+
+            <div>
+                <h2 style="margin:0;">Meus Envios e Solicitações</h2>
+                <div style="font-size: 0.9rem; color: #555; margin-top: 5px;">
+                    <i class="fas fa-school"></i> <strong>Escola:</strong> <?= htmlspecialchars($schoolData['name'] ?? 'Não informada') ?> 
+                    <span style="font-weight: normal; margin-left: 20px;">
+                        <i class="fas fa-chalkboard"></i> <strong>Turma:</strong> <?= htmlspecialchars($className ?? 'Não vinculada') ?>
+                    </span>
+                </div>
+            </div>
         </div>
-        <button onclick="document.getElementById('password-form').style.display = document.getElementById('password-form').style.display == 'none' ? 'block' : 'none'" class="btn btn-secondary" style="width:auto; font-size:0.8rem; margin-top: 10px;">Alterar Senha</button>
+        
+        <button onclick="document.getElementById('password-form').style.display = document.getElementById('password-form').style.display == 'none' ? 'block' : 'none'" class="btn btn-secondary" style="width:auto; font-size:0.8rem;">Alterar Senha</button>
     </div>
     
     <div id="password-form" style="display:none; background:var(--card-bg); padding:15px; border:1px solid var(--border-color); margin-top:10px; border-radius:5px;">

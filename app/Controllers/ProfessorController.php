@@ -8,7 +8,12 @@ require_once __DIR__ . '/../Models/Planning.php';
 class ProfessorController extends Controller {
     public function dashboard() {
         checkAuth('professor');
-        $user = auth();
+        $sessionUser = auth();
+        
+        // Fetch fresh user data to get profile_photo
+        require_once __DIR__ . '/../Models/User.php';
+        $userModel = new User();
+        $user = $userModel->findById($sessionUser['id']);
         
         $docModel = new Document();
         $documents = $docModel->getByUserId($user['id']);
@@ -167,25 +172,66 @@ class ProfessorController extends Controller {
         $user = auth();
         $docModel = new Document();
         
-        // Find document to ensure ownership and get file path
-        // We need a method to findById, or query directly. Assuming findById logic or direct query.
-        // Since Document extends Model, and Model usually has basics, let's check. 
-        // Actually Document model usually doesn't have generic findById unless implemented.
-        // Let's implement a quick check logic here or use db query directly for MVP speed.
-        
         $doc = $docModel->findById($id);
         
         if ($doc && $doc['user_id'] == $user['id']) {
-            // Delete file from disk
             $filePath = __DIR__ . '/../../public/uploads/' . $doc['file_path'];
             if (file_exists($filePath)) {
                 unlink($filePath);
             }
-
-            // Delete from DB
             $docModel->delete($id);
         }
 
+        redirect('professor/dashboard');
+    }
+
+    public function uploadPhoto() {
+        checkAuth('professor');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo'])) {
+            $user = auth();
+            $file = $_FILES['photo'];
+            
+            // Validation
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!in_array($file['type'], $allowedTypes)) {
+                $_SESSION['error'] = "Apenas imagens JPG e PNG são permitidas.";
+                redirect('professor/dashboard');
+            }
+
+            if ($file['size'] > 2 * 1024 * 1024) { // 2MB
+                $_SESSION['error'] = "A imagem deve ter no máximo 2MB.";
+                redirect('professor/dashboard');
+            }
+
+            // Upload
+            $uploadDir = __DIR__ . '/../../public/uploads/avatars/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $fileName = 'user_' . $user['id'] . '_' . time() . '.' . $ext;
+            $targetFile = $uploadDir . $fileName;
+
+            if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+                // Remove old photo
+                require_once __DIR__ . '/../Models/User.php';
+                $userModel = new User();
+                $freshUser = $userModel->findById($user['id']);
+                if ($freshUser['profile_photo']) {
+                    $oldFile = $uploadDir . $freshUser['profile_photo'];
+                    if (file_exists($oldFile)) unlink($oldFile);
+                }
+
+                // Update DB
+                $userModel->updateProfilePhoto($user['id'], $fileName);
+                
+                // Update Session
+                $_SESSION['user']['profile_photo'] = $fileName;
+
+                $_SESSION['success'] = "Foto de perfil atualizada!";
+            } else {
+                $_SESSION['error'] = "Erro ao salvar o arquivo.";
+            }
+        }
         redirect('professor/dashboard');
     }
 }

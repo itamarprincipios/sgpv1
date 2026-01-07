@@ -157,6 +157,11 @@ class User extends Model {
         return $stmt->fetchAll(PDO::FETCH_COLUMN); // Returns simple array [1, 5, 8]
     }
 
+    public function updateProfilePhoto($userId, $fileName) {
+        $sql = "UPDATE users SET profile_photo = :photo WHERE id = :id";
+        return $this->db->query($sql, ['photo' => $fileName, 'id' => $userId]);
+    }
+
     public function getManagedSchools($userId) {
         $sql = "SELECT s.* FROM schools s 
                 JOIN user_schools us ON s.id = us.school_id 
