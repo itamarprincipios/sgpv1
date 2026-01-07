@@ -220,7 +220,23 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="semed-hero" style="position: relative;">
-    <div style="display: flex; justify-content: space-between; align-items: start;">
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <!-- Avatar Section -->
+        <div style="position: relative;">
+            <?php 
+                $photoUrl = !empty($user['profile_photo']) ? url('uploads/avatars/' . $user['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($user['name']) . '&background=random'; 
+            ?>
+            <img src="<?= $photoUrl ?>" alt="Perfil" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:4px solid rgba(255,255,255,0.8); box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+            
+            <form action="<?= url('semed/photo/upload') ?>" method="POST" enctype="multipart/form-data" id="photo-form" style="display:none;">
+                <input type="file" name="photo" id="photo-input" accept="image/png, image/jpeg" onchange="document.getElementById('photo-form').submit()">
+            </form>
+            
+            <button onclick="document.getElementById('photo-input').click()" title="Alterar Foto" style="position: absolute; bottom: 0; right: 0; width: 35px; height: 35px; border-radius: 50%; padding: 0; border: none; background: white; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                <i class="fas fa-camera" style="font-size: 16px; color: #667eea;"></i>
+            </button>
+        </div>
+
         <div>
             <h1>🎯 Painel SEMED</h1>
             <p>Visão completa da rede municipal de educação em tempo real</p>

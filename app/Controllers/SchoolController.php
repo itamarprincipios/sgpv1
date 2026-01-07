@@ -539,6 +539,59 @@ class SchoolController extends Controller {
             redirect('school/dashboard');
         }
     }
+
+    public function uploadPhoto() {
+        checkAuth('coordinator');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo'])) {
+            $user = auth();
+            $file = $_FILES['photo'];
+            
+            // Validation
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!in_array($file['type'], $allowedTypes)) {
+                $_SESSION['error'] = "Apenas imagens JPG e PNG são permitidas.";
+                redirect('school/dashboard');
+            }
+
+            if ($file['size'] > 2 * 1024 * 1024) { // 2MB
+                $_SESSION['error'] = "A imagem deve ter no máximo 2MB.";
+                redirect('school/dashboard');
+            }
+
+            // Upload
+            $uploadDir = __DIR__ . '/../../public/uploads/avatars/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $fileName = 'user_' . $user['id'] . '_' . time() . '.' . $ext;
+            $targetFile = $uploadDir . $fileName;
+
+            if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+                // Remove old photo
+                try {
+                    $userModel = new User();
+                    $freshUser = $userModel->findById($user['id']);
+                    
+                    if (!empty($freshUser['profile_photo'])) {
+                        $oldFilePath = $uploadDir . $freshUser['profile_photo'];
+                        if (file_exists($oldFilePath) && is_file($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
+                    }
+                } catch (Exception $e) { }
+
+                // Update DB
+                $userModel->updateProfilePhoto($user['id'], $fileName);
+                
+                // Update Session
+                $_SESSION['user']['profile_photo'] = $fileName;
+                $_SESSION['success'] = "Foto de perfil atualizada com sucesso!";
+            } else {
+                $_SESSION['error'] = "Erro ao fazer upload da imagem.";
+            }
+        }
+        redirect('school/dashboard');
+    }
 }
 
 

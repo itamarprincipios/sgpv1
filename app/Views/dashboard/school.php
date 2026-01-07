@@ -96,11 +96,31 @@
 </style>
 
 <div class="school-hero">
-    <h1>
-        <i class="fas fa-school"></i> 
-        <?= isset($school['name']) ? htmlspecialchars($school['name']) : 'Painel da Escola' ?>
-    </h1>
-    <p>Painel de Gestão do Coordenador Pedagógico</p>
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <!-- Avatar Section -->
+        <div style="position: relative; flex-shrink: 0;">
+            <?php 
+                $photoUrl = !empty($user['profile_photo']) ? url('uploads/avatars/' . $user['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($user['name']) . '&background=random'; 
+            ?>
+            <img src="<?= $photoUrl ?>" alt="Perfil" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            
+            <form action="<?= url('school/photo/upload') ?>" method="POST" enctype="multipart/form-data" id="photo-form" style="display:none;">
+                <input type="file" name="photo" id="photo-input" accept="image/png, image/jpeg" onchange="document.getElementById('photo-form').submit()">
+            </form>
+            
+            <button onclick="document.getElementById('photo-input').click()" title="Alterar Foto" style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-radius: 50%; padding: 0; border: none; background: #fff; color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <i class="fas fa-camera" style="font-size: 14px;"></i>
+            </button>
+        </div>
+        
+        <div>
+            <h1>
+                <i class="fas fa-school"></i> 
+                <?= isset($school['name']) ? htmlspecialchars($school['name']) : 'Painel da Escola' ?>
+            </h1>
+            <p>Painel de Gestão do Coordenador Pedagógico</p>
+        </div>
+    </div>
 </div>
 
 <div class="stats-grid">

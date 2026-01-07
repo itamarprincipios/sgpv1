@@ -62,6 +62,7 @@ $routes = [
     'semed/school/edit' => 'SemedController@editSchool',
     'semed/school/update' => 'SemedController@updateSchool',
     'semed/school/delete' => 'SemedController@deleteSchool',
+    'semed/photo/upload' => 'SemedController@uploadPhoto', // NEW
     'semed/coordinators' => 'SemedController@coordinators',
     'semed/coordinator/store' => 'SemedController@storeCoordinator',
     'semed/coordinator/edit' => 'SemedController@editCoordinator',
@@ -77,6 +78,7 @@ $routes = [
     'professor/upload/delete' => 'ProfessorController@deleteUpload',
     'school/mark-viewed' => 'SchoolController@markUploadsAsViewed',
     'school/password/change' => 'SchoolController@changePassword',
+    'school/photo/upload' => 'SchoolController@uploadPhoto', // NEW
 
     // Admin Routes
     'admin/dashboard' => 'AdminController@dashboard',
