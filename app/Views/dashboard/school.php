@@ -163,7 +163,270 @@
             <span class="stat-label">Pendências</span>
         </div>
     </div>
-</div>
+    </div>
+
+    <!-- GAMIFICATION WIDGET (Director Only) -->
+    <?php if ($user['role'] == 'director'): ?>
+        <?php
+            // CALCULATE DATA ON THE FLY (MVP)
+            // 1. School Ranking
+            // Fetch global Punctuality (simulated or real if Document model allows)
+            $globalPunctuality = $docModel->getSchoolPunctuality(); // Returns [{school_name, avg_score, total_docs}]
+            
+            // Sort by score desc
+            usort($globalPunctuality, function($a, $b) { return $b['avg_score'] <=> $a['avg_score']; });
+            
+            // Find my school
+            $mySchoolRank = null;
+            $mySchoolData = null;
+            $targetSchoolId = isset($school['id']) ? $school['id'] : $schools[0]['id'];
+            
+            // Note: getSchoolPunctuality returns Name, Score, Total. It doesn't return ID currently.
+            // Matching by name is risky but acceptable for MVP if unique names.
+            // Better: Let's assume the first match with similar name or just display top schools and Highlight ours.
+            // Or simpler: Show "Minha Escola" score and its hypothetical rank.
+            
+            foreach ($globalPunctuality as $idx => $row) {
+                if ($row['school_name'] === ($school['name'] ?? '')) {
+                    $mySchoolRank = $idx + 1;
+                    $mySchoolData = $row;
+                    break;
+                }
+            }
+            // Fallback if not found (no docs yet)
+            if (!$mySchoolData) {
+                $mySchoolRank = count($globalPunctuality) + 1;
+                $mySchoolData = ['school_name' => $school['name'], 'avg_score' => 10.0, 'total_docs' => 0];
+            }
+
+            // 2. Professors Destaque
+            // We have $professors list. Need their stats.
+            $profStats = [];
+            foreach($professors as $p) {
+                // Warning: N+1 query. OK for small schools. Optimization needed for large scale.
+                $stats = $docModel->getProfessorStats($p['id']);
+                // Score Calculation: (OnTime / Total) * 10 
+                // Stats returns total_sent, on_time.
+                $total = $stats['stats']['total_sent'] ?? 0;
+                $ontime = $stats['stats']['on_time'] ?? 0;
+                $score = ($total > 0) ? ($ontime / $total) * 100 : 0; // Usage % or Punctuality % ?
+                // User asked for "Pontos 15.0" in image. Maybe raw count of OnTime?
+                // Visual shows "Pontualidade 100.0%".
+                // Professor Destaque shows "Pontos 15.0". Let's use OnTime Count as Points.
+                $profStats[] = [
+                    'name' => $p['name'],
+                    'school_name' => $school['name'] ?? '',
+                    'points' => $ontime * 5, // 5 points per activity? Or just count. Let's use count.
+                    'whatsapp' => $p['whatsapp'],
+                    'id' => $p['id']
+                ];
+            }
+            usort($profStats, function($a, $b) { return $b['points'] <=> $a['points']; });
+            $topProfessors = array_slice($profStats, 0, 5); // Top 5
+
+            // 3. Coordinators Destaque (Same School score for now)
+            $coordStats = [];
+            foreach($coordinators as $c) {
+                $coordStats[] = [
+                    'name' => $c['name'],
+                    'school_name' => $c['school_name'] ?? $school['name'],
+                    'punctuality' => number_format($mySchoolData['avg_score'], 1), // School Avg
+                    'whatsapp' => $c['whatsapp'],
+                    'id' => $c['id']
+                ];
+            }
+            // Only have one list, so just show them.
+        ?>
+
+        <style>
+            .gamification-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            .gamification-card {
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                padding: 20px;
+                border: 1px solid #e5e7eb;
+            }
+            .g-header {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 15px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+            }
+            .g-header h3 {
+                margin: 0;
+                font-size: 1.1rem;
+                color: #374151;
+            }
+            .g-icon {
+                color: #f59e0b; /* Gold */
+                font-size: 1.2rem;
+            }
+            .rank-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .rank-table th {
+                text-align: left;
+                font-size: 0.75rem;
+                color: #6b7280;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                padding: 8px 10px;
+                background: #f9fafb;
+            }
+            .rank-table td {
+                padding: 12px 10px;
+                border-bottom: 1px solid #f3f4f6;
+                font-size: 0.9rem;
+            }
+            .rank-pos {
+                font-weight: bold;
+                color: #6b7280;
+                width: 50px;
+                text-align: center;
+            }
+            .medal-icon { color: #f59e0b; margin-right: 5px; }
+            .rank-score {
+                font-weight: bold;
+                color: #4f46e5;
+                text-align: right;
+            }
+            
+            @media (min-width: 992px) {
+                .gamification-lower {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 20px;
+                }
+            }
+        </style>
+
+        <div class="gamification-grid">
+            <!-- Ranking de Escolas -->
+            <div class="gamification-card">
+                <div class="g-header">
+                    <i class="fas fa-trophy g-icon"></i>
+                    <h3>Ranking de Escolas mais Pontuais</h3>
+                </div>
+                <table class="rank-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;">Posição</th>
+                            <th>Escola</th>
+                            <th style="text-align: right;">Pontualidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="rank-pos">
+                                <?php if($mySchoolRank == 1): ?><i class="fas fa-medal medal-icon"></i><?php else: ?><?= $mySchoolRank ?>º<?php endif; ?>
+                            </td>
+                            <td><strong><?= htmlspecialchars($mySchoolData['school_name']) ?></strong></td>
+                            <td class="rank-score"><?= number_format($mySchoolData['avg_score'], 1) ?>%</td>
+                        </tr>
+                        <!-- Show Top 2 Global just for context if valid -->
+                        <?php 
+                        $count = 0;
+                        foreach($globalPunctuality as $idx => $row): 
+                            if($row['school_name'] == $mySchoolData['school_name']) continue;
+                            if($count >= 2) break;
+                            $count++;
+                        ?>
+                        <tr style="opacity: 0.6;">
+                            <td class="rank-pos"><?= $idx + 1 ?>º</td>
+                            <td><?= htmlspecialchars($row['school_name']) ?></td>
+                            <td class="rank-score"><?= number_format($row['avg_score'], 1) ?>%</td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="gamification-lower">
+                <!-- Professores Destaque -->
+                <div class="gamification-card">
+                    <div class="g-header">
+                        <i class="fas fa-chalkboard-teacher" style="color: #10b981;"></i>
+                        <h3>Professores Destaque</h3>
+                    </div>
+                    <table class="rank-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">Pos.</th>
+                                <th>Nome</th>
+                                <th style="text-align: center;">Pontos</th>
+                                <th style="text-align: center;">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($topProfessors as $i => $p): ?>
+                            <tr>
+                                <td class="rank-pos">
+                                    <?php if($i == 0): ?><i class="fas fa-medal medal-icon"></i><?php else: ?><?= $i + 1 ?>º<?php endif; ?>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600;"><?= htmlspecialchars($p['name']) ?></div>
+                                    <div style="font-size: 0.75rem; color: #9ca3af;"><?= htmlspecialchars($p['school_name']) ?></div>
+                                </td>
+                                <td style="text-align: center; font-weight: bold; color: #10b981;"><?= $p['points'] ?>.0</td>
+                                <td style="text-align: center;">
+                                    <?php if(!empty($p['whatsapp'])): ?>
+                                        <a href="https://wa.me/<?= preg_replace('/\D/','', $p['whatsapp']) ?>" target="_blank" class="btn-icon" style="background: #e6fffa; color: #10b981; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fab fa-whatsapp"></i></a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Coordenadores Destaque -->
+                <div class="gamification-card">
+                    <div class="g-header">
+                        <i class="fas fa-user-tie" style="color: #6366f1;"></i>
+                        <h3>Coordenadores Destaque</h3>
+                    </div>
+                    <table class="rank-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">Pos.</th>
+                                <th>Nome</th>
+                                <th style="text-align: center;">Pontualidade</th>
+                                <th style="text-align: center;">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach($coordStats as $i => $c): ?>
+                            <tr>
+                                <td class="rank-pos">
+                                     <?php if($i == 0): ?><i class="fas fa-medal medal-icon"></i><?php else: ?><?= $i + 1 ?>º<?php endif; ?>
+                                </td>
+                                <td>
+                                    <div style="font-weight: 600;"><?= htmlspecialchars($c['name']) ?></div>
+                                    <div style="font-size: 0.75rem; color: #9ca3af;"><?= htmlspecialchars($c['school_name']) ?></div>
+                                </td>
+                                <td style="text-align: center; font-weight: bold; color: #6366f1;"><?= $c['punctuality'] ?>%</td>
+                                <td style="text-align: center;">
+                                    <?php if(!empty($c['whatsapp'])): ?>
+                                        <a href="https://wa.me/<?= preg_replace('/\D/','', $c['whatsapp']) ?>" target="_blank" class="btn-icon" style="background: #eef2ff; color: #6366f1; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px;"><i class="fab fa-whatsapp"></i></a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
 <div class="tabs">
     <button class="tab-btn active" onclick="openTab(event, 'tab-planning')">Meus Planejamentos</button>

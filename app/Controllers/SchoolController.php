@@ -163,17 +163,19 @@ class SchoolController extends Controller {
 
         $this->view('dashboard/school', [
             'user' => $user,
-            'school' => $school, // Layout might expect single school object
-            'schools' => $schools, // Pass all
+            'school' => $school, 
+            'schools' => $schools, 
             'plannings' => $plannings,
             'documents' => $documents,
             'classes' => $classes,
             'professors' => $professors,
-            'coordinators' => $coordinators, // NEW
-            'coordinators' => $coordinators, // NEW
+            'coordinators' => $coordinators, 
             'pendingSubmissions' => $pendingSubmissions,
             'newUploadsCount' => $newUploadsCount,
-            'filters' => $filters
+            'filters' => $filters,
+            // Gamification Data
+            'schoolIds' => $schoolIds,
+            'docModel' => new Document()
         ]);
     }
 
@@ -695,6 +697,71 @@ class SchoolController extends Controller {
         // Add security check here...
         $userModel->delete($id);
         redirect('school/dashboard?tab=coordinators');
+    }
+
+    // --- Director Reports ---
+    public function reports() {
+        checkAuth('director');
+        $user = auth();
+        $userModel = new User();
+        $docModel = new Document();
+        
+        $type = $_GET['type'] ?? 'submissions';
+        $professorId = $_GET['professor_id'] ?? null;
+        $period = $_GET['period'] ?? 'annual';
+        
+        // Director only sees their own schools
+        $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        if (!empty($user['school_id'])) {
+             if (!in_array($user['school_id'], $assignedSchoolIds)) {
+                 $assignedSchoolIds[] = $user['school_id'];
+             }
+        }
+        
+        $schoolId = $_GET['school_id'] ?? ($assignedSchoolIds[0] ?? null);
+        
+        if ($schoolId && !in_array($schoolId, $assignedSchoolIds)) {
+            $_SESSION['error'] = "Acesso negado para esta escola.";
+            redirect('school/dashboard');
+            return;
+        }
+
+        $schools = $userModel->getManagedSchools($user['id']);
+        $professors = $schoolId ? $userModel->getBySchoolId($schoolId, 'professor') : [];
+
+        $data = [];
+        if ($professorId) {
+             $prof = $userModel->findById($professorId);
+             if (!$prof || !in_array($prof['school_id'], $assignedSchoolIds)) {
+                 $data = []; 
+             } else {
+                 $data = $docModel->getProfessorStats($professorId, $period);
+             }
+        } elseif ($type === 'pendencies') {
+             $data = $docModel->getGlobalPendencies($schoolId);
+        } elseif ($type === 'punctuality') {
+             $data = $docModel->getSchoolPunctuality(); 
+             $data = array_filter($data, function($row) use ($schoolId) {
+                 // If getSchoolPunctuality returns all schools, we filter here
+                 // Assuming row has school_name, but matching by ID is better if Model supported it.
+                 // For now, accept all (Director sees ranking global? Image implies "Ranking de Escolas")
+                 // If Image implies Global Ranking comparing with others, then don't filter!
+                 // "Ranking de Escolas mais Pontuais" implies global.
+                 return true; 
+             });
+        } else {
+             $data = $docModel->getSubmissionsReport($schoolId);
+        }
+
+        $this->view('dashboard/school_reports', [
+            'type' => $type,
+            'data' => $data,
+            'schools' => $schools,
+            'professors' => $professors,
+            'schoolId' => $schoolId,
+            'professorId' => $professorId,
+            'period' => $period
+        ]);
     }
 }
 
