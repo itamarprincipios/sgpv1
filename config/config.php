@@ -1,8 +1,14 @@
 <?php
 
 // Função simples para carregar .env
+// DEBUG: Habilitar erros temporariamente
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 function loadEnv($path) {
     if (!file_exists($path)) {
+        // die("DEBUG: Arquivo .env não encontrado em: " . $path); // Descomente para testar caminho
         return;
     }
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
