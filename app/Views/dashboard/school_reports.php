@@ -198,8 +198,18 @@
                 <?php else: ?>
                     <?php foreach($data as $index => $row): ?>
                         <tr>
-                            <td style="text-align: center;"><?= $index + 1 ?>º</td>
-                            <td><strong><?= htmlspecialchars($row['professor_name']) ?></strong></td>
+                            <td style="text-align: center; font-weight: bold;"><?= $index + 1 ?>º</td>
+                            <td style="display: flex; align-items: center; gap: 10px;">
+                                <?php 
+                                    if (!empty($row['profile_photo']) && file_exists(__DIR__ . '/../../../public/uploads/avatars/' . $row['profile_photo'])) {
+                                        $avatarUrl = url('uploads/avatars/' . $row['profile_photo']);
+                                    } else {
+                                        $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($row['professor_name']) . "&background=random&color=fff&size=40";
+                                    }
+                                ?>
+                                <img src="<?= $avatarUrl ?>" alt="Foto" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                <strong><?= htmlspecialchars($row['professor_name']) ?></strong>
+                            </td>
                             <td style="text-align: center;">
                                 <span style="font-size: 1.1rem; font-weight: bold; color: var(--primary);">
                                     <?= number_format($row['avg_score'] ?? 0, 1) ?> pts
@@ -216,11 +226,30 @@
 
 <style>
     @media print {
+        @page { margin: 1cm; size: A4; }
+        body { background: #fff !important; font-size: 12px; font-family: sans-serif; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         .navbar, .btn, form, .dashboard-header div:last-child { display: none !important; }
-        .main-container { padding: 0 !important; }
-        .list-section { border: none !important; box-shadow: none !important; }
-        h2, h3 { color: #000 !important; }
-        body { background: #fff !important; }
+        .main-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; }
+        .list-section { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+        h2 { font-size: 18px !important; margin-bottom: 10px !important; color: #000 !important; text-align: center; }
+        h3 { font-size: 16px !important; margin-bottom: 10px !important; color: #333 !important; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        
+        table { width: 100% !important; border-collapse: collapse !important; font-size: 11px !important; }
+        th, td { padding: 4px 8px !important; border: 1px solid #ddd !important; text-align: left; }
+        th { background-color: #f0f0f0 !important; font-weight: bold; color: #000 !important; }
+        
+        /* Stats Grid Compact */
+        .dashboard-header + .list-section > div > div { display: grid; grid-template-columns: repeat(6, 1fr) !important; gap: 5px !important; }
+        .dashboard-header + .list-section > div > div > div { padding: 5px !important; border: 1px solid #ccc !important; }
+        .dashboard-header + .list-section > div > div > div > div:first-child { font-size: 10px !important; }
+        .dashboard-header + .list-section > div > div > div > div:last-child { font-size: 14px !important; }
+
+        /* Hide badge background colors for saving ink, allow text color */
+        .status-badge { background: none !important; border: none !important; padding: 0; }
+        .btn-icon { display: none !important; }
+        
+        /* Ensure photos print */
+        img { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
 </style>
 

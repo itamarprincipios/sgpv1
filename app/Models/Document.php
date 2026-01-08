@@ -307,7 +307,7 @@ class Document extends Model {
     }
 
     public function getProfessorPunctualityBySchool($schoolId) {
-        $sql = "SELECT u.name as professor_name, AVG(d.score_final) as avg_score, COUNT(d.id) as total_docs
+        $sql = "SELECT u.name as professor_name, u.profile_photo, AVG(d.score_final) as avg_score, COUNT(d.id) as total_docs
                 FROM users u
                 JOIN documents d ON u.id = d.user_id
                 WHERE u.school_id = :school_id
