@@ -85,6 +85,12 @@
                     <i class="fas fa-th-large"></i>
                     <span>Painel da Escola</span>
                 </a>
+                <?php if ($role === 'director'): ?>
+                <a href="<?= url('school/reports') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'school/reports') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Relatórios</span>
+                </a>
+                <?php endif; ?>
                 <!-- Links abaixo removidos pois agora são abas no painel principal -->
             <?php elseif ($role === 'professor'): ?>
                 <a href="<?= url('professor/dashboard') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'professor/dashboard') !== false ? 'active' : '' ?>">

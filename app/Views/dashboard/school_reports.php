@@ -4,9 +4,11 @@
     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <h2>Relatórios da Rede</h2>
         <div style="display: flex; gap: 10px;">
-            <a href="<?= url('semed/reports?type=submissions') ?>" class="btn <?= ($type === 'submissions') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Envios</a>
-            <a href="<?= url('semed/reports?type=pendencies') ?>" class="btn <?= ($type === 'pendencies') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Pendências</a>
-            <a href="<?= url('semed/reports?type=punctuality') ?>" class="btn <?= ($type === 'punctuality') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Pontualidade</a>
+        <div style="display: flex; gap: 10px;">
+            <a href="<?= url('school/reports?type=submissions') ?>" class="btn <?= ($type === 'submissions') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Envios</a>
+            <a href="<?= url('school/reports?type=pendencies') ?>" class="btn <?= ($type === 'pendencies') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Pendências</a>
+            <a href="<?= url('school/reports?type=punctuality') ?>" class="btn <?= ($type === 'punctuality') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Pontualidade</a>
+        </div>
         </div>
     </div>
 </div>
