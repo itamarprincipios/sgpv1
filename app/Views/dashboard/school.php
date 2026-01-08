@@ -913,7 +913,7 @@
             </div>
             <button type="submit" class="btn btn-primary" style="height: 42px;">Salvar</button>
         </form>
-        <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 10px;">* Senha padrão: <strong>coordinator123</strong></p>
+        <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 10px;">* Senha padrão: <strong>123456</strong></p>
     </div>
 
     <div class="list-section">
@@ -948,6 +948,11 @@
                                     <?php endif; ?>
                                     
                                     <a href="<?= url('school/coordinator/delete?id='.$coord['id']) ?>" class="btn-icon" style="color: red;" onclick="return confirm('Excluir coordenador?')"><i class="fas fa-trash"></i></a>
+                                    
+                                    <a href="<?= url('school/coordinator/reset-password?id='.$coord['id']) ?>" class="btn-icon" style="color: #f59e0b;" title="Resetar Senha (123456)" onclick="return confirm('Deseja resetar a senha deste coordenador para 123456?')"><i class="fas fa-key"></i></a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

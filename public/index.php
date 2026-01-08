@@ -88,6 +88,7 @@ $routes = [
     'school/coordinator/edit' => 'SchoolController@editCoordinator', // NEW (Director)
     'school/coordinator/update' => 'SchoolController@updateCoordinator', // NEW (Director)
     'school/coordinator/delete' => 'SchoolController@deleteCoordinator', // NEW (Director)
+    'school/coordinator/reset-password' => 'SchoolController@resetCoordinatorPassword', // NEW (Director)
     'school/reports' => 'SchoolController@reports', // NEW (Director)
 
     // Admin Routes
