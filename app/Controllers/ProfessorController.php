@@ -161,6 +161,9 @@ class ProfessorController extends Controller {
              $userModel->updatePassword($user['id'], password_hash($newPass, PASSWORD_DEFAULT));
              
              redirect('professor/dashboard');
+         } else {
+             // If accessed via GET (e.g. browser reload or direct link), redirect to dashboard
+             redirect('professor/dashboard');
          }
     }
 

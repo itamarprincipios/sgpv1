@@ -172,6 +172,11 @@ class User extends Model {
         return $this->db->query($sql, ['photo' => $fileName, 'id' => $userId]);
     }
 
+    public function updatePassword($id, $hashedPassword) {
+        $sql = "UPDATE users SET password = :password WHERE id = :id";
+        return $this->db->query($sql, ['password' => $hashedPassword, 'id' => $id]);
+    }
+
     public function getManagedSchools($userId) {
         $sql = "SELECT s.* FROM schools s 
                 JOIN user_schools us ON s.id = us.school_id 
