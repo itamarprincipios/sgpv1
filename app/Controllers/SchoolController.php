@@ -688,7 +688,6 @@ class SchoolController extends Controller {
             $_SESSION['success'] = "Coordenador atualizado!";
         }
         redirect('school/dashboard?tab=coordinators');
-        redirect('school/dashboard?tab=coordinators');
     }
 
     public function resetCoordinatorPassword() {
