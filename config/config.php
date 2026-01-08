@@ -1,42 +1,44 @@
 <?php
 
-// Detectar ambiente automaticamente
-$isProduction = (
-    isset($_SERVER['HTTP_HOST']) && 
-    strpos($_SERVER['HTTP_HOST'], 'sgprorainopolis.com') !== false
-);
+// Função simples para carregar .env
+function loadEnv($path) {
+    if (!file_exists($path)) {
+        return;
+    }
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2);
+        $name = trim($name);
+        $value = trim($value);
+        if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
+            putenv(sprintf('%s=%s', $name, $value));
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
+        }
+    }
+}
 
-// Configurações de produção
-$productionConfig = [
+// Carregar .env se existir
+loadEnv(__DIR__ . '/../.env');
+
+// Detectar ambiente (Produção se não houver .env ou URL for prod)
+// OBS: Em produção, você deve criar o arquivo .env com as credenciais reais OU configurar as variáveis no servidor.
+// Se não houver .env, tenta usar os valores padrão abaixo (fallback) ou variáveis de ambiente do sistema.
+
+$config = [
     'app' => [
-        'name' => 'SGP - Sistema de Gestão Pedagógica',
-        'url' => 'https://sgprorainopolis.com',
-        'timezone' => 'America/Sao_Paulo',
+        'name' => getenv('APP_NAME') ?: 'SGP - Sistema de Gestão Pedagógica',
+        'url' => getenv('APP_URL') ?: 'https://sgprorainopolis.com',
+        'timezone' => getenv('APP_TIMEZONE') ?: 'America/Sao_Paulo',
     ],
     'db' => [
-        'host' => 'localhost',
-        'dbname' => 'u199671261_dbsgp',
-        'username' => 'u199671261_dbsgpuser',
-        'password' => 'SgpAdmin2025',
+        'host' => getenv('DB_HOST') ?: 'localhost',
+        'dbname' => getenv('DB_NAME') ?: 'u199671261_dbsgp',
+        'username' => getenv('DB_USER') ?: 'u199671261_dbsgpuser',
+        'password' => getenv('DB_PASS') ?: 'SgpAdmin2025', // Fallback apenas se não houver .env (CUIDADO: Mantenha isso seguro ou remova após criar .env em prod)
         'charset' => 'utf8mb4'
     ]
 ];
 
-// Configurações de desenvolvimento local
-$localConfig = [
-    'app' => [
-        'name' => 'SGP - Sistema de Gestão Pedagógica [LOCAL]',
-        'url' => 'http://localhost:8000',
-        'timezone' => 'America/Sao_Paulo',
-    ],
-    'db' => [
-        'host' => 'localhost',
-        'dbname' => 'sgp_system',
-        'username' => 'root',
-        'password' => '',
-        'charset' => 'utf8mb4'
-    ]
-];
-
-// Retornar configuração apropriada
-return $isProduction ? $productionConfig : $localConfig;
+return $config;
