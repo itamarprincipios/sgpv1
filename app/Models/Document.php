@@ -305,6 +305,17 @@ class Document extends Model {
                 ORDER BY avg_score DESC";
         return $this->db->query($sql)->fetchAll();
     }
+
+    public function getProfessorPunctualityBySchool($schoolId) {
+        $sql = "SELECT u.name as professor_name, AVG(d.score_final) as avg_score, COUNT(d.id) as total_docs
+                FROM users u
+                JOIN documents d ON u.id = d.user_id
+                WHERE u.school_id = :school_id
+                  AND d.status IN ('aprovado', 'ajustado', 'enviado')
+                GROUP BY u.id
+                ORDER BY avg_score DESC";
+        return $this->db->query($sql, ['school_id' => $schoolId])->fetchAll();
+    }
     public function search($filters = []) {
         $sql = "SELECT d.*, u.name as professor_name, s.name as school_name, p.name as period_name, p.opening_date 
                 FROM documents d 

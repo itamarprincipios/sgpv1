@@ -758,15 +758,7 @@ class SchoolController extends Controller {
         } elseif ($type === 'pendencies') {
              $data = $docModel->getGlobalPendencies($schoolId);
         } elseif ($type === 'punctuality') {
-             $data = $docModel->getSchoolPunctuality(); 
-             $data = array_filter($data, function($row) use ($schoolId) {
-                 // If getSchoolPunctuality returns all schools, we filter here
-                 // Assuming row has school_name, but matching by ID is better if Model supported it.
-                 // For now, accept all (Director sees ranking global? Image implies "Ranking de Escolas")
-                 // If Image implies Global Ranking comparing with others, then don't filter!
-                 // "Ranking de Escolas mais Pontuais" implies global.
-                 return true; 
-             });
+             $data = $docModel->getProfessorPunctualityBySchool($schoolId); 
         } else {
              $data = $docModel->getSubmissionsReport($schoolId);
         }

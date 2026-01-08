@@ -182,29 +182,33 @@
         </table>
 
     <?php elseif ($type === 'punctuality'): ?>
-        <h3>Índice de Pontualidade por Escola</h3>
+        <h3>Índice de Pontualidade por Professor</h3>
         <table class="data-table">
             <thead>
                 <tr>
                     <th style="width: 10%;">Posição</th>
-                    <th>Escola</th>
+                    <th>Professor</th>
                     <th style="text-align: center;">Média de Pontuação</th>
                     <th style="text-align: center;">Volume de Envios</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach($data as $index => $row): ?>
-                    <tr>
-                        <td style="text-align: center;"><?= $index + 1 ?>º</td>
-                        <td><strong><?= htmlspecialchars($row['school_name']) ?></strong></td>
-                        <td style="text-align: center;">
-                            <span style="font-size: 1.1rem; font-weight: bold; color: var(--primary);">
-                                <?= number_format($row['avg_score'], 1) ?> pts
-                            </span>
-                        </td>
-                        <td style="text-align: center;"><?= $row['total_docs'] ?> docs</td>
-                    </tr>
-                <?php endforeach; ?>
+                <?php if(empty($data)): ?>
+                     <tr><td colspan="4" style="text-align: center; padding: 20px; color: #666;">Nenhum dado de pontualidade encontrado.</td></tr>
+                <?php else: ?>
+                    <?php foreach($data as $index => $row): ?>
+                        <tr>
+                            <td style="text-align: center;"><?= $index + 1 ?>º</td>
+                            <td><strong><?= htmlspecialchars($row['professor_name']) ?></strong></td>
+                            <td style="text-align: center;">
+                                <span style="font-size: 1.1rem; font-weight: bold; color: var(--primary);">
+                                    <?= number_format($row['avg_score'] ?? 0, 1) ?> pts
+                                </span>
+                            </td>
+                            <td style="text-align: center;"><?= $row['total_docs'] ?> docs</td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
     <?php endif; ?>
