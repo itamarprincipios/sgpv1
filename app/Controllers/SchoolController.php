@@ -567,6 +567,9 @@ class SchoolController extends Controller {
             
             $_SESSION['success'] = "Sua senha foi alterada com sucesso!";
             redirect('school/dashboard');
+        } else {
+            // If accessed via GET, redirect to dashboard
+            redirect('school/dashboard');
         }
     }
 

@@ -511,6 +511,9 @@ class SemedController extends Controller {
              
              $_SESSION['success'] = "Sua senha foi alterada com sucesso!";
              redirect('semed/dashboard');
+         } else {
+             // If accessed via GET, redirect to dashboard
+             redirect('semed/dashboard');
          }
     }
 
