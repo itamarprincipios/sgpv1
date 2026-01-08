@@ -647,14 +647,14 @@ class SchoolController extends Controller {
                 'school_id' => $targetSchoolId,
                 'whatsapp' => $_POST['whatsapp'],
                 'role' => 'coordinator',
-                'password' => password_hash('coordinator123', PASSWORD_DEFAULT)
+                'password' => password_hash('123456', PASSWORD_DEFAULT)
             ];
 
             if ($userModel->findByEmail($data['email'])) {
                 $_SESSION['error'] = "E-mail já cadastrado!";
             } else {
                 $userModel->create($data);
-                $_SESSION['success'] = "Coordenador cadastrado com sucesso! Senha padrão: coordinator123";
+                $_SESSION['success'] = "Coordenador cadastrado com sucesso! Senha padrão: 123456";
             }
         }
         redirect('school/dashboard?tab=coordinators');
