@@ -19,10 +19,11 @@
         <div class="nav-brand">SGP - <?php
             $user = auth(); // Get the full user object
             $role = $user['role'] ?? '';
-            if($role == 'coordinator') echo 'Coordenador Pedagógico';
+            if($role == 'coordinator') echo 'Coordenador';
+            elseif($role == 'director') echo 'Diretor';
             elseif($role == 'semed') echo 'SEMED';
             elseif($role == 'professor') echo 'Professor';
-            elseif($role == 'admin') echo 'Super Admin';
+            elseif($role == 'admin') echo 'Admin';
         ?></div>
         
         <!-- Hamburger Menu Button (Mobile Only) -->
