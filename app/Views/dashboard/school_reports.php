@@ -17,15 +17,8 @@
     <form action="" method="GET" class="filter-container">
         <input type="hidden" name="type" value="<?= $type ?>">
         
-        <div class="filter-group">
-            <label class="filter-label">Unidade Escolar</label>
-            <select name="school_id" class="filter-select" onchange="this.form.submit()">
-                <option value="">Todas as Escolas</option>
-                <?php foreach($schools as $school): ?>
-                    <option value="<?= $school['id'] ?>" <?= ($schoolId == $school['id']) ? 'selected' : '' ?>><?= htmlspecialchars($school['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+        <!-- School Filter Removed for Director Context -->
+        <input type="hidden" name="school_id" value="<?= $schoolId ?>">
 
         <?php if ($schoolId): ?>
         <div class="filter-group">
