@@ -198,24 +198,26 @@
                 <?php else: ?>
                     <?php foreach($data as $index => $row): ?>
                         <tr>
-                            <td style="text-align: center; font-weight: bold;"><?= $index + 1 ?>º</td>
-                            <td style="display: flex; align-items: center; gap: 10px;">
-                                <?php 
-                                    if (!empty($row['profile_photo']) && file_exists(__DIR__ . '/../../../public/uploads/avatars/' . $row['profile_photo'])) {
-                                        $avatarUrl = url('uploads/avatars/' . $row['profile_photo']);
-                                    } else {
-                                        $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($row['professor_name']) . "&background=random&color=fff&size=40";
-                                    }
-                                ?>
-                                <img src="<?= $avatarUrl ?>" alt="Foto" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
-                                <strong><?= htmlspecialchars($row['professor_name']) ?></strong>
+                            <td style="text-align: center; font-weight: bold; width: 5%;"><?= $index + 1 ?>º</td>
+                            <td style="width: 55%;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <?php 
+                                        if (!empty($row['profile_photo']) && file_exists(__DIR__ . '/../../../public/uploads/avatars/' . $row['profile_photo'])) {
+                                            $avatarUrl = url('uploads/avatars/' . $row['profile_photo']);
+                                        } else {
+                                            $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($row['professor_name']) . "&background=random&color=fff&size=40";
+                                        }
+                                    ?>
+                                    <img src="<?= $avatarUrl ?>" alt="Foto" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                    <strong><?= htmlspecialchars($row['professor_name']) ?></strong>
+                                </div>
                             </td>
-                            <td style="text-align: center;">
-                                <span style="font-size: 1.1rem; font-weight: bold; color: var(--primary);">
+                            <td style="text-align: center; width: 20%; white-space: nowrap;">
+                                <span style="font-size: 1rem; font-weight: bold; color: #000;">
                                     <?= number_format($row['avg_score'] ?? 0, 1) ?> pts
                                 </span>
                             </td>
-                            <td style="text-align: center;"><?= $row['total_docs'] ?> docs</td>
+                            <td style="text-align: center; width: 20%;"><?= $row['total_docs'] ?> docs</td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -238,6 +240,10 @@
         th, td { padding: 4px 8px !important; border: 1px solid #ddd !important; text-align: left; }
         th { background-color: #f0f0f0 !important; font-weight: bold; color: #000 !important; }
         
+        /* Ensure single line rows */
+        tr { page-break-inside: avoid; height: auto !important; }
+        td, th { vertical-align: middle !important; padding: 4px 5px !important; }
+        
         /* Stats Grid Compact */
         .dashboard-header + .list-section > div > div { display: grid; grid-template-columns: repeat(6, 1fr) !important; gap: 5px !important; }
         .dashboard-header + .list-section > div > div > div { padding: 5px !important; border: 1px solid #ccc !important; }
@@ -245,8 +251,11 @@
         .dashboard-header + .list-section > div > div > div > div:last-child { font-size: 14px !important; }
 
         /* Hide badge background colors for saving ink, allow text color */
-        .status-badge { background: none !important; border: none !important; padding: 0; }
+        .status-badge { background: none !important; border: none !important; padding: 0; color: #000 !important; }
         .btn-icon { display: none !important; }
+        
+        /* Enforce black text for scores in print */
+        span { color: #000 !important; }
         
         /* Ensure photos print */
         img { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
