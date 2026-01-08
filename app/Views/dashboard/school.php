@@ -953,9 +953,6 @@
                                 </td>
                             </tr>
                         <?php endforeach; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
             </table>
