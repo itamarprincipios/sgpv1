@@ -118,7 +118,7 @@
                 <i class="fas fa-school"></i> 
                 <?= isset($school['name']) ? htmlspecialchars($school['name']) : 'Painel da Escola' ?>
             </h1>
-            <p>Painel de Gestão do Coordenador Pedagógico</p>
+            <p>Painel de Gestão <?= ($user['role'] == 'director') ? 'do Diretor Escolar' : 'do Coordenador Pedagógico' ?></p>
         </div>
     </div>
 </div>
