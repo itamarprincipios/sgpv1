@@ -79,7 +79,8 @@
                     <i class="fas fa-file-invoice"></i>
                     <span>Relatórios</span>
                 </a>
-            <?php elseif ($role === 'coordinator'): ?>
+                </a>
+            <?php elseif ($role === 'coordinator' || $role === 'director'): ?>
                 <a href="<?= url('school/dashboard') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'school/dashboard') !== false ? 'active' : '' ?>">
                     <i class="fas fa-th-large"></i>
                     <span>Painel da Escola</span>
