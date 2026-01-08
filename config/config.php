@@ -34,9 +34,9 @@ $config = [
     ],
     'db' => [
         'host' => getenv('DB_HOST') ?: 'localhost',
-        'dbname' => getenv('DB_NAME') ?: 'u199671261_dbsgp',
-        'username' => getenv('DB_USER') ?: 'u199671261_dbsgpuser',
-        'password' => getenv('DB_PASS') ?: 'SgpAdmin2025', // Fallback apenas se não houver .env (CUIDADO: Mantenha isso seguro ou remova após criar .env em prod)
+        'dbname' => getenv('DB_NAME') ?: 'sgp_db',
+        'username' => getenv('DB_USER') ?: 'root',
+        'password' => getenv('DB_PASS') ?: '',
         'charset' => 'utf8mb4'
     ]
 ];
