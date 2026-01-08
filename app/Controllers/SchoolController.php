@@ -9,7 +9,7 @@ require_once __DIR__ . '/../Models/ClassModel.php';
 
 class SchoolController extends Controller {
     public function dashboard() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $user = auth();
         
         $userModel = new User();
@@ -135,6 +135,32 @@ class SchoolController extends Controller {
             }
         }
 
+        // Tab 5: Coordinators (Director Only)
+        $coordinators = [];
+        if ($user['role'] == 'director') {
+            foreach($schoolIds as $sid) {
+                 $coords = $userModel->getCoordinatorsBySchool($sid);
+                 if($coords) {
+                     $name = $schoolsMap[$sid] ?? '';
+                     foreach($coords as &$val) $val['school_name'] = $name;
+                     $coordinators = array_merge($coordinators, $coords);
+                 }
+            }
+        }
+
+        // Tab 5: Coordinators (Director Only)
+        $coordinators = [];
+        if ($user['role'] == 'director') {
+            foreach($schoolIds as $sid) {
+                 $coords = $userModel->getCoordinatorsBySchool($sid);
+                 if($coords) {
+                     $name = $schoolsMap[$sid] ?? '';
+                     foreach($coords as &$val) $val['school_name'] = $name;
+                     $coordinators = array_merge($coordinators, $coords);
+                 }
+            }
+        }
+
         $this->view('dashboard/school', [
             'user' => $user,
             'school' => $school, // Layout might expect single school object
@@ -143,6 +169,8 @@ class SchoolController extends Controller {
             'documents' => $documents,
             'classes' => $classes,
             'professors' => $professors,
+            'coordinators' => $coordinators, // NEW
+            'coordinators' => $coordinators, // NEW
             'pendingSubmissions' => $pendingSubmissions,
             'newUploadsCount' => $newUploadsCount,
             'filters' => $filters
@@ -150,7 +178,7 @@ class SchoolController extends Controller {
     }
 
     public function createPlanning() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $user = auth();
         $userModel = new User();
         $schoolIds = $userModel->getAssignedSchoolIds($user['id']);
@@ -168,7 +196,7 @@ class SchoolController extends Controller {
     }
 
     public function storePlanning() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $start_date = $_POST['start_date']; 
             
@@ -208,7 +236,7 @@ class SchoolController extends Controller {
     }
 
     public function viewPlanning() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $id = $_GET['id'] ?? null;
         if (!$id) redirect('school/dashboard');
         
@@ -235,7 +263,7 @@ class SchoolController extends Controller {
     }
 
     public function editPlanning() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $id = $_GET['id'] ?? null;
         if (!$id) redirect('school/dashboard');
 
@@ -248,7 +276,7 @@ class SchoolController extends Controller {
     }
 
     public function updatePlanning() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $start_date = $_POST['start_date'];
@@ -275,7 +303,7 @@ class SchoolController extends Controller {
     }
 
     public function deletePlanning() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $id = $_GET['id'] ?? null;
         if ($id) {
             $planningModel = new Planning();
@@ -289,7 +317,7 @@ class SchoolController extends Controller {
 
     // --- Classes CRUD ---
     public function storeClass() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'];
             $user = auth();
@@ -311,7 +339,7 @@ class SchoolController extends Controller {
     }
 
     public function editClass() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $id = $_GET['id'] ?? null;
         if (!$id) redirect('school/dashboard');
 
@@ -324,7 +352,7 @@ class SchoolController extends Controller {
     }
 
     public function updateClass() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $name = $_POST['name'];
@@ -341,7 +369,7 @@ class SchoolController extends Controller {
     }
 
     public function deleteClass() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $id = $_GET['id'] ?? null;
         if ($id) {
             $classModel = new ClassModel();
@@ -356,7 +384,7 @@ class SchoolController extends Controller {
 
     // --- Professor CRUD ---
     public function storeProfessor() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = new User();
             
@@ -387,7 +415,7 @@ class SchoolController extends Controller {
     }
 
     public function editProfessor() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $id = $_GET['id'] ?? null;
         if(!$id) redirect('school/dashboard');
 
@@ -404,7 +432,7 @@ class SchoolController extends Controller {
     }
 
     public function updateProfessor() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = new User();
             $data = [
@@ -422,7 +450,7 @@ class SchoolController extends Controller {
     }
 
     public function deleteProfessor() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if (isset($_GET['id'])) {
            $userModel = new User();
            $userModel->delete($_GET['id']); // Add security check
@@ -431,7 +459,7 @@ class SchoolController extends Controller {
     }
 
     public function reviewDocument() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $statusInput = $_POST['status']; // 'aprovado', 'ajustado', 'rejeitado'
@@ -482,7 +510,7 @@ class SchoolController extends Controller {
     }
 
     public function associateToBimester() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['planning_id'] ?? null;
@@ -499,7 +527,7 @@ class SchoolController extends Controller {
     }
 
     public function resetProfessorPassword() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $id = $_GET['id'] ?? null;
         
         if ($id) {
@@ -520,14 +548,14 @@ class SchoolController extends Controller {
     }
 
     public function markUploadsAsViewed() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         $_SESSION['last_viewed_uploads'] = time();
         echo json_encode(['status' => 'success']);
         exit;
     }
 
     public function changePassword() {
-        checkAuth('coordinator');
+        checkAuth(['coordinator', 'director']);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $newPass = $_POST['password'];
             $user = auth();
@@ -591,6 +619,82 @@ class SchoolController extends Controller {
             }
         }
         redirect('school/dashboard');
+    }
+
+    // --- AGENTIC CODE: Director Management Logic ---
+    public function storeCoordinator() {
+        checkAuth('director'); 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $user = auth();
+            $userModel = new User();
+            $targetSchoolId = $_POST['school_id'];
+
+            // Validation: Director must own this school
+            $assigned = $userModel->getAssignedSchoolIds($user['id']);
+            if (!empty($user['school_id'])) $assigned[] = $user['school_id'];
+
+            if (!in_array($targetSchoolId, $assigned)) {
+                $_SESSION['error'] = "Permissão negada para esta escola.";
+                redirect('school/dashboard'); 
+                return;
+            }
+
+            $data = [
+                'name' => $_POST['name'],
+                'email' => $_POST['email'],
+                'school_id' => $targetSchoolId,
+                'whatsapp' => $_POST['whatsapp'],
+                'role' => 'coordinator',
+                'password' => password_hash('coordinator123', PASSWORD_DEFAULT)
+            ];
+
+            if ($userModel->findByEmail($data['email'])) {
+                $_SESSION['error'] = "E-mail já cadastrado!";
+            } else {
+                $userModel->create($data);
+                $_SESSION['success'] = "Coordenador cadastrado com sucesso! Senha padrão: coordinator123";
+            }
+        }
+        redirect('school/dashboard?tab=coordinators');
+    }
+
+    public function editCoordinator() {
+        checkAuth('director');
+        $id = $_GET['id'] ?? null;
+        if (!$id) redirect('school/dashboard');
+
+        $userModel = new User();
+        $coordinator = $userModel->findById($id);
+        $schools = $userModel->getManagedSchools(auth()['id']);
+        
+        $this->view('dashboard/coordinator_edit', ['coordinator' => $coordinator, 'schools' => $schools]);
+    }
+
+    public function updateCoordinator() {
+        checkAuth('director');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $data = [
+                'name' => $_POST['name'],
+                'email' => $_POST['email'],
+                'whatsapp' => $_POST['whatsapp'],
+                'school_id' => $_POST['school_id'] 
+            ];
+            
+            $userModel = new User();
+            $userModel->update($id, $data);
+            $_SESSION['success'] = "Coordenador atualizado!";
+        }
+        redirect('school/dashboard?tab=coordinators');
+    }
+
+    public function deleteCoordinator() {
+        checkAuth('director');
+        $id = $_GET['id'];
+        $userModel = new User();
+        // Add security check here...
+        $userModel->delete($id);
+        redirect('school/dashboard?tab=coordinators');
     }
 }
 

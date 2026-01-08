@@ -62,6 +62,10 @@
                     <i class="fas fa-school"></i>
                     <span>Escolas</span>
                 </a>
+                <a href="<?= url('semed/directors') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/directors') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Diretores</span>
+                </a>
                 <a href="<?= url('semed/coordinators') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/coordinators') !== false ? 'active' : '' ?>">
                     <i class="fas fa-user-tie"></i>
                     <span>Coordenadores</span>

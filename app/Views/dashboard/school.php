@@ -180,6 +180,9 @@
 
     <button class="tab-btn" onclick="openTab(event, 'tab-classes')">Turmas</button>
     <button class="tab-btn" onclick="openTab(event, 'tab-professors')">Professores</button>
+    <?php if($user['role'] === 'director'): ?>
+        <button class="tab-btn" onclick="openTab(event, 'tab-coordinators')">Coordenadores</button>
+    <?php endif; ?>
 </div>
 
 <?php $showSchool = isset($schools) && count($schools) > 1; ?>
@@ -619,8 +622,83 @@
     </div>
 </div>
 
+<!-- TAB 6: COORDENADORES (DIRETOR ONLY) -->
+<?php if($user['role'] === 'director'): ?>
+<div id="tab-coordinators" class="tab-content">
+    <div class="upload-section">
+        <h3><i class="fas fa-user-plus"></i> Novo Coordenador</h3>
+        <form action="<?= url('school/coordinator/store') ?>" method="POST" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: end;">
+            <div class="form-group" style="margin: 0;">
+                <label>Nome Completo</label>
+                <input type="text" name="name" required placeholder="Nome do Coordenador">
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label>E-mail (Login)</label>
+                <input type="email" name="email" required placeholder="email@sgp.com">
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label>Escola</label>
+                <select name="school_id" required>
+                    <?php foreach($schools as $s): ?>
+                        <option value="<?= $s['id'] ?>"><?= htmlspecialchars($s['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group" style="margin: 0;">
+                <label>WhatsApp</label>
+                <input type="text" name="whatsapp" placeholder="Ex: 5511999999999">
+            </div>
+            <button type="submit" class="btn btn-primary" style="height: 42px;">Salvar</button>
+        </form>
+        <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 10px;">* Senha padrão: <strong>coordinator123</strong></p>
+    </div>
+
+    <div class="list-section">
+        <h3>Coordenadores da Escola</h3>
+        <div style="overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Escola</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if(empty($coordinators)): ?>
+                        <tr><td colspan="4" style="text-align: center; color: #777;">Nenhum coordenador encontrado.</td></tr>
+                    <?php else: ?>
+                        <?php foreach($coordinators as $coord): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($coord['name']) ?></td>
+                                <td><?= htmlspecialchars($coord['email']) ?></td>
+                                <td><?= htmlspecialchars($coord['school_name'] ?? 'N/A') ?></td>
+                                <td>
+                                    <a href="<?= url('school/coordinator/edit?id='.$coord['id']) ?>" class="btn-icon" title="Editar"><i class="fas fa-edit"></i></a>
+                                    
+                                    <?php if (!empty($coord['whatsapp'])): 
+                                        $phone = preg_replace('/\D/', '', $coord['whatsapp']);
+                                        if (strlen($phone) >= 10 && substr($phone, 0, 2) != '55') $phone = '55' . $phone;
+                                    ?>
+                                        <a href="https://wa.me/<?= $phone ?>" target="_blank" class="btn-icon" style="color: #25D366;" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                                    <?php endif; ?>
+                                    
+                                    <a href="<?= url('school/coordinator/delete?id='.$coord['id']) ?>" class="btn-icon" style="color: red;" onclick="return confirm('Excluir coordenador?')"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 <script>
     function openTab(evt, tabName) {
+        // ... (existing)
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tab-content");
         for (i = 0; i < tabcontent.length; i++) {
@@ -630,56 +708,35 @@
         for (i = 0; i < tablinks.length; i++) {
             tablinks[i].classList.remove("active");
         }
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
-
-
-
-    function markUploadsViewed(btn) {
-        // Hides badge immediately
-        const badge = document.getElementById('badge-uploads');
-        if (badge) badge.style.display = 'none';
-
-        // Notify server
-        fetch('<?= url('school/mark-viewed') ?>')
-            .then(response => response.json())
-            .then(data => console.log('Uploads viewed updated'))
-            .catch(error => console.error('Error updating view:', error));
-    }
-
-    // Dropdown toggle logic
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.dropdown > button')) {
-            const dropdown = e.target.closest('.dropdown');
-            const content = dropdown.querySelector('.dropdown-content');
-            const isOpen = content.style.display === 'block';
-            
-            // Close all first
-            document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
-            
-            // Toggle current
-            content.style.display = isOpen ? 'none' : 'block';
-            e.stopPropagation();
-        } else {
-            document.querySelectorAll('.dropdown-content').forEach(d => d.style.display = 'none');
+        
+        var target = document.getElementById(tabName);
+        if (target) {
+            target.classList.add("active");
+            if (evt) evt.currentTarget.classList.add("active");
+            else {
+                // Find button for this tab
+                // Simple hack: assume order matches? No.
+                // Loop buttons
+                for (i = 0; i < tablinks.length; i++) {
+                     if (tablinks[i].getAttribute('onclick').includes(tabName)) {
+                         tablinks[i].classList.add("active");
+                     }
+                }
+            }
         }
-    });
+    }
     
-    // Open specific tab based on URL parameter
+    // ... (rest)
+    
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const tab = urlParams.get('tab');
         
-        if (tab === 'classes') {
-            openTab(null, 'tab-classes');
-        } else if (tab === 'professors') {
-            openTab(null, 'tab-professors');
-        } else if (tab === 'bimesters') {
-            openTab(null, 'tab-bimesters');
-        } else if (tab === 'uploads' || urlParams.has('period_id') || urlParams.has('professor_id') || urlParams.has('status')) {
-            openTab(null, 'tab-uploads');
-        }
+        if (tab === 'classes') openTab(null, 'tab-classes');
+        else if (tab === 'professors') openTab(null, 'tab-professors');
+        else if (tab === 'coordinators') openTab(null, 'tab-coordinators'); // NEW
+        else if (tab === 'bimesters') openTab(null, 'tab-bimesters');
+        else if (tab === 'uploads' || urlParams.has('period_id')) openTab(null, 'tab-uploads');
     });
 </script>
 

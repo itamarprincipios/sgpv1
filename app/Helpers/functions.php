@@ -47,13 +47,30 @@ function checkAuth($role = null) {
     }
 
     $userRole = auth()['role'];
-    log_debug("checkAuth: Requested '$role', User has '$userRole'");
+    log_debug("checkAuth: Requested " . json_encode($role) . ", User has '$userRole'");
 
-    if ($role && $userRole !== $role) {
-        log_debug("checkAuth: Role mismatch. Redirecting based on user role '$userRole'.");
-        if($userRole == 'semed') redirect('semed/dashboard');
-        if($userRole == 'coordinator') redirect('school/dashboard'); 
-        if($userRole == 'professor') redirect('professor/dashboard');
-        if($userRole == 'admin') redirect('admin/dashboard');
+    // Allow multiple roles
+    if ($role) {
+        if (!is_array($role)) {
+            $role = [$role];
+        }
+
+        if (!in_array($userRole, $role)) {
+            // Role Hierarchy Logic
+            if (in_array('coordinator', $role) && $userRole === 'director') {
+                return; // Director can access Coordinator areas
+            }
+            if (in_array('director', $role) && $userRole === 'admin') {
+                 // Admin usually has own area, but if we wanted Admin to see Director view... 
+                 // For now, only Director > Coordinator.
+            }
+
+            log_debug("checkAuth: Role mismatch. Redirecting based on user role '$userRole'.");
+            if($userRole == 'semed') redirect('semed/dashboard');
+            if($userRole == 'coordinator') redirect('school/dashboard'); 
+            if($userRole == 'director') redirect('school/dashboard'); 
+            if($userRole == 'professor') redirect('professor/dashboard');
+            if($userRole == 'admin') redirect('admin/dashboard');
+        }
     }
 }

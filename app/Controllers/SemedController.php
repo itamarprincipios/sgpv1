@@ -254,6 +254,101 @@ class SemedController extends Controller {
         redirect('semed/coordinators');
     }
 
+    // --- Director Management ---
+    public function directors() {
+        checkAuth('semed');
+        $user = auth();
+        $userModel = new User();
+        
+        $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        $directors = $userModel->getByRole('director');
+        
+        // Filter directors belonging to my schools (optional, currently SEMED sees all or we filter)
+        // Ideally filter by $assignedSchoolIds if multi-tenant SEMED, but usually SEMED sees all.
+        // Let's filter if assignedSchoolIds is restricted.
+        
+        $schools = $userModel->getManagedSchools($user['id']);
+        
+        $this->view('dashboard/semed_directors', [
+            'directors' => $directors,
+            'schools' => $schools
+        ]);
+    }
+
+    public function storeDirector() {
+        checkAuth('semed');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userModel = new User();
+            $data = [
+                'name' => $_POST['name'],
+                'email' => $_POST['email'],
+                'school_id' => $_POST['school_id'],
+                'whatsapp' => $_POST['whatsapp'],
+                'address' => $_POST['address'],
+                'role' => 'director',
+                'password' => password_hash('123456', PASSWORD_DEFAULT)
+            ];
+            
+            // Check email
+            if ($userModel->findByEmail($data['email'])) {
+                $_SESSION['error'] = "E-mail já cadastrado!";
+            } else {
+                $userModel->create($data);
+                $_SESSION['success'] = "Diretor cadastrado com sucesso! Senha padrão: 123456";
+            }
+        }
+        redirect('semed/directors');
+    }
+
+    public function editDirector() {
+        checkAuth('semed');
+        $id = $_GET['id'] ?? null;
+        $user = auth();
+        $userModel = new User();
+        
+        $director = $userModel->findById($id);
+        $schools = $userModel->getManagedSchools($user['id']);
+        
+        $this->view('dashboard/semed_director_edit', [
+            'director' => $director,
+            'schools' => $schools
+        ]);
+    }
+
+    public function updateDirector() {
+        checkAuth('semed');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $data = [
+                'name' => $_POST['name'],
+                'email' => $_POST['email'],
+                'whatsapp' => $_POST['whatsapp'],
+                'address' => $_POST['address'],
+                'school_id' => $_POST['school_id']
+            ];
+            
+            // Note: For Directors we might not be using pivot table `user_schools` yet, primarily `school_id`.
+            // But consistency with Coordinator suggests we should.
+            // However, Director usually has ONE school. Let's stick to `school_id` column for simplicity as per request "Escola" (singular).
+            
+            $userModel = new User();
+            $userModel->update($id, $data);
+            $_SESSION['success'] = "Diretor atualizado com sucesso!";
+        }
+        redirect('semed/directors');
+    }
+
+    public function deleteDirector() {
+        checkAuth('semed');
+        $id = $_GET['id'] ?? null;
+        if ($id) {
+            $userModel = new User();
+            $userModel->delete($id);
+            $_SESSION['success'] = "Diretor excluído com sucesso!";
+        }
+        redirect('semed/directors');
+    }
+
     public function resetPassword() {
         checkAuth('semed');
         $id = $_GET['id'] ?? null;

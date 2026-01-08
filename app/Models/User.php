@@ -28,6 +28,16 @@ class User extends Model {
                 ORDER BY c.name ASC, u.name ASC";
         return $this->db->query($sql, ['school_id' => $schoolId])->fetchAll();
     }
+
+    public function getCoordinatorsBySchool($schoolId) {
+        $sql = "SELECT u.* FROM users u 
+                LEFT JOIN user_schools us ON u.id = us.user_id
+                WHERE (u.school_id = :sid OR us.school_id = :sid) 
+                AND u.role = 'coordinator'
+                GROUP BY u.id
+                ORDER BY u.name ASC";
+        return $this->db->query($sql, ['sid' => $schoolId])->fetchAll();
+    }
     
     public function delete($id) {
         $sql = "DELETE FROM users WHERE id = :id";
