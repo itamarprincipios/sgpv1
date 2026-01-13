@@ -39,7 +39,10 @@ class ProfessorController extends Controller {
         $schoolData = $schoolModel->findById($user['school_id']);
         
         $className = 'Não vinculada';
-        if (!empty($user['class_id'])) {
+        
+        if (!empty($user['is_physical_education'])) {
+            $className = 'Educação Física';
+        } elseif (!empty($user['class_id'])) {
             require_once __DIR__ . '/../Models/ClassModel.php';
             $classModel = new ClassModel();
             $classData = $classModel->findById($user['class_id']);
