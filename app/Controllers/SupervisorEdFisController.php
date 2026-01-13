@@ -152,9 +152,24 @@ class SupervisorEdFisController extends Controller {
         
         $documentModel = new Document();
         $userModel = new User();
+        $schoolModel = new School();
+        
+        // Buscar todas as escolas para o filtro
+        $schools = $schoolModel->all();
+        
+        // Capturar filtro
+        $schoolIdFilter = $_GET['school_id'] ?? '';
         
         // Buscar todos professores Ed. Física
+        // Se tiver filtro, buscamos todos e filtramos no PHP ou poderíamos criar um método específico no Model
+        // Pela simplicidade e volume atual, vamos filtrar aqui o array de professores
         $professors = $userModel->getPhysicalEducationProfessors();
+        
+        if ($schoolIdFilter) {
+            $professors = array_filter($professors, function($p) use ($schoolIdFilter) {
+                return isset($p['school_id']) && $p['school_id'] == $schoolIdFilter;
+            });
+        }
         
         $report = [];
         

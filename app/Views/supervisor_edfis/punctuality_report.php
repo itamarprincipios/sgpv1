@@ -14,6 +14,28 @@
         </button>
     </div>
 
+    <!-- Filtro de Escola -->
+    <div class="card p-3 mb-4">
+        <form method="GET" action="<?= url('supervisor-edfis/punctuality_report') ?>" class="d-flex align-items-end gap-3">
+            <div class="flex-grow-1">
+                <label for="school_id" class="form-label fw-bold">Filtrar por Escola:</label>
+                <select name="school_id" id="school_id" class="form-select" onchange="this.form.submit()">
+                    <option value="">Todas as Escolas</option>
+                    <?php foreach ($schools as $school): ?>
+                        <option value="<?= $school['id'] ?>" <?= (isset($schoolIdFilter) && $schoolIdFilter == $school['id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($school['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php if (!empty($schoolIdFilter)): ?>
+                <a href="<?= url('supervisor-edfis/punctuality_report') ?>" class="btn btn-outline-danger">
+                    <i class="fas fa-times"></i> Limpar Filtro
+                </a>
+            <?php endif; ?>
+        </form>
+    </div>
+
     <div class="card p-4">
         <div class="table-responsive">
             <table class="data-table">
