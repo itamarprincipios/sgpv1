@@ -12,36 +12,50 @@
     </div>
 
     <!-- Filtros de Busca -->
-    <div class="card p-4 mb-4" style="background: #f8f9fa; border: 1px solid #e9ecef;">
-        <form method="GET" action="<?= url('supervisor-edfis/professors') ?>" class="row g-3 align-items-end">
-            <div class="col-md-5">
-                <label for="search" class="form-label fw-bold">Buscar Professor:</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
-                    <input type="text" name="search" id="search" class="form-control" 
-                           placeholder="Nome do professor..." 
-                           value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+    <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden;">
+        <div class="card-body p-4 bg-white">
+            <h5 class="card-title mb-3 text-secondary"><i class="fas fa-search me-2"></i>Filtrar Professores</h5>
+            
+            <form method="GET" action="<?= url('supervisor-edfis/professors') ?>">
+                <div class="row g-3">
+                    <!-- Campo de Busca -->
+                    <div class="col-12">
+                        <label for="search" class="form-label fw-bold text-dark">Buscar por Nome:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
+                            <input type="text" name="search" id="search" class="form-control border-start-0 bg-light" 
+                                   placeholder="Digite o nome do professor..." 
+                                   value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                                   style="font-size: 1.1rem;">
+                        </div>
+                    </div>
+                    
+                    <!-- Filtro de Escola -->
+                    <div class="col-12">
+                        <label for="school_id" class="form-label fw-bold text-dark">Filtrar por Escola:</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-school text-muted"></i></span>
+                            <select name="school_id" id="school_id" class="form-select border-start-0 bg-light" style="font-size: 1.1rem; cursor: pointer;">
+                                <option value="">Todas as Escolas da Rede</option>
+                                <?php foreach ($schools as $school): ?>
+                                    <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($school['name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Botão Filtrar -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm" 
+                                style="border-radius: 10px; text-transform: uppercase; letter-spacing: 1px;">
+                            <i class="fas fa-filter me-2"></i> Aplicar Filtros
+                        </button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="col-md-4">
-                <label for="school_id" class="form-label fw-bold">Filtrar por Escola:</label>
-                <select name="school_id" id="school_id" class="form-select">
-                    <option value="">Todas as Escolas</option>
-                    <?php foreach ($schools as $school): ?>
-                        <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($school['name']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-filter"></i> Filtrar
-                </button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 
     <!-- Lista de Professores -->
