@@ -189,7 +189,7 @@ require __DIR__ . '/../layouts/header.php';
 
 <!-- Botões de Navegação -->
 <div class="nav-buttons">
-    <a href="#professores" class="nav-btn" onclick="showTab('professores'); return false;">
+    <a href="<?= url('supervisor-edfis/professors') ?>" class="nav-btn">
         <i class="fas fa-users"></i> Professores
     </a>
     <a href="#planejamentos" class="nav-btn" onclick="showTab('planejamentos'); return false;">

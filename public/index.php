@@ -114,6 +114,7 @@ $routes = [
     'supervisor-edfis/dashboard' => 'SupervisorEdFisController@dashboard',
     'supervisor-edfis/planning/view' => 'SupervisorEdFisController@viewPlanning',
     'supervisor-edfis/punctuality_report' => 'SupervisorEdFisController@punctualityReport',
+    'supervisor-edfis/professors' => 'SupervisorEdFisController@professors',
     'supervisor-edfis/photo/upload' => 'SupervisorEdFisController@uploadPhoto',
 
     // Admin - Supervisor Ed. Física management
