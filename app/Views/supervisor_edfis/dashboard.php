@@ -1,15 +1,79 @@
 <?php 
-$pageTitle = 'Supervisão - Educação Física';
+$pageTitle = 'SGP - Supervisão Ed. Física';
 require __DIR__ . '/../layouts/header.php'; 
 ?>
 
 <style>
-.edfis-header {
+.supervisor-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 2rem;
     border-radius: 10px;
     margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.supervisor-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.supervisor-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.supervisor-photo:hover {
+    opacity: 0.9;
+}
+
+.supervisor-details h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.supervisor-details p {
+    margin: 0.5rem 0 0 0;
+    opacity: 0.9;
+}
+
+.nav-buttons {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    background: #667eea;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.nav-btn:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+    color: white;
+}
+
+.nav-btn.active {
+    background: #764ba2;
 }
 
 .stat-card {
@@ -84,9 +148,47 @@ require __DIR__ . '/../layouts/header.php';
 }
 </style>
 
-<div class="edfis-header">
-    <h1><i class="fas fa-running"></i> Supervisão - Educação Física SEMED</h1>
-    <p>Painel de acompanhamento de todos os professores de Educação Física da rede municipalsup>
+
+<!-- Header com Foto e Informações -->
+<div class="supervisor-header">
+    <div class="supervisor-info">
+        <?php
+        $photoPath = $user['profile_photo'] ?? 'default-avatar.png';
+        $photoUrl = url('public/uploads/profiles/' . $photoPath);
+        ?>
+        <img src="<?= $photoUrl ?>" alt="Foto" class="supervisor-photo" 
+             onclick="document.getElementById('photoUpload').click()">
+        
+        <div class="supervisor-details">
+            <h1><i class="fas fa-running"></i> SGP - SUPERVISÃO GERAL DE ED. FÍSICA</h1>
+            <p>Painel de acompanhamento de todos os professores de Educação Física da rede municipal</p>
+        </div>
+    </div>
+    
+    <div style="text-align: right;">
+        <div style="font-size: 0.9rem; opacity: 0.9;">Olá, <?= htmlspecialchars($user['name']) ?></div>
+        <a href="<?= url('logout') ?>" style="color: white; text-decoration: underline; font-size: 0.9rem;">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </a>
+    </div>
+</div>
+
+<!-- Upload de Foto (hidden) -->
+<form id="photoForm" method="POST" action="<?= url('supervisor-edfis/photo/upload') ?>" enctype="multipart/form-data" style="display: none;">
+    <input type="file" id="photoUpload" name="photo" accept="image/*" onchange="document.getElementById('photoForm').submit()">
+</form>
+
+<!-- Botões de Navegação -->
+<div class="nav-buttons">
+    <a href="#professores" class="nav-btn active" onclick="showTab('professores'); return false;">
+        <i class="fas fa-users"></i> Professores
+    </a>
+    <a href="#planejamentos" class="nav-btn" onclick="showTab('planejamentos'); return false;">
+        <i class="fas fa-file-alt"></i> Planejamentos
+    </a>
+    <a href="<?= url('supervisor-edfis/punctuality') ?>" class="nav-btn">
+        <i class="fas fa-chart-line"></i> Relatórios
+    </a>
 </div>
 
 <!-- Estatísticas -->
@@ -117,28 +219,9 @@ require __DIR__ . '/../layouts/header.php';
     </div>
 </div>
 
-<!-- Abas de Navegação -->
-<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 2rem;">
-    <li class="nav-item">
-        <a class="nav-link active" data-toggle="tab" href="#professores">
-            <i class="fas fa-users"></i> Professores (<?= count($professors) ?>)
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" data-toggle="tab" href="#planejamentos">
-            <i class="fas fa-file-alt"></i> Planejamentos (<?= count($plannings) ?>)
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="<?= url('supervisor-edfis/punctuality') ?>" class="nav-link">
-            <i class="fas fa-chart-line"></i> Relatório de Pontualidade
-        </a>
-    </li>
-</ul>
 
-<div class="tab-content">
-    <!-- Tab: Professores -->
-    <div id="professores" class="tab-pane active">
+<!-- Abas de Navegação - Agora são divs simples -->
+<div id="professores-tab" class="tab-content-supervisor active">
         <?php if (empty($professorsBySchool)): ?>
             <div class="alert alert-info">
                 <i class="fas fa-info-circle"></i> Nenhum professor de Educação Física cadastrado ainda.
@@ -209,7 +292,7 @@ require __DIR__ . '/../layouts/header.php';
     </div>
 
     <!-- Tab: Planejamentos -->
-    <div id="planejamentos" class="tab-pane fade">
+    <div id="planejamentos-tab" class="tab-content-supervisor" style="display: none;">
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
@@ -255,6 +338,28 @@ require __DIR__ . '/../layouts/header.php';
         </div>
     </div>
 </div>
+
+<script>
+function showTab(tabName) {
+    // Esconder todas as tabs
+    document.getElementById('professores-tab').style.display = 'none';
+    document.getElementById('planejamentos-tab').style.display = 'none';
+    
+    // Remover classe active de todos os botões
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Mostrar tab selecionada
+    if (tabName === 'professores') {
+        document.getElementById('professores-tab').style.display = 'block';
+        document.querySelectorAll('.nav-btn')[0].classList.add('active');
+    } else if (tabName === 'planejamentos') {
+        document.getElementById('planejamentos-tab').style.display = 'block';
+        document.querySelectorAll('.nav-btn')[1].classList.add('active');
+    }
+}
+</script>
 
 <!-- Widget IANNE -->
 <?php

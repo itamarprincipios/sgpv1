@@ -192,4 +192,44 @@ class SupervisorEdFisController extends Controller {
         
         require __DIR__ . '/../Views/supervisor_edfis/punctuality_report.php';
     }
+
+    /**
+     * Upload de foto de perfil
+     */
+    public function uploadPhoto() {
+        $user = auth();
+        
+        if (!$user || $user['role'] !== 'supervisor_edfis') {
+            redirect('login');
+        }
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['photo'])) {
+            $uploadDir = __DIR__ . '/../../public/uploads/profiles/';
+            
+            // Criar diretório se não existir
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            $file = $_FILES['photo'];
+            $fileName = time() . '_' . $user['id'] . '_' . basename($file['name']);
+            $targetFile = $uploadDir . $fileName;
+            
+            // Validar tipo de arquivo
+            $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (in_array($file['type'], $allowedTypes)) {
+                if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+                    // Atualizar banco
+                    $userModel = new User();
+                    $userModel->updateProfilePhoto($user['id'], $fileName);
+                    
+                    // Atualizar sessão
+                    $_SESSION['user']['profile_photo'] = $fileName;
+                    $_SESSION['success'] = 'Foto atualizada com sucesso!';
+                }
+            }
+        }
+        
+        redirect('supervisor-edfis/dashboard');
+    }
 }
