@@ -189,7 +189,7 @@ require __DIR__ . '/../layouts/header.php';
 
 <!-- Botões de Navegação -->
 <div class="nav-buttons">
-    <a href="#professores" class="nav-btn active" onclick="showTab('professores'); return false;">
+    <a href="#professores" class="nav-btn" onclick="showTab('professores'); return false;">
         <i class="fas fa-users"></i> Professores
     </a>
     <a href="#planejamentos" class="nav-btn" onclick="showTab('planejamentos'); return false;">
@@ -250,7 +250,7 @@ require __DIR__ . '/../layouts/header.php';
 
 
 <!-- Abas de Navegação - Agora são divs simples -->
-<div id="professores-tab" class="tab-content-supervisor active">
+<div id="professores-tab" class="tab-content-supervisor" style="display: none;">
         <?php if (empty($professorsBySchool)): ?>
             <div class="alert alert-info">
                 <i class="fas fa-info-circle"></i> Nenhum professor de Educação Física cadastrado ainda.
