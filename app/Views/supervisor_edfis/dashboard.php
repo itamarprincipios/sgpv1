@@ -150,25 +150,34 @@ require __DIR__ . '/../layouts/header.php';
 
 
 <!-- Header com Foto e Informações -->
-<!-- Header com Foto e Informações -->
-<div class="supervisor-header">
-    <div class="supervisor-info">
-        <?php
-        $photoPath = $user['profile_photo'] ?? 'default-avatar.png';
-        $photoUrl = url('public/uploads/profiles/' . $photoPath);
-        ?>
-        <div style="position: relative;">
-            <img src="<?= $photoUrl ?>" alt="Foto" class="supervisor-photo" 
+<!-- Header com Foto e Informações - Estilo Igual Coordenador -->
+<div class="school-hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <!-- Avatar Section -->
+        <div style="position: relative; flex-shrink: 0;">
+            <?php 
+                $photoPath = $user['profile_photo'] ?? 'default-avatar.png';
+                // Se for arquivo local (não URL), adiciona o caminho
+                if (strpos($photoPath, 'http') === false) {
+                     $photoUrl = url('public/uploads/profiles/' . $photoPath);
+                } else {
+                     $photoUrl = $photoPath;
+                }
+            ?>
+            <img src="<?= $photoUrl ?>" alt="Perfil" style="width:200px; height:200px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
                  onclick="document.getElementById('photoUpload').click()">
-            <div onclick="document.getElementById('photoUpload').click()" 
-                 style="position: absolute; bottom: 0; right: 0; background: white; border-radius: 50%; padding: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                <i class="fas fa-camera" style="color: #667eea; font-size: 0.8rem;"></i>
-            </div>
+            
+            <button onclick="document.getElementById('photoUpload').click()" title="Alterar Foto" style="position: absolute; bottom: 10px; right: 10px; width: 45px; height: 45px; border-radius: 50%; padding: 0; border: none; background: #fff; color: #667eea; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <i class="fas fa-camera" style="font-size: 20px;"></i>
+            </button>
         </div>
         
-        <div class="supervisor-details">
-            <h1><i class="fas fa-running"></i> SGP - Supervisão de Educação Física</h1>
-            <p>Painel de acompanhamento de todos os professores de Educação Física da rede municipal</p>
+        <div>
+            <h1>
+                <i class="fas fa-running"></i> 
+                SGP - Supervisão de Educação Física
+            </h1>
+            <p>Painel de Gestão da Supervisão de Educação Física</p>
         </div>
     </div>
 </div>
