@@ -196,11 +196,12 @@
                                 <!-- Foto do Professor -->
                                 <?php 
                                     $photoUrl = !empty($prof['profile_photo']) 
-                                        ? url('public/uploads/profiles/' . $prof['profile_photo']) 
-                                        : 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=7F9CF5&color=fff&size=150';
+                                        ? url('uploads/avatars/' . $prof['profile_photo']) 
+                                        : 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=random&size=150';
                                 ?>
                                 <img src="<?= $photoUrl ?>" alt="Foto" 
-                                     class="rounded-circle shadow-sm" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
+                                     class="rounded-circle shadow-sm" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;"
+                                     onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<?= urlencode($prof['name']) ?>&background=random&size=150';">
                                 
                                 <div class="flex-grow-1 text-center text-md-start">
                                     
