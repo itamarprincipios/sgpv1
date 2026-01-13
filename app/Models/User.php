@@ -244,6 +244,7 @@ class User extends Model {
                 }
                 if (!$exists) {
                     $map[$row['school_id']][] = [
+                        'id' => $row['id'],
                         'name' => $row['name'],
                         'whatsapp' => $row['whatsapp']
                     ];
