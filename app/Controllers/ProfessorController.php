@@ -127,7 +127,7 @@ class ProfessorController extends Controller {
 
                     $score_final = $score_base - $penalty_delay;
 
-                    $docModel->create([
+                    $documentId = $docModel->create([
                         'user_id' => $user['id'],
                         'period_id' => $period_id,
                         'title' => $title,
@@ -138,6 +138,15 @@ class ProfessorController extends Controller {
                         'penalty_delay' => $penalty_delay,
                         'score_final' => $score_final
                     ]);
+                    
+                    // Extração automática do documento
+                    try {
+                        require_once __DIR__ . '/../Core/DocumentExtractor.php';
+                        $extractor = new DocumentExtractor();
+                        $extractor->extractAndSave($documentId);
+                    } catch (Exception $e) {
+                        error_log("Erro na extração automática do documento $documentId: " . $e->getMessage());
+                    }
                     
                     // Simple feedback via session would be nice, but skipping for brevity, redirecting back.
                     redirect('professor/dashboard');

@@ -274,4 +274,11 @@
     </div>
 </div>
 
+<?php 
+$user = auth();
+if ($user && $user['role'] === 'coordinator') {
+    include __DIR__ . '/../partials/coordinator_ai_widget.php';
+}
+?>
+
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
