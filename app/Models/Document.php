@@ -364,6 +364,7 @@ class Document extends Model {
     public function getByPhysicalEducation() {
         $sql = "SELECT d.*, 
                        u.name as professor_name,
+                       u.school_id,
                        s.name as school_name,
                        p.name as period_name,
                        p.deadline
