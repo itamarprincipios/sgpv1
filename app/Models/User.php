@@ -207,15 +207,49 @@ class User extends Model {
      * @param int $classId ID da classe
      * @return array Lista de professores
      */
-    public function getByClassId($classId) {
-        $sql = "SELECT u.*, 
-                       s.name as school_name,
-                       c.name as class_name
-                FROM users u
-                LEFT JOIN schools s ON u.school_id = s.id
-                LEFT JOIN classes c ON u.class_id = c.id
-                WHERE u.class_id = :class_id
-                ORDER BY u.name ASC";
-        return $this->db->query($sql, ['class_id' => $classId])->fetchAll();
+    /**
+     * Retorna um array associativo de coordenadores indexado por school_id
+     * Útil para listagens em massa
+     */
+    public function getCoordinatorsMap() {
+        // Coordenadores via user_schools
+        $sql1 = "SELECT u.id, u.name, u.whatsapp, us.school_id 
+                 FROM users u 
+                 JOIN user_schools us ON u.id = us.user_id 
+                 WHERE u.role = 'coordinator'";
+                 
+        // Coordenadores via coluna school_id (legado ou principal)
+        $sql2 = "SELECT u.id, u.name, u.whatsapp, u.school_id 
+                 FROM users u 
+                 WHERE u.role = 'coordinator' AND u.school_id IS NOT NULL";
+                 
+        $rows1 = $this->db->query($sql1)->fetchAll();
+        $rows2 = $this->db->query($sql2)->fetchAll();
+        
+        $map = [];
+        $rows = array_merge($rows1, $rows2);
+        
+        foreach ($rows as $row) {
+            if (!empty($row['school_id'])) {
+                // Pode haver mais de um coordenador por escola?
+                // Vamos guardar um array ou apenas o primeiro?
+                // O usuário pediu "uma coordenadora". Vamos guardar uma lista ou concat string.
+                if (!isset($map[$row['school_id']])) {
+                    $map[$row['school_id']] = [];
+                }
+                // Evitar duplicados
+                $exists = false;
+                foreach ($map[$row['school_id']] as $c) {
+                    if ($c['id'] == $row['id']) $exists = true;
+                }
+                if (!$exists) {
+                    $map[$row['school_id']][] = [
+                        'name' => $row['name'],
+                        'whatsapp' => $row['whatsapp']
+                    ];
+                }
+            }
+        }
+        return $map;
     }
 }
