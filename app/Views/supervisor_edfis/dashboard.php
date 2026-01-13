@@ -146,6 +146,72 @@ require __DIR__ . '/../layouts/header.php';
     background: #128C7E;
     color: white;
 }
+
+.ranking-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.ranking-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.data-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.data-table thead th {
+    background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+    color: #374151;
+    font-weight: 600;
+    padding: 15px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.data-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.data-table tbody tr:hover {
+    background: #f9fafb;
+    transform: scale(1.01);
+}
+
+.data-table tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.whatsapp-btn {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.whatsapp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+    color: white;
+}
 </style>
 
 
@@ -201,6 +267,20 @@ require __DIR__ . '/../layouts/header.php';
     </a>
 </div>
 
+<!-- Filtro e Título da Seção -->
+<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 30px;">
+    <h2>Visão Geral - Educação Física</h2>
+    <form action="" method="GET" class="filter-container" style="margin: 0; width: auto; min-width: 200px;">
+        <div class="filter-group" style="margin: 0; flex: 1;">
+            <select name="filter" id="filter" onchange="this.form.submit()" class="filter-select">
+                <option value="annual" <?= ($filter ?? 'annual') == 'annual' ? 'selected' : '' ?>>Anual</option>
+                <option value="bimestral" <?= ($filter ?? 'annual') == 'bimestral' ? 'selected' : '' ?>>Bimestral</option>
+                <option value="monthly" <?= ($filter ?? 'annual') == 'monthly' ? 'selected' : '' ?>>Mensal</option>
+            </select>
+        </div>
+    </form>
+</div>
+
 <!-- Estatísticas -->
 <!-- Estatísticas Grid (Igual Coordenador) -->
 <div class="stats-grid">
@@ -247,6 +327,171 @@ require __DIR__ . '/../layouts/header.php';
             <span class="stat-label">Pontualidade</span>
         </div>
     </div>
+</div>
+
+
+<!-- Seção de Rankings -->
+<div class="content-row" style="display: flex; flex-direction: column; gap: 30px; margin-top: 20px;">
+    <!-- Ranking de Escolas mais Pontuais -->
+    <div style="margin-bottom: 40px;">
+        <div class="ranking-section">
+            <div class="ranking-title">
+                <i class="fas fa-trophy" style="color: #f59e0b;"></i>
+                <span>🏆 Ranking de Escolas mais Pontuais</span>
+            </div>
+            <table class="data-table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">Posição</th>
+                        <th>Escola</th>
+                        <th style="text-align: center;">Pontualidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($rankSchools)): ?>
+                        <tr><td colspan="3" style="text-align: center; padding: 30px; color: #9ca3af;">Nenhum dado disponível para o período selecionado</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($rankSchools as $index => $school): ?>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <span style="font-size: 1.5rem; font-weight: 700;">
+                                        <?php if($index == 0): ?>🥇<?php elseif($index == 1): ?>🥈<?php elseif($index == 2): ?>🥉<?php else: ?><?= $index + 1 ?>º<?php endif; ?>
+                                    </span>
+                                </td>
+                                <td><strong><?= htmlspecialchars($school['school_name']) ?></strong></td>
+                                <td style="text-align: center;">
+                                    <span style="font-size: 1.2rem; font-weight: 700; color: #667eea;">
+                                        <?= number_format($school['punctuality_percentage'], 1) ?>%
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Grid de Professores e Coordenadores -->
+    <div class="rankings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <!-- Professores Destaque -->
+        <div class="ranking-section">
+            <div class="ranking-title">
+                <i class="fas fa-user-graduate" style="color: #10b981;"></i>
+                <span>👩‍🏫 Professores Destaque</span>
+            </div>
+            <table class="data-table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Pos.</th>
+                        <th>Nome</th>
+                        <th style="text-align: center;">Pontos</th>
+                        <th style="width: 15%;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($rankProfessors)): ?>
+                        <tr><td colspan="4" style="text-align: center; padding: 30px; color: #9ca3af;">Nenhum dado disponível</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($rankProfessors as $index => $prof): ?>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <span style="font-size: 1.3rem; font-weight: 700;">
+                                        <?php if($index == 0): ?>🥇<?php elseif($index == 1): ?>🥈<?php elseif($index == 2): ?>🥉<?php else: ?><?= $index + 1 ?>º<?php endif; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <strong><?= htmlspecialchars($prof['professor_name']) ?></strong>
+                                    <br>
+                                    <small style="color:#9ca3af;"><?= htmlspecialchars($prof['school_name']) ?></small>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span style="font-size: 1.1rem; font-weight: 700; color: #10b981;">
+                                        <?= number_format($prof['total_points'], 1) ?>
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php if (!empty($prof['whatsapp'])): 
+                                        $phone = preg_replace('/\D/', '', $prof['whatsapp']);
+                                        if (strlen($phone) >= 10 && substr($phone, 0, 2) != '55') {
+                                            $phone = '55' . $phone;
+                                        }
+                                    ?>
+                                        <a href="https://wa.me/<?= $phone ?>?text=Olá, <?= urlencode($prof['professor_name']) ?>! Parabéns pelo seu excelente desempenho no ranking de pontualidade!" target="_blank" class="whatsapp-btn">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Coordenadores Destaque -->
+        <div class="ranking-section">
+            <div class="ranking-title">
+                <i class="fas fa-user-tie" style="color: #8b5cf6;"></i>
+                <span>🧭 Coordenadores Destaque</span>
+            </div>
+            <table class="data-table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Pos.</th>
+                        <th>Nome</th>
+                        <th style="text-align: center;">Pontualidade</th>
+                        <th style="width: 15%;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($rankCoordinators)): ?>
+                        <tr><td colspan="4" style="text-align: center; padding: 30px; color: #9ca3af;">Nenhum dado disponível</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($rankCoordinators as $index => $coord): ?>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <span style="font-size: 1.3rem; font-weight: 700;">
+                                        <?php if($index == 0): ?>🥇<?php elseif($index == 1): ?>🥈<?php elseif($index == 2): ?>🥉<?php else: ?><?= $index + 1 ?>º<?php endif; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <strong><?= htmlspecialchars($coord['coordinator_name']) ?></strong>
+                                    <br>
+                                    <small style="color:#9ca3af;"><?= htmlspecialchars($coord['school_name']) ?></small>
+                                </td>
+                                <td style="text-align: center;">
+                                        <span style="font-size: 1.1rem; font-weight: 700; color: #8b5cf6;">
+                                            <?= number_format($coord['punctuality_percentage'], 1) ?>%
+                                        </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php if (!empty($coord['whatsapp'])): 
+                                        $phone = preg_replace('/\D/', '', $coord['whatsapp']);
+                                        if (strlen($phone) >= 10 && substr($phone, 0, 2) != '55') {
+                                            $phone = '55' . $phone;
+                                        }
+                                    ?>
+                                        <a href="https://wa.me/<?= $phone ?>?text=Olá, <?= urlencode($coord['coordinator_name']) ?>! Parabéns pelo excelente trabalho de gestão em sua escola!" target="_blank" class="whatsapp-btn">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <style>
+        @media (max-width: 768px) {
+            .rankings-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
 </div>
 
 

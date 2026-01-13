@@ -56,6 +56,21 @@ class SupervisorEdFisController extends Controller {
             $professorsBySchool[$schoolId]['professors'][] = $prof;
         }
         
+        // Importar RankingModel para buscar rankings
+        require_once __DIR__ . '/../Models/RankingModel.php';
+        $rankingModel = new RankingModel();
+        
+        // Obter filtro (annual, bimestral, monthly)
+        $filter = $_GET['filter'] ?? 'annual';
+        
+        // Obter IDs das escolas com professores de Ed. Física
+        $schoolIds = array_unique(array_column($professors, 'school_id'));
+        
+        // Buscar rankings filtrados para Ed. Física
+        $rankSchools = $rankingModel->getSchoolRanking($filter, null, $schoolIds);
+        $rankProfessors = $rankingModel->getProfessorRanking($filter, null, $schoolIds);
+        $rankCoordinators = $rankingModel->getCoordinatorRanking($filter, null, $schoolIds);
+        
         require __DIR__ . '/../Views/supervisor_edfis/dashboard.php';
     }
 
