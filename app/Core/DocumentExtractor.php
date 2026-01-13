@@ -129,9 +129,10 @@ class DocumentExtractor {
             // Buscar informações do documento
             $sql = "SELECT id, file_path FROM documents WHERE id = :id";
             $stmt = $db->query($sql, ['id' => $documentId]);
-            $document = $stmt->fetch();
+            $document = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if (!$document) {
+                error_log("DocumentExtractor: Documento ID $documentId não encontrado");
                 return [
                     'success' => false,
                     'message' => 'Documento não encontrado'
@@ -145,6 +146,15 @@ class DocumentExtractor {
                 $filePath = 'uploads/' . $filePath;
             }
             $fullPath = __DIR__ . '/../../public/' . $filePath;
+            
+            // Verificar se arquivo existe
+            if (!file_exists($fullPath)) {
+                error_log("DocumentExtractor: Arquivo não encontrado: $fullPath");
+                return [
+                    'success' => false,
+                    'message' => "Arquivo não encontrado: $filePath"
+                ];
+            }
             
             // Extrair texto
             $text = $this->extractText($fullPath);
@@ -167,6 +177,8 @@ class DocumentExtractor {
             }
             
         } catch (Exception $e) {
+            error_log("DocumentExtractor::extractAndSave error: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
             return [
                 'success' => false,
                 'message' => 'Erro: ' . $e->getMessage()
