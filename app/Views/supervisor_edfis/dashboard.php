@@ -364,7 +364,7 @@ function showTab(tabName) {
 <!-- Widget IANNE -->
 <?php
 if ($user && $user['role'] === 'supervisor_edfis') {
-    include __DIR__ . '/../partials/supervisor_edfis_ai_widget.php';
+    include __DIR__ . '/../partials/coordinator_ai_widget.php';
 }
 ?>
 
