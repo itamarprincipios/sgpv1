@@ -17,12 +17,12 @@
             <h4 class="card-title mb-4 text-secondary"><i class="fas fa-search me-2"></i>Filtrar Professores</h4>
             
             <form method="GET" action="<?= url('supervisor-edfis/professors') ?>">
-                <!-- Container centralizado com 50% (col-md-6 no desktop) -->
-                <div class="row g-3 justify-content-center">
+                <!-- Container Rígido Centralizado: 50% da largura da tela (desktop) -->
+                <div style="width: 100%; max-width: 600px; margin: 0 auto;">
                     
                     <!-- Campo de Busca -->
-                    <div class="col-md-6 col-12">
-                        <div class="text-start mb-1 fw-bold text-dark">Buscar por Nome:</div>
+                    <div class="mb-4">
+                        <div class="text-start mb-2 fw-bold text-dark" style="font-size: 1.1rem;">Buscar por Nome:</div>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
                             <input type="text" name="search" id="search" class="form-control border-start-0 bg-light" 
@@ -32,12 +32,9 @@
                         </div>
                     </div>
                     
-                    <!-- Quebra de linha forçada para manter layout vertical centralizado -->
-                    <div class="w-100"></div>
-
                     <!-- Filtro de Escola -->
-                    <div class="col-md-6 col-12">
-                        <div class="text-start mb-1 fw-bold text-dark">Filtrar por Escola:</div>
+                    <div class="mb-4">
+                        <div class="text-start mb-2 fw-bold text-dark" style="font-size: 1.1rem;">Filtrar por Escola:</div>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="fas fa-school text-muted"></i></span>
                             <select name="school_id" id="school_id" class="form-select border-start-0 bg-light" style="height: 50px; font-size: 1.1rem; cursor: pointer;">
@@ -51,16 +48,12 @@
                         </div>
                     </div>
                     
-                    <!-- Quebra de linha -->
-                    <div class="w-100"></div>
-
                     <!-- Botão Filtrar -->
-                    <div class="col-md-6 col-12 mt-3">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm" 
-                                style="border-radius: 8px; height: 50px; font-size: 1.1rem; text-transform: uppercase;">
-                            <i class="fas fa-filter me-2"></i> Filtrar Resultados
-                        </button>
-                    </div>
+                    <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm" 
+                            style="border-radius: 8px; height: 50px; font-size: 1.1rem; text-transform: uppercase;">
+                        <i class="fas fa-filter me-2"></i> Filtrar Resultados
+                    </button>
+                    
                 </div>
             </form>
         </div>
