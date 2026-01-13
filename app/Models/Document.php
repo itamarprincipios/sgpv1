@@ -356,4 +356,24 @@ class Document extends Model {
 
         return $this->db->query($sql, $params)->fetchAll();
     }
+
+    /**
+     * Busca TODOS os planejamentos de professores de Educação Física
+     * @return array Lista de documentos com dados do professor, escola e período
+     */
+    public function getByPhysicalEducation() {
+        $sql = "SELECT d.*, 
+                       u.name as professor_name,
+                       s.name as school_name,
+                       p.name as period_name,
+                       p.deadline
+                FROM documents d
+                JOIN users u ON d.user_id = u.id
+                LEFT JOIN schools s ON u.school_id = s.id
+                JOIN periods p ON d.period_id = p.id
+                WHERE u.role = 'professor'
+                AND u.is_physical_education = 1
+                ORDER BY d.submitted_at DESC";
+        return $this->db->query($sql)->fetchAll();
+    }
 }

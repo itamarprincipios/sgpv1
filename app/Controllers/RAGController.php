@@ -50,8 +50,8 @@ class RAGController {
         header('Content-Type: application/json');
         
         try {
-            // Verificar autenticação (SEMED, Admin, Superadmin ou Coordenador)
-            $allowedRoles = ['semed', 'admin', 'superadmin', 'coordinator'];
+            // Verificar autenticação (SEMED, Admin, Superadmin, Coordenador ou Supervisor Ed. Fis)
+            $allowedRoles = ['semed', 'admin', 'superadmin', 'coordinator', 'supervisor_edfis'];
             if (!isset($_SESSION['user']['id']) || !in_array($_SESSION['user']['role'], $allowedRoles)) {
                 throw new Exception('Acesso negado. Apenas usuários autorizados podem usar esta funcionalidade.');
             }

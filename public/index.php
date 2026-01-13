@@ -109,6 +109,11 @@ $routes = [
     'admin/history' => 'HistoryController@index', // NEW
     'admin/reset-year' => 'AdminController@resetSchoolYear', // NEW
     'semed/history' => 'HistoryController@index', // NEW
+
+    // Supervisor Ed. Física Routes
+    'supervisor-edfis/dashboard' => 'SupervisorEdFisController@dashboard',
+    'supervisor-edfis/planning/view' => 'SupervisorEdFisController@viewPlanning',
+    'supervisor-edfis/punctuality' => 'SupervisorEdFisController@punctualityReport',
 ];
 
 if (array_key_exists($uri, $routes)) {
