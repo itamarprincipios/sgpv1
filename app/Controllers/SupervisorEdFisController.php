@@ -203,40 +203,35 @@ class SupervisorEdFisController extends Controller {
         
         $docModel = new Document();
         $schoolModel = new School();
-        require_once __DIR__ . '/../Models/Planning.php';
+        require_once __DIR__ . '/../Models/Planning.php'; // Fix syntax check
         $planningModel = new Planning();
 
         // Filtros
         $schoolId = $_GET['school_id'] ?? '';
-        $periodId = $_GET['period_id'] ?? ''; // Aqui usaremos ID para simplificar se o select mandar ID, mas idealmente seria Name se quisermos multi-school. 
-        // OBS: No view anterior eu coloquei value="<?= $period['id'] ?>".
-        // Se eu quiser filtrar por nome (multiescola), tenho que receber o NOME ou mudar a lógica.
-        // Vamos ajustar para receber o NOME caso o filtro select mande o nome? Nao, os IDs sao unicos.
-        // Mas se eu selecionar "1 Bimestre" no select (value=ID do 1 Bimestre da Escola X), e filtrar só por ID, vou ver só da Escola X.
-        // Se eu quiser ver de TODAS, o select tem que ser de nomes unicos.
-        
-        // Vamos usar nomes únicos no select e filtrar por nome.
-        // Alteração no View será necessária? Sim, value="<?= $period['name'] ?>"
-        
-        $periodName = $_GET['period_name'] ?? ''; // Mudança de estrategia
+        $periodName = $_GET['period_name'] ?? '';
         $status = $_GET['status'] ?? '';
 
         // Carregar opções
         $schools = $schoolModel->all();
-        $periods = $planningModel->getUniqueNamesPhysicalEducation(); // Retorna DISTINCT names
+        $periods = $planningModel->getUniqueNamesPhysicalEducation(); 
         
         // Buscar Tudo
         $allDocs = $docModel->getByPhysicalEducation();
         
-        // Filtrar
+        // Filtrar no PHP
         $plannings = array_filter($allDocs, function($doc) use ($schoolId, $periodName, $status) {
-            if ($schoolId && $doc['school_id'] != $schoolId) return false;
-            
-            // Filtro por Nome do Periodo (para pegar de todas as escolas)
-            if ($periodName && $doc['period_name'] != $periodName) return false;
-            
-            if ($status && strtolower($doc['status']) != strtolower($status)) return false;
-            
+            // Filtro por Escola
+            if ($schoolId && (!isset($doc['school_id']) || $doc['school_id'] != $schoolId)) {
+                return false;
+            }
+            // Filtro por Nome do Periodo
+            if ($periodName && (!isset($doc['period_name']) || $doc['period_name'] != $periodName)) {
+                return false;
+            }
+            // Filtro por Status
+            if ($status && isset($doc['status']) && strtolower($doc['status']) != strtolower($status)) {
+                return false;
+            }
             return true;
         });
 
@@ -264,8 +259,6 @@ class SupervisorEdFisController extends Controller {
         $schoolIdFilter = $_GET['school_id'] ?? '';
         
         // Buscar todos professores Ed. Física
-        // Se tiver filtro, buscamos todos e filtramos no PHP ou poderíamos criar um método específico no Model
-        // Pela simplicidade e volume atual, vamos filtrar aqui o array de professores
         $professors = $userModel->getPhysicalEducationProfessors();
         
         if ($schoolIdFilter) {
@@ -277,12 +270,12 @@ class SupervisorEdFisController extends Controller {
         $report = [];
         
         foreach ($professors as $prof) {
-            $plannings = $documentModel->getByUserId($prof['id']);
+            $planningsData = $documentModel->getByUserId($prof['id']);
             
             $onTime = 0;
-            $total = count($plannings);
+            $total = count($planningsData); // Renomeado para evitar conflito
             
-            foreach ($plannings as $plan) {
+            foreach ($planningsData as $plan) {
                 if (isset($plan['submitted_at']) && isset($plan['deadline'])) {
                     if (strtotime($plan['submitted_at']) <= strtotime($plan['deadline'])) {
                         $onTime++;
@@ -303,7 +296,7 @@ class SupervisorEdFisController extends Controller {
             ];
         }
         
-        // Ordenar por taxa de pontualidade (menor primeiro - quem precisa de mais atenção)
+        // Ordenar por taxa (menor primeiro)
         usort($report, function($a, $b) {
             return $a['punctuality_rate'] <=> $b['punctuality_rate'];
         });
