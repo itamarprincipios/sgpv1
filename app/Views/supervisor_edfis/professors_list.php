@@ -75,37 +75,47 @@
                 <div class="col-md-6 mb-4">
                     <div class="card h-100 shadow-sm border-0" style="transition: transform 0.2s;">
                         <div class="card-body">
-                            <div class="d-flex align-items-start gap-3">
+                            <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                                 <!-- Foto do Professor -->
                                 <?php 
-                                    $photoUrl = !empty($prof['profile_photo']) 
+                                    $photoUrl = !empty($prof['school_cover']) // Ops, school_cover não, profile_photo
                                         ? url('public/uploads/profiles/' . $prof['profile_photo']) 
-                                        : 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=random';
+                                        : 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=random&size=150';
+                                    
+                                    // Fallback melhorado se profile_photo estiver vazio
+                                    if(empty($prof['profile_photo'])) {
+                                         $photoUrl = 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=7F9CF5&color=fff&size=150';
+                                    }
                                 ?>
                                 <img src="<?= $photoUrl ?>" alt="Foto" 
-                                     class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                                     class="rounded-circle shadow-sm" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
                                 
-                                <div class="flex-grow-1">
-                                    <h5 class="card-title mb-1 text-primary fw-bold">
+                                <div class="flex-grow-1 text-center text-md-start">
+                                    <h3 class="card-title mb-1 text-dark fw-bold">
                                         <?= htmlspecialchars($prof['name']) ?>
-                                    </h5>
+                                    </h3>
                                     
-                                    <div class="mb-2 text-muted small">
-                                        <i class="fas fa-school me-1"></i> 
+                                    <div class="mb-3 text-muted" style="font-size: 1.1rem;">
+                                        <i class="fas fa-school me-1 text-primary"></i> 
                                         <?= htmlspecialchars($prof['school_name'] ?? 'Sem escola vinculada') ?>
                                     </div>
 
-                                    <!-- Contato Professor -->
+                                    <!-- Botão WhatsApp Professor -->
                                     <?php if (!empty($prof['whatsapp'])): ?>
+                                        <?php
+                                            $phone = preg_replace('/[^0-9]/', '', $prof['whatsapp']);
+                                            $msg = urlencode("Olá professor(a) {$prof['name']}, sou da Supervisão de Ed. Física do SGP.");
+                                        ?>
                                         <div class="mb-3">
-                                            <?php
-                                                $phone = preg_replace('/[^0-9]/', '', $prof['whatsapp']);
-                                                $msg = urlencode("Olá professor(a) {$prof['name']}, sou da Supervisão de Ed. Física do SGP.");
-                                            ?>
                                             <a href="https://wa.me/55<?= $phone ?>?text=<?= $msg ?>" target="_blank" 
-                                               class="btn btn-sm btn-success rounded-pill px-3">
-                                                <i class="fab fa-whatsapp"></i> Contato Professor
+                                               class="btn btn-success btn-lg shadow-sm text-uppercase fw-bold" 
+                                               style="border-radius: 50px; padding: 10px 25px; font-size: 0.9rem;">
+                                                <i class="fab fa-whatsapp fa-lg me-2"></i> Falar com Professor
                                             </a>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="mb-3">
+                                            <span class="badge bg-secondary">Sem WhatsApp cadastrado</span>
                                         </div>
                                     <?php endif; ?>
 
