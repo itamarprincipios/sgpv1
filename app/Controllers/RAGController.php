@@ -219,6 +219,7 @@ class RAGController {
     
     /**
      * Busca o school_id do coordenador
+     * Verifica tanto na tabela users (school_id direto) quanto em user_schools (múltiplas escolas)
      * @param int $userId ID do coordenador
      * @return int|null ID da escola ou null se não encontrado
      */
@@ -226,7 +227,16 @@ class RAGController {
         try {
             $db = Database::getInstance();
             
-            // Buscar escola vinculada ao coordenador na tabela user_schools
+            // OPÇÃO 1: Buscar school_id diretamente na tabela users
+            $sql = "SELECT school_id FROM users WHERE id = :user_id AND school_id IS NOT NULL LIMIT 1";
+            $stmt = $db->query($sql, ['user_id' => $userId]);
+            $result = $stmt->fetch();
+            
+            if ($result && $result['school_id']) {
+                return (int)$result['school_id'];
+            }
+            
+            // OPÇÃO 2 (Fallback): Buscar na tabela user_schools (para usuários com múltiplas escolas)
             $sql = "SELECT school_id FROM user_schools WHERE user_id = :user_id LIMIT 1";
             $stmt = $db->query($sql, ['user_id' => $userId]);
             $result = $stmt->fetch();
