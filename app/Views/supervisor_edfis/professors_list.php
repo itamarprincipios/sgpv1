@@ -1,5 +1,5 @@
 <?php 
-// Atualizado em: <?= date('d/m/Y H:i:s') ?> - Forçando sync
+// Atualizado em: 13/05/2026 - Correcao Layout
 require __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="main-container">
@@ -13,27 +13,27 @@ require __DIR__ . '/../layouts/header.php'; ?>
         </div>
     </div>
 
-    <!-- Filtros de Busca (Estilo Clean - Referência Relatórios) -->
+    <!-- Filtros de Busca (Layout Horizontal) -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
-            <h5 class="card-title text-secondary mb-3">Filtrar Professores</h5>
-            
             <form method="GET" action="<?= url('supervisor-edfis/professors') ?>">
-                <div class="row align-items-end g-3">
+                <div class="row g-3 align-items-end">
                     <!-- Campo de Busca -->
                     <div class="col-md-5">
-                        <label for="search" class="form-label text-muted small fw-bold text-uppercase">Buscar por Nome</label>
-                        <input type="text" name="search" id="search" class="form-control bg-light border-0" 
-                               placeholder="Digite o nome do professor..." 
-                               value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                               style="padding: 10px 15px;">
+                        <label for="search" class="form-label fw-bold text-secondary">Buscar Professor</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                            <input type="text" name="search" id="search" class="form-control border-start-0" 
+                                   placeholder="Nome do professor..." 
+                                   value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+                        </div>
                     </div>
                     
                     <!-- Filtro de Escola -->
                     <div class="col-md-5">
-                        <label for="school_id" class="form-label text-muted small fw-bold text-uppercase">Filtrar por Escola</label>
-                        <select name="school_id" id="school_id" class="form-select bg-light border-0" style="padding: 10px 15px; cursor: pointer;">
-                            <option value="">Todas as Escolas da Rede</option>
+                        <label for="school_id" class="form-label fw-bold text-secondary">Filtrar por Escola</label>
+                        <select name="school_id" id="school_id" class="form-select cursor-pointer">
+                            <option value="">Todas as Escolas</option>
                             <?php foreach ($schools as $school): ?>
                                 <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
                                     <?= htmlspecialchars($school['name']) ?>
@@ -44,8 +44,8 @@ require __DIR__ . '/../layouts/header.php'; ?>
                     
                     <!-- Botão Filtrar -->
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold" style="padding: 10px;">
-                            <i class="fas fa-filter me-1"></i> Filtrar
+                        <button type="submit" class="btn btn-primary w-100 fw-bold">
+                            <i class="fas fa-filter"></i> Filtrar
                         </button>
                     </div>
                 </div>
