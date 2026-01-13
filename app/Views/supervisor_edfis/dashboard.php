@@ -159,13 +159,14 @@ require __DIR__ . '/../layouts/header.php';
                 $photoPath = $user['profile_photo'] ?? 'default-avatar.png';
                 // Se for arquivo local (não URL), adiciona o caminho
                 if (strpos($photoPath, 'http') === false) {
-                     $photoUrl = url('public/uploads/profiles/' . $photoPath);
+                     $photoUrl = url('uploads/avatars/' . $photoPath);
                 } else {
                      $photoUrl = $photoPath;
                 }
             ?>
             <img src="<?= $photoUrl ?>" alt="Perfil" style="width:200px; height:200px; border-radius:50%; object-fit:cover; border:3px solid #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
-                 onclick="document.getElementById('photoUpload').click()">
+                 onclick="document.getElementById('photoUpload').click()"
+                 onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<?= urlencode($user['name']) ?>&background=random&size=200';">
             
             <button onclick="document.getElementById('photoUpload').click()" title="Alterar Foto" style="position: absolute; bottom: 10px; right: 10px; width: 45px; height: 45px; border-radius: 50%; padding: 0; border: none; background: #fff; color: #667eea; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
                 <i class="fas fa-camera" style="font-size: 20px;"></i>
@@ -192,7 +193,7 @@ require __DIR__ . '/../layouts/header.php';
     <a href="<?= url('supervisor-edfis/professors') ?>" class="nav-btn">
         <i class="fas fa-users"></i> Professores
     </a>
-    <a href="#planejamentos" class="nav-btn" onclick="showTab('planejamentos'); return false;">
+    <a href="<?= url('supervisor-edfis/plannings') ?>" class="nav-btn">
         <i class="fas fa-file-alt"></i> Planejamentos
     </a>
     <a href="<?= url('supervisor-edfis/punctuality_report') ?>" class="nav-btn">
