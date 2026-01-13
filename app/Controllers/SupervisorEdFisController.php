@@ -58,6 +58,60 @@ class SupervisorEdFisController extends Controller {
         
         require __DIR__ . '/../Views/supervisor_edfis/dashboard.php';
     }
+
+    /**
+     * Página dedicada de Listagem de Professores
+     */
+    public function professors() {
+        $user = auth();
+        
+        if (!$user || $user['role'] !== 'supervisor_edfis') {
+            redirect('login');
+        }
+        
+        $userModel = new User();
+        $schoolModel = new School();
+        
+        // Filtros
+        $search = $_GET['search'] ?? '';
+        $schoolId = $_GET['school_id'] ?? '';
+        
+        // 1. Buscar Professores
+        $professors = $userModel->getPhysicalEducationProfessors();
+        
+        // 2. Aplicar Filtros (Search e School)
+        if ($search || $schoolId) {
+            $professors = array_filter($professors, function($p) use ($search, $schoolId) {
+                // Filtro por Escola
+                if ($schoolId && (!isset($p['school_id']) || $p['school_id'] != $schoolId)) {
+                    return false;
+                }
+                
+                // Filtro por Nome (Busca)
+                if ($search) {
+                    $nameMatch = stripos($p['name'], $search) !== false;
+                    $emailMatch = stripos($p['email'], $search) !== false;
+                    
+                    // Busca também no nome da escola (se já não filtrou por ID)
+                    $schoolNameMatch = isset($p['school_name']) && stripos($p['school_name'], $search) !== false;
+                    
+                    if (!$nameMatch && !$emailMatch && !$schoolNameMatch) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+        }
+        
+        // 3. Buscar Coordenadores (Mapa)
+        $coordinatorsMap = $userModel->getCoordinatorsMap();
+        
+        // 4. Buscar Escolas para o select
+        $schools = $schoolModel->all();
+        
+        require __DIR__ . '/../Views/supervisor_edfis/professors_list.php';
+    }
     
     /**
      * Calcula estatísticas dos professores Ed. Física
@@ -247,4 +301,5 @@ class SupervisorEdFisController extends Controller {
         
         redirect('supervisor-edfis/dashboard');
     }
+
 }
