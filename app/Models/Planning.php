@@ -131,4 +131,9 @@ class Planning extends Model {
                 ORDER BY p.deadline ASC, u.name";
         return $this->db->query($sql, ['school_id' => $schoolId])->fetchAll();
     }
+
+    public function getUniqueNamesPhysicalEducation() {
+        $sql = "SELECT DISTINCT name, id FROM periods WHERE is_physical_education = 1 GROUP BY name ORDER BY id DESC";
+        return $this->db->query($sql)->fetchAll();
+    }
 }

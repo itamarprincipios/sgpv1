@@ -195,6 +195,55 @@ class SupervisorEdFisController extends Controller {
     }
     
     /**
+     * Página dedicada de Listagem de Planejamentos com filtros
+     */
+    public function plannings() {
+        $user = auth();
+        if (!$user || $user['role'] !== 'supervisor_edfis') redirect('login');
+        
+        $docModel = new Document();
+        $schoolModel = new School();
+        require_once __DIR__ . '/../Models/Planning.php';
+        $planningModel = new Planning();
+
+        // Filtros
+        $schoolId = $_GET['school_id'] ?? '';
+        $periodId = $_GET['period_id'] ?? ''; // Aqui usaremos ID para simplificar se o select mandar ID, mas idealmente seria Name se quisermos multi-school. 
+        // OBS: No view anterior eu coloquei value="<?= $period['id'] ?>".
+        // Se eu quiser filtrar por nome (multiescola), tenho que receber o NOME ou mudar a lógica.
+        // Vamos ajustar para receber o NOME caso o filtro select mande o nome? Nao, os IDs sao unicos.
+        // Mas se eu selecionar "1 Bimestre" no select (value=ID do 1 Bimestre da Escola X), e filtrar só por ID, vou ver só da Escola X.
+        // Se eu quiser ver de TODAS, o select tem que ser de nomes unicos.
+        
+        // Vamos usar nomes únicos no select e filtrar por nome.
+        // Alteração no View será necessária? Sim, value="<?= $period['name'] ?>"
+        
+        $periodName = $_GET['period_name'] ?? ''; // Mudança de estrategia
+        $status = $_GET['status'] ?? '';
+
+        // Carregar opções
+        $schools = $schoolModel->all();
+        $periods = $planningModel->getUniqueNamesPhysicalEducation(); // Retorna DISTINCT names
+        
+        // Buscar Tudo
+        $allDocs = $docModel->getByPhysicalEducation();
+        
+        // Filtrar
+        $plannings = array_filter($allDocs, function($doc) use ($schoolId, $periodName, $status) {
+            if ($schoolId && $doc['school_id'] != $schoolId) return false;
+            
+            // Filtro por Nome do Periodo (para pegar de todas as escolas)
+            if ($periodName && $doc['period_name'] != $periodName) return false;
+            
+            if ($status && strtolower($doc['status']) != strtolower($status)) return false;
+            
+            return true;
+        });
+
+        require __DIR__ . '/../Views/supervisor_edfis/plannings_list.php';
+    }
+
+    /**
      * Obter relatório de pontualidade dos professores Ed. Física
      */
     public function punctualityReport() {
