@@ -13,29 +13,34 @@
 
     <!-- Filtros de Busca -->
     <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden;">
-        <div class="card-body p-4 bg-white">
-            <h4 class="card-title mb-4 text-secondary" style="font-size: 1.5rem;"><i class="fas fa-search me-2"></i>Filtrar Professores</h4>
+        <div class="card-body p-4 bg-white text-center">
+            <h4 class="card-title mb-4 text-secondary"><i class="fas fa-search me-2"></i>Filtrar Professores</h4>
             
             <form method="GET" action="<?= url('supervisor-edfis/professors') ?>">
-                <div class="row g-4">
+                <!-- Container centralizado com 50% (col-md-6 no desktop) -->
+                <div class="row g-3 justify-content-center">
+                    
                     <!-- Campo de Busca -->
-                    <div class="col-12">
-                        <label for="search" class="form-label fw-bold text-dark" style="font-size: 1.3rem;">Buscar por Nome:</label>
+                    <div class="col-md-6 col-12">
+                        <div class="text-start mb-1 fw-bold text-dark">Buscar por Nome:</div>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0" style="font-size: 1.5rem; padding: 15px;"><i class="fas fa-search text-muted"></i></span>
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
                             <input type="text" name="search" id="search" class="form-control border-start-0 bg-light" 
-                                   placeholder="Digite o nome do professor..." 
+                                   placeholder="Digite o nome..." 
                                    value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                                   style="font-size: 1.3rem; height: 60px;">
+                                   style="height: 50px; font-size: 1.1rem;">
                         </div>
                     </div>
                     
+                    <!-- Quebra de linha forçada para manter layout vertical centralizado -->
+                    <div class="w-100"></div>
+
                     <!-- Filtro de Escola -->
-                    <div class="col-12">
-                        <label for="school_id" class="form-label fw-bold text-dark" style="font-size: 1.3rem;">Filtrar por Escola:</label>
+                    <div class="col-md-6 col-12">
+                        <div class="text-start mb-1 fw-bold text-dark">Filtrar por Escola:</div>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0" style="font-size: 1.5rem; padding: 15px;"><i class="fas fa-school text-muted"></i></span>
-                            <select name="school_id" id="school_id" class="form-select border-start-0 bg-light" style="font-size: 1.3rem; height: 60px; cursor: pointer;">
+                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-school text-muted"></i></span>
+                            <select name="school_id" id="school_id" class="form-select border-start-0 bg-light" style="height: 50px; font-size: 1.1rem; cursor: pointer;">
                                 <option value="">Todas as Escolas da Rede</option>
                                 <?php foreach ($schools as $school): ?>
                                     <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
@@ -46,11 +51,14 @@
                         </div>
                     </div>
                     
+                    <!-- Quebra de linha -->
+                    <div class="w-100"></div>
+
                     <!-- Botão Filtrar -->
-                    <div class="col-12 mt-4">
+                    <div class="col-md-6 col-12 mt-3">
                         <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm" 
-                                style="border-radius: 10px; text-transform: uppercase; letter-spacing: 1px; font-size: 1.4rem; padding: 15px;">
-                            <i class="fas fa-filter me-2"></i> Aplicar Filtros
+                                style="border-radius: 8px; height: 50px; font-size: 1.1rem; text-transform: uppercase;">
+                            <i class="fas fa-filter me-2"></i> Filtrar Resultados
                         </button>
                     </div>
                 </div>
