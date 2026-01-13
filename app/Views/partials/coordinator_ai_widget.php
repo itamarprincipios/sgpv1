@@ -4,10 +4,11 @@
  * Componente reutilizável para todas as páginas do coordenador
  */
 
-// Verificar se usuário é coordenador
+// Verificar se usuário é coordenador ou supervisor ed. fis
 $user = auth(); // Get authenticated user
-if (!$user || $user['role'] !== 'coordinator') {
-    return; // Não exibir se não for coordenador
+$allowedRoles = ['coordinator', 'supervisor_edfis'];
+if (!$user || !in_array($user['role'], $allowedRoles)) {
+    return; // Não exibir se não for autorizado
 }
 ?>
 

@@ -170,6 +170,43 @@ class ContextBuilder {
     }
     
     /**
+     * Recupera contexto específico de Educação Física da rede
+     * @return array Contexto estruturado de Educação Física
+     */
+    public function getPhysicalEducationContext() {
+        $userModel = new User();
+        $documentModel = new Document();
+        
+        // Buscar professores de Ed. Física
+        $professors = $userModel->getPhysicalEducationProfessors();
+        
+        // Buscar planejamentos de Ed. Física
+        $plannings = $documentModel->getByPhysicalEducation();
+        
+        // Estatísticas específicas
+        $totalProfessors = count($professors);
+        $totalPlannings = count($plannings);
+        $enviados = $this->countByStatus($plannings, 'enviado');
+        $atrasados = $this->countByStatus($plannings, 'atrasado');
+        $aprovados = $this->countByStatus($plannings, 'aprovado');
+        
+        return [
+            'tipo' => 'rede_educacao_fisica',
+            'descricao' => 'Contexto filtrado apenas para professores e planejamentos de Educação Física da rede municipal.',
+            'estatisticas_edfis' => [
+                'total_professores' => $totalProfessors,
+                'total_planejamentos' => $totalPlannings,
+                'enviados' => $enviados,
+                'atrasados' => $atrasados,
+                'aprovados' => $aprovados,
+                'taxa_entrega' => $totalProfessors > 0 ? round(($enviados / $totalProfessors) * 100, 1) . '%' : '0%'
+            ],
+            'professores' => $this->extractProfessorsInfo($professors),
+            'planejamentos_recentes' => $this->extractPlanningsInfo(array_slice($plannings, 0, 20))
+        ];
+    }
+    
+    /**
      * Extrai informações resumidas dos professores
      * @param array $professors Lista de professores
      * @return array Informações formatadas

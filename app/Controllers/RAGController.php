@@ -81,6 +81,9 @@ class RAGController {
                 
                 // Forçar filtro de escola (sobrescreve qualquer filtro enviado)
                 $filters['school_id'] = $schoolId;
+            } elseif ($_SESSION['user']['role'] === 'supervisor_edfis') {
+                 // Supervisor Ed. Física recebe tratamento especial no buildContext
+                 $filters['context_type'] = 'physical_education';
             }
             
             // Executar fluxo RAG
@@ -151,6 +154,10 @@ class RAGController {
         
         if (isset($filters['school_id'])) {
             return $this->contextBuilder->getSchoolContext($filters['school_id']);
+        }
+        
+        if (isset($filters['context_type']) && $filters['context_type'] === 'physical_education') {
+            return $this->contextBuilder->getPhysicalEducationContext();
         }
         
         // Se não especificou nada, retorna contexto da rede
