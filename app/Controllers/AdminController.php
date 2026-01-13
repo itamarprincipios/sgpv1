@@ -305,4 +305,101 @@ class AdminController extends Controller {
         }
         redirect('admin/dashboard');
     }
+
+    // --- Supervisora Ed. Física Management ---
+    public function supervisorEdFis() {
+        checkAuth('admin');
+        $userModel = new User();
+        $supervisors = $userModel->getByRole('supervisor_edfis');
+        $this->view('admin/supervisor_edfis', ['supervisors' => $supervisors]);
+    }
+
+    public function storeSupervisorEdFis() {
+        checkAuth('admin');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userModel = new User();
+            $data = $_POST;
+            
+            // Forçar role supervisor_edfis
+            $data['role'] = 'supervisor_edfis';
+            
+            // Password padrão
+            if (empty($data['password'])) {
+                $data['password'] = 'supervisor123';
+            }
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+            
+            // Supervisora não tem escola específica (vê todas)
+            $data['school_id'] = null;
+            
+            $userModel->create($data);
+            $_SESSION['success'] = "Supervisora de Educação Física cadastrada com sucesso!";
+        }
+        redirect('admin/supervisor-edfis');
+    }
+
+    public function editSupervisorEdFis() {
+        checkAuth('admin');
+        $id = $_GET['id'] ?? null;
+        if (!$id) redirect('admin/supervisor-edfis');
+        
+        $userModel = new User();
+        $supervisor = $userModel->findById($id);
+        
+        if (!$supervisor || $supervisor['role'] !== 'supervisor_edfis') {
+            $_SESSION['error'] = "Supervisora não encontrada.";
+            redirect('admin/supervisor-edfis');
+        }
+        
+        $this->view('admin/supervisor_edfis_edit', ['supervisor' => $supervisor]);
+    }
+
+    public function updateSupervisorEdFis() {
+        checkAuth('admin');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userModel = new User();
+            $id = $_POST['id'];
+            $data = $_POST;
+            
+            unset($data['password']); // Não atualizar senha aqui
+            unset($data['id']);
+            unset($data['role']); // Não permitir mudar role
+            
+            $userModel->update($id, $data);
+            $_SESSION['success'] = "Supervisora atualizada com sucesso!";
+        }
+        redirect('admin/supervisor-edfis');
+    }
+
+    public function deleteSupervisorEdFis() {
+        checkAuth('admin');
+        $id = $_GET['id'] ?? null;
+        
+        if ($id) {
+            $userModel = new User();
+            $supervisor = $userModel->findById($id);
+            
+            if ($supervisor && $supervisor['role'] === 'supervisor_edfis') {
+                $userModel->delete($id);
+                $_SESSION['success'] = "Supervisora excluída com sucesso!";
+            }
+        }
+        redirect('admin/supervisor-edfis');
+    }
+
+    public function resetSupervisorPassword() {
+        checkAuth('admin');
+        $id = $_GET['id'] ?? null;
+        
+        if ($id) {
+            $userModel = new User();
+            $supervisor = $userModel->findById($id);
+            
+            if ($supervisor && $supervisor['role'] === 'supervisor_edfis') {
+                $userModel->update($id, ['password' => password_hash('supervisor123', PASSWORD_DEFAULT)]);
+                $_SESSION['success'] = "Senha resetada para 'supervisor123' com sucesso!";
+            }
+        }
+        redirect('admin/supervisor-edfis');
+    }
 }

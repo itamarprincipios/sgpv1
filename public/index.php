@@ -114,6 +114,14 @@ $routes = [
     'supervisor-edfis/dashboard' => 'SupervisorEdFisController@dashboard',
     'supervisor-edfis/planning/view' => 'SupervisorEdFisController@viewPlanning',
     'supervisor-edfis/punctuality' => 'SupervisorEdFisController@punctualityReport',
+
+    // Admin - Supervisor Ed. Física management
+    'admin/supervisor-edfis' => 'AdminController@supervisorEdFis',
+    'admin/supervisor-edfis/store' => 'AdminController@storeSupervisorEdFis',
+    'admin/supervisor-edfis/edit' => 'AdminController@editSupervisorEdFis',
+    'admin/supervisor-edfis/update' => 'AdminController@updateSupervisorEdFis',
+    'admin/supervisor-edfis/delete' => 'AdminController@deleteSupervisorEdFis',
+    'admin/supervisor-edfis/reset-password' => 'AdminController@resetSupervisorPassword',
 ];
 
 if (array_key_exists($uri, $routes)) {
