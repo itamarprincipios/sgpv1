@@ -281,7 +281,7 @@
                                     <strong><?= htmlspecialchars($plan['school_name']) ?></strong>
                                 </td>
                                 <td>
-                                    <?= htmlspecialchars($plan['user_name']) ?>
+                                    <?= htmlspecialchars($plan['professor_name']) ?>
                                 </td>
                                 <td>
                                     <?= htmlspecialchars($plan['title']) ?>
