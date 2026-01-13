@@ -93,6 +93,25 @@ class ProfessorController extends Controller {
                     $planningModel = new Planning();
                     $period = $planningModel->findById($period_id);
 
+                    // ======================================
+                    // SUBSTITUIÇÃO AUTOMÁTICA
+                    // Verificar se já existe documento para este período
+                    // ======================================
+                    $existingDoc = $docModel->findByUserAndPeriod($user['id'], $period_id);
+                    $wasReplaced = false;
+                    
+                    if ($existingDoc) {
+                        // Deletar arquivo físico antigo
+                        $oldFilePath = $uploadDir . $existingDoc['file_path'];
+                        if (file_exists($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
+                        
+                        // Deletar registro do banco
+                        $docModel->delete($existingDoc['id']);
+                        $wasReplaced = true;
+                    }
+
                     $score_base = 10;
                     $penalty_delay = 0;
                     
@@ -148,7 +167,11 @@ class ProfessorController extends Controller {
                         error_log("Erro na extração automática do documento $documentId: " . $e->getMessage());
                     }
                     
-                    // Simple feedback via session would be nice, but skipping for brevity, redirecting back.
+                    // Feedback de sucesso
+                    $_SESSION['success'] = $wasReplaced 
+                        ? 'Documento anterior substituído com sucesso!' 
+                        : 'Documento enviado com sucesso!';
+                    
                     redirect('professor/dashboard');
                 } else {
                     echo "Erro ao mover arquivo.";

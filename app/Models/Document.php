@@ -12,6 +12,11 @@ class Document extends Model {
         return $this->db->query("SELECT * FROM documents WHERE id = :id", ['id' => $id])->fetch();
     }
 
+    public function findByUserAndPeriod($userId, $periodId) {
+        $sql = "SELECT * FROM documents WHERE user_id = :user_id AND period_id = :period_id LIMIT 1";
+        return $this->db->query($sql, ['user_id' => $userId, 'period_id' => $periodId])->fetch();
+    }
+
     public function getByUserId($userId) {
         $sql = "SELECT d.*, p.name as period_name 
                 FROM documents d 
