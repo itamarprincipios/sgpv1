@@ -195,7 +195,7 @@ require __DIR__ . '/../layouts/header.php';
     <a href="#planejamentos" class="nav-btn" onclick="showTab('planejamentos'); return false;">
         <i class="fas fa-file-alt"></i> Planejamentos
     </a>
-    <a href="<?= url('supervisor-edfis/punctuality') ?>" class="nav-btn">
+    <a href="<?= url('supervisor-edfis/punctuality_report') ?>" class="nav-btn">
         <i class="fas fa-chart-line"></i> Relatórios
     </a>
 </div>

@@ -3,8 +3,8 @@
 <div class="main-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-outline-secondary mb-2">
-                <i class="fas fa-arrow-left"></i> Voltar
+            <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-primary mb-2">
+                <i class="fas fa-arrow-left"></i> Voltar ao Painel
             </a>
             <h1><i class="fas fa-clock"></i> Relatório de Pontualidade</h1>
             <p class="text-muted">Acompanhamento de prazos de entrega dos professores de Educação Física</p>
