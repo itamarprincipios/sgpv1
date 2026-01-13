@@ -70,7 +70,7 @@
                             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                                 <!-- Foto do Professor -->
                                 <?php 
-                                    $photoUrl = !empty($prof['school_cover']) // Legado: checando campo alternativo se existir
+                                    $photoUrl = !empty($prof['school_cover']) // Legado
                                         ? url('public/uploads/profiles/' . $prof['profile_photo']) 
                                         : 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=random&size=150';
                                     
@@ -82,26 +82,22 @@
                                      class="rounded-circle shadow-sm" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #fff;">
                                 
                                 <div class="flex-grow-1 text-center text-md-start">
-                                    <h3 class="card-title mb-1 text-dark fw-bold">
-                                        <?= htmlspecialchars($prof['name']) ?>
-                                    </h3>
-
-                                    <!-- Botão WhatsApp Professor (Reposicionado) -->
-                                    <div class="mb-2">
+                                    
+                                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1">
+                                        <h3 class="card-title mb-0 text-dark fw-bold">
+                                            <?= htmlspecialchars($prof['name']) ?>
+                                        </h3>
+                                        
+                                        <!-- Botão WhatsApp Estilo SEMED (Ao lado do nome) -->
                                         <?php if (!empty($prof['whatsapp'])): ?>
                                             <?php
                                                 $phone = preg_replace('/[^0-9]/', '', $prof['whatsapp']);
                                                 $msg = urlencode("Olá professor(a) {$prof['name']}, sou da Supervisão de Ed. Física do SGP.");
                                             ?>
                                             <a href="https://wa.me/55<?= $phone ?>?text=<?= $msg ?>" target="_blank" 
-                                               class="btn btn-success btn-sm fw-bold rounded-pill px-3" 
-                                               style="font-size: 0.9rem;">
-                                                <i class="fab fa-whatsapp me-1"></i> WhatsApp
+                                               class="whatsapp-btn" title="Falar com Professor">
+                                                <i class="fab fa-whatsapp fa-lg"></i>
                                             </a>
-                                        <?php else: ?>
-                                            <span class="badge bg-light text-muted border rounded-pill px-3 py-2">
-                                                <i class="fas fa-phone-slash me-1"></i> Sem WhatsApp
-                                            </span>
                                         <?php endif; ?>
                                     </div>
                                     
@@ -156,5 +152,28 @@
 <style>
     .card:hover {
         transform: translateY(-2px);
+    }
+
+    /* Estilo WhatsApp SEMED */
+    .whatsapp-btn {
+        background: linear-gradient(135deg, #25D366, #128C7E);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 1rem; /* Aumentei um pouco */
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+    
+    .whatsapp-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        color: white;
     }
 </style>
