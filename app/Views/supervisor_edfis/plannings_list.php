@@ -237,6 +237,13 @@
                 </select>
             </div>
 
+            <!-- Botão Filtrar -->
+            <div style="padding-bottom: 2px;">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+            </div>
+
             <!-- Botão Limpar -->
             <div style="padding-bottom: 2px;">
                  <?php if(!empty($_GET['school_id']) || !empty($_GET['period_name']) || !empty($_GET['status'])): ?>
@@ -309,11 +316,4 @@
         </div>
     </div>
     
-    <!-- Botão Voltar Rodapé -->
-    <div class="d-flex justify-content-center mt-4 mb-5">
-        <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-secondary px-4 py-2" style="border-radius: 6px;">
-            <i class="fas fa-arrow-left me-2"></i> Voltar ao Painel
-        </a>
-    </div>
-
 </div>
