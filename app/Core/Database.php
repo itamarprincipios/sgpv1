@@ -39,7 +39,7 @@ class Database {
         } catch (PDOException $e) {
             error_log("Database query error: " . $e->getMessage());
             error_log("SQL: " . $sql);
-            error_log("Params: " . print_r($params, true));
+            error_log("Params: " . json_encode($params, JSON_UNESCAPED_UNICODE));
             throw $e;
         }
     }

@@ -4,7 +4,8 @@ class Document extends Model {
     public function create($data) {
         $sql = "INSERT INTO documents (user_id, period_id, title, type, file_path, status, score_base, penalty_delay, score_final) 
                 VALUES (:user_id, :period_id, :title, :type, :file_path, :status, :score_base, :penalty_delay, :score_final)";
-        return $this->db->query($sql, $data);
+        $this->db->query($sql, $data);
+        return $this->db->getConnection()->lastInsertId();
     }
 
     public function findById($id) {
