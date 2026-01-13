@@ -150,26 +150,26 @@ require __DIR__ . '/../layouts/header.php';
 
 
 <!-- Header com Foto e Informações -->
+<!-- Header com Foto e Informações -->
 <div class="supervisor-header">
     <div class="supervisor-info">
         <?php
         $photoPath = $user['profile_photo'] ?? 'default-avatar.png';
         $photoUrl = url('public/uploads/profiles/' . $photoPath);
         ?>
-        <img src="<?= $photoUrl ?>" alt="Foto" class="supervisor-photo" 
-             onclick="document.getElementById('photoUpload').click()">
+        <div style="position: relative;">
+            <img src="<?= $photoUrl ?>" alt="Foto" class="supervisor-photo" 
+                 onclick="document.getElementById('photoUpload').click()">
+            <div onclick="document.getElementById('photoUpload').click()" 
+                 style="position: absolute; bottom: 0; right: 0; background: white; border-radius: 50%; padding: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <i class="fas fa-camera" style="color: #667eea; font-size: 0.8rem;"></i>
+            </div>
+        </div>
         
         <div class="supervisor-details">
-            <h1><i class="fas fa-running"></i> SGP - SUPERVISÃO GERAL DE ED. FÍSICA</h1>
+            <h1><i class="fas fa-running"></i> SGP - Supervisão de Educação Física</h1>
             <p>Painel de acompanhamento de todos os professores de Educação Física da rede municipal</p>
         </div>
-    </div>
-    
-    <div style="text-align: right;">
-        <div style="font-size: 0.9rem; opacity: 0.9;">Olá, <?= htmlspecialchars($user['name']) ?></div>
-        <a href="<?= url('logout') ?>" style="color: white; text-decoration: underline; font-size: 0.9rem;">
-            <i class="fas fa-sign-out-alt"></i> Sair
-        </a>
     </div>
 </div>
 
