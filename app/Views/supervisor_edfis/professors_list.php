@@ -11,49 +11,41 @@
         </div>
     </div>
 
-    <!-- Filtros de Busca -->
-    <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden;">
-        <div class="card-body p-4 bg-white text-center">
-            <h4 class="card-title mb-4 text-secondary"><i class="fas fa-search me-2"></i>Filtrar Professores</h4>
+    <!-- Filtros de Busca (Estilo Clean - Referência Relatórios) -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <h5 class="card-title text-secondary mb-3">Filtrar Professores</h5>
             
             <form method="GET" action="<?= url('supervisor-edfis/professors') ?>">
-                <!-- Container Rígido Centralizado: 50% da largura da tela (desktop) -->
-                <div style="width: 100%; max-width: 600px; margin: 0 auto;">
-                    
+                <div class="row align-items-end g-3">
                     <!-- Campo de Busca -->
-                    <div class="mb-4">
-                        <div class="text-start mb-2 fw-bold text-dark" style="font-size: 1.1rem;">Buscar por Nome:</div>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
-                            <input type="text" name="search" id="search" class="form-control border-start-0 bg-light" 
-                                   placeholder="Digite o nome..." 
-                                   value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
-                                   style="height: 50px; font-size: 1.1rem;">
-                        </div>
+                    <div class="col-md-5">
+                        <label for="search" class="form-label text-muted small fw-bold text-uppercase">Buscar por Nome</label>
+                        <input type="text" name="search" id="search" class="form-control bg-light border-0" 
+                               placeholder="Digite o nome do professor..." 
+                               value="<?= htmlspecialchars($_GET['search'] ?? '') ?>"
+                               style="padding: 10px 15px;">
                     </div>
                     
                     <!-- Filtro de Escola -->
-                    <div class="mb-4">
-                        <div class="text-start mb-2 fw-bold text-dark" style="font-size: 1.1rem;">Filtrar por Escola:</div>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0"><i class="fas fa-school text-muted"></i></span>
-                            <select name="school_id" id="school_id" class="form-select border-start-0 bg-light" style="height: 50px; font-size: 1.1rem; cursor: pointer;">
-                                <option value="">Todas as Escolas da Rede</option>
-                                <?php foreach ($schools as $school): ?>
-                                    <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($school['name']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                    <div class="col-md-5">
+                        <label for="school_id" class="form-label text-muted small fw-bold text-uppercase">Filtrar por Escola</label>
+                        <select name="school_id" id="school_id" class="form-select bg-light border-0" style="padding: 10px 15px; cursor: pointer;">
+                            <option value="">Todas as Escolas da Rede</option>
+                            <?php foreach ($schools as $school): ?>
+                                <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($school['name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     
                     <!-- Botão Filtrar -->
-                    <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm" 
-                            style="border-radius: 8px; height: 50px; font-size: 1.1rem; text-transform: uppercase;">
-                        <i class="fas fa-filter me-2"></i> Filtrar Resultados
-                    </button>
-                    
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100 fw-bold" style="padding: 10px;">
+                            <i class="fas fa-filter me-1"></i> Filtrar
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -78,11 +70,10 @@
                             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                                 <!-- Foto do Professor -->
                                 <?php 
-                                    $photoUrl = !empty($prof['school_cover']) // Ops, school_cover não, profile_photo
+                                    $photoUrl = !empty($prof['school_cover']) // Ops, school_cover não, profile_photo (mantendo lógica anterior corrigida)
                                         ? url('public/uploads/profiles/' . $prof['profile_photo']) 
                                         : 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=random&size=150';
                                     
-                                    // Fallback melhorado se profile_photo estiver vazio
                                     if(empty($prof['profile_photo'])) {
                                          $photoUrl = 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=7F9CF5&color=fff&size=150';
                                     }
@@ -100,24 +91,25 @@
                                         <?= htmlspecialchars($prof['school_name'] ?? 'Sem escola vinculada') ?>
                                     </div>
 
-                                    <!-- Botão WhatsApp Professor -->
-                                    <?php if (!empty($prof['whatsapp'])): ?>
-                                        <?php
-                                            $phone = preg_replace('/[^0-9]/', '', $prof['whatsapp']);
-                                            $msg = urlencode("Olá professor(a) {$prof['name']}, sou da Supervisão de Ed. Física do SGP.");
-                                        ?>
-                                        <div class="mb-3">
+                                    <!-- Botão WhatsApp Professor (Sempre Visível) -->
+                                    <div class="mb-3">
+                                        <?php if (!empty($prof['whatsapp'])): ?>
+                                            <?php
+                                                $phone = preg_replace('/[^0-9]/', '', $prof['whatsapp']);
+                                                $msg = urlencode("Olá professor(a) {$prof['name']}, sou da Supervisão de Ed. Física do SGP.");
+                                            ?>
                                             <a href="https://wa.me/55<?= $phone ?>?text=<?= $msg ?>" target="_blank" 
-                                               class="btn btn-success btn-lg shadow-sm text-uppercase fw-bold" 
+                                               class="btn btn-success btn-lg shadow-sm text-uppercase fw-bold w-100" 
                                                style="border-radius: 50px; padding: 10px 25px; font-size: 0.9rem;">
-                                                <i class="fab fa-whatsapp fa-lg me-2"></i> Falar com Professor
+                                                <i class="fab fa-whatsapp fa-lg me-2"></i> WhatsApp Professor
                                             </a>
-                                        </div>
-                                    <?php else: ?>
-                                        <div class="mb-3">
-                                            <span class="badge bg-secondary">Sem WhatsApp cadastrado</span>
-                                        </div>
-                                    <?php endif; ?>
+                                        <?php else: ?>
+                                            <button class="btn btn-secondary btn-lg shadow-sm text-uppercase fw-bold w-100" disabled
+                                                    style="border-radius: 50px; padding: 10px 25px; font-size: 0.9rem; opacity: 0.6;">
+                                                <i class="fab fa-whatsapp fa-lg me-2"></i> Sem WhatsApp
+                                            </button>
+                                        <?php endif; ?>
+                                    </div>
 
                                     <hr style="border-top: 1px dashed #dee2e6;">
 
