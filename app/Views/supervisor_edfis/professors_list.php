@@ -1,4 +1,6 @@
-<?php require __DIR__ . '/../layouts/header.php'; ?>
+<?php 
+// Atualizado em: <?= date('d/m/Y H:i:s') ?> - Forçando sync
+require __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="main-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
