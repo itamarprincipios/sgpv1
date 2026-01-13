@@ -1,72 +1,197 @@
 <?php require __DIR__ . '/../layouts/header.php'; ?>
 
+<!-- CSS Específico inspirado em Relatórios SEMED -->
+<style>
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+    
+    .dashboard-header h2 {
+        font-size: 1.75rem;
+        color: #333;
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .list-section {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid #f0f0f0;
+    }
+
+    .filter-container {
+        display: flex;
+        gap: 20px;
+        align-items: flex-end;
+        flex-wrap: wrap; /* Para mobile */
+    }
+
+    .filter-group {
+        flex: 1; /* Ocupar espaço disponível */
+        min-width: 200px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-label {
+        font-size: 0.75rem;
+        color: #8898aa;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .filter-input, .filter-select {
+        width: 100%;
+        padding: 10px 15px;
+        font-size: 0.95rem;
+        color: #495057;
+        background-color: #f8f9fa;
+        background-clip: padding-box;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        height: 45px; /* Altura confortável */
+    }
+
+    .filter-input:focus, .filter-select:focus {
+        background-color: #fff;
+        border-color: #667eea;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .btn-filter {
+        background-color: #667eea;
+        color: #fff;
+        border: none;
+        padding: 0 25px;
+        height: 45px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-filter:hover {
+        background-color: #5a67d8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Estilo WhatsApp SEMED */
+    .whatsapp-btn {
+        background: linear-gradient(135deg, #25D366, #128C7E);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+    
+    .whatsapp-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        color: white;
+    }
+    
+    .prof-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        height: 100%;
+    }
+    .prof-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+    }
+</style>
+
 <div class="main-container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    
+    <!-- Cabeçalho Estilo Relatórios -->
+    <div class="dashboard-header">
         <div>
-            <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-outline-secondary mb-2">
-                <i class="fas fa-arrow-left"></i> Voltar ao Painel
+            <h2>Professores de Educação Física</h2>
+            <p class="text-muted mb-0">Gestão da rede municipal</p>
+        </div>
+        <div>
+            <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-outline-secondary" style="border-radius: 6px;">
+                <i class="fas fa-arrow-left me-2"></i> Voltar ao Painel
             </a>
-            <h1><i class="fas fa-users"></i> Professores de Educação Física</h1>
-            <p class="text-muted">Gestão e contato dos professores da rede municipal</p>
         </div>
     </div>
 
-    <!-- Filtros de Busca (Layout Horizontal) -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-4">
-            <form method="GET" action="<?= url('supervisor-edfis/professors') ?>">
-                <div class="row g-3 align-items-end">
-                    <!-- Campo de Busca -->
-                    <div class="col-md-5">
-                        <label for="search" class="form-label fw-bold text-secondary">Buscar Professor</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
-                            <input type="text" name="search" id="search" class="form-control border-start-0" 
-                                   placeholder="Nome do professor..." 
-                                   value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
-                        </div>
-                    </div>
-                    
-                    <!-- Filtro de Escola -->
-                    <div class="col-md-5">
-                        <label for="school_id" class="form-label fw-bold text-secondary">Filtrar por Escola</label>
-                        <select name="school_id" id="school_id" class="form-select cursor-pointer">
-                            <option value="">Todas as Escolas</option>
-                            <?php foreach ($schools as $school): ?>
-                                <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($school['name']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <!-- Botão Filtrar -->
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100 fw-bold">
-                            <i class="fas fa-filter"></i> Filtrar
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+    <!-- Seção de Filtros (Frontend Relatórios) -->
+    <div class="list-section">
+        <form method="GET" action="<?= url('supervisor-edfis/professors') ?>" class="filter-container">
+            
+            <!-- Busca por Nome -->
+            <div class="filter-group" style="flex: 2;">
+                <label for="search" class="filter-label">Buscar Professor</label>
+                <input type="text" name="search" id="search" class="filter-input" 
+                       placeholder="Digite o nome..." 
+                       value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+            </div>
+            
+            <!-- Filtro de Escola -->
+            <div class="filter-group" style="flex: 2;">
+                <label for="school_id" class="filter-label">Unidade Escolar</label>
+                <select name="school_id" id="school_id" class="filter-select cursor-pointer">
+                    <option value="">Todas as Escolas</option>
+                    <?php foreach ($schools as $school): ?>
+                        <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($school['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <!-- Botão Filtrar -->
+            <div style="padding-bottom: 2px;"> <!-- Ajuste fino de alinhamento -->
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-filter"></i> Filtrar
+                </button>
+            </div>
+        </form>
     </div>
 
     <!-- Lista de Professores -->
     <div class="row">
         <?php if (empty($professors)): ?>
             <div class="col-12">
-                <div class="alert alert-info text-center p-5">
-                    <i class="fas fa-search fa-3x mb-3 text-muted"></i>
-                    <h4>Nenhum professor encontrado.</h4>
-                    <p class="text-muted">Tente ajustar os filtros de busca.</p>
-                    <a href="<?= url('supervisor-edfis/professors') ?>" class="btn btn-outline-primary mt-2">Limpar Filtros</a>
+                <div class="list-section text-center p-5">
+                    <div style="opacity: 0.5; font-size: 3rem; margin-bottom: 20px;"><i class="fas fa-ghost"></i></div>
+                    <h4 class="text-muted">Nenhum professor encontrado.</h4>
+                    <p class="text-secondary">Tente ajustar seus filtros de busca.</p>
+                    <a href="<?= url('supervisor-edfis/professors') ?>" class="btn btn-link text-decoration-none fw-bold">Limpar Filtros</a>
                 </div>
             </div>
         <?php else: ?>
             <?php foreach ($professors as $prof): ?>
                 <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm border-0" style="transition: transform 0.2s;">
-                        <div class="card-body">
+                    <div class="card prof-card">
+                        <div class="card-body p-4">
                             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                                 <!-- Foto do Professor -->
                                 <?php 
@@ -83,12 +208,12 @@
                                 
                                 <div class="flex-grow-1 text-center text-md-start">
                                     
-                                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1">
-                                        <h3 class="card-title mb-0 text-dark fw-bold">
+                                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mb-2">
+                                        <h3 class="card-title mb-0 text-dark fw-bold" style="font-size: 1.4rem;">
                                             <?= htmlspecialchars($prof['name']) ?>
                                         </h3>
                                         
-                                        <!-- Botão WhatsApp Estilo SEMED (Ao lado do nome) -->
+                                        <!-- Botão WhatsApp Estilo SEMED -->
                                         <?php if (!empty($prof['whatsapp'])): ?>
                                             <?php
                                                 $phone = preg_replace('/[^0-9]/', '', $prof['whatsapp']);
@@ -101,17 +226,17 @@
                                         <?php endif; ?>
                                     </div>
                                     
-                                    <div class="mb-3 text-muted">
-                                        <i class="fas fa-school me-1 text-primary"></i> 
+                                    <div class="mb-3 text-secondary">
+                                        <i class="fas fa-school me-2 text-primary"></i> 
                                         <?= htmlspecialchars($prof['school_name'] ?? 'Sem escola vinculada') ?>
                                     </div>
 
-                                    <hr style="border-top: 1px dashed #dee2e6;">
+                                    <hr style="border-top: 1px dashed #e9ecef;">
 
                                     <!-- Seção Coordenador(a) -->
-                                    <div class="bg-light p-2 rounded" style="font-size: 0.85rem;">
-                                        <strong class="text-secondary d-block mb-1">
-                                            <i class="fas fa-user-tie me-1"></i> Coordenação da Escola:
+                                    <div class="bg-light p-3 rounded-3" style="font-size: 0.9rem;">
+                                        <strong class="text-secondary d-block mb-2 text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                            Coordenação da Escola
                                         </strong>
                                         
                                         <?php 
@@ -120,19 +245,19 @@
                                         ?>
                                         
                                         <?php if (empty($coords)): ?>
-                                            <span class="text-muted fst-italic">Nenhum coordenador identificado.</span>
+                                            <span class="text-muted small fst-italic">Nenhum coordenador vinculado.</span>
                                         <?php else: ?>
                                             <?php foreach ($coords as $coord): ?>
                                                 <div class="d-flex justify-content-between align-items-center mb-1">
-                                                    <span><?= htmlspecialchars($coord['name']) ?></span>
+                                                    <span class="text-dark"><?= htmlspecialchars($coord['name']) ?></span>
                                                     <?php if(!empty($coord['whatsapp'])): ?>
                                                         <?php
                                                             $cPhone = preg_replace('/[^0-9]/', '', $coord['whatsapp']);
                                                             $cMsg = urlencode("Olá coordenador(a) {$coord['name']}, assunto referente à Educação Física.");
                                                         ?>
                                                         <a href="https://wa.me/55<?= $cPhone ?>?text=<?= $cMsg ?>" target="_blank" 
-                                                           class="text-success text-decoration-none fw-bold" title="WhatsApp Coordenação">
-                                                            <i class="fab fa-whatsapp"></i>
+                                                           class="text-success" style="opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8" title="WhatsApp Coordenação">
+                                                            <i class="fab fa-whatsapp fa-lg"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>
@@ -148,32 +273,3 @@
         <?php endif; ?>
     </div>
 </div>
-
-<style>
-    .card:hover {
-        transform: translateY(-2px);
-    }
-
-    /* Estilo WhatsApp SEMED */
-    .whatsapp-btn {
-        background: linear-gradient(135deg, #25D366, #128C7E);
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 1rem; /* Aumentei um pouco */
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-    }
-    
-    .whatsapp-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-        color: white;
-    }
-</style>
