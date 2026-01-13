@@ -201,29 +201,49 @@ require __DIR__ . '/../layouts/header.php';
 </div>
 
 <!-- Estatísticas -->
-<div class="row" style="margin-bottom: 2rem;">
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-value"><?= $stats['total_professors'] ?></div>
-            <div class="stat-label">Total de Professores Ed. Fis</div>
+<!-- Estatísticas Grid (Igual Coordenador) -->
+<div class="stats-grid">
+    <!-- Card Professores -->
+    <div class="stat-card">
+        <div class="stat-icon-wrapper bg-blue">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        <div class="stat-content">
+            <span class="stat-value"><?= $stats['total_professors'] ?></span>
+            <span class="stat-label">Professores</span>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-value"><?= $stats['total_plannings'] ?></div>
-            <div class="stat-label">Planejamentos Enviados</div>
+    
+    <!-- Card Planejamentos -->
+    <div class="stat-card">
+        <div class="stat-icon-wrapper bg-purple">
+            <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="stat-content">
+            <span class="stat-value"><?= $stats['total_plannings'] ?></span>
+            <span class="stat-label">Planejamentos</span>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-value" style="color: #dc3545;"><?= $stats['late'] ?></div>
-            <div class="stat-label">Atrasados</div>
+
+    <!-- Card Atrasados -->
+    <div class="stat-card">
+        <div class="stat-icon-wrapper bg-red">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div class="stat-content">
+            <span class="stat-value"><?= $stats['late'] ?></span>
+            <span class="stat-label">Pendências</span>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="stat-card">
-            <div class="stat-value" style="color: #28a745;"><?= $stats['punctuality_rate'] ?>%</div>
-            <div class="stat-label">Taxa de Pontualidade</div>
+
+    <!-- Card Pontualidade -->
+    <div class="stat-card">
+        <div class="stat-icon-wrapper bg-orange">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-content">
+            <span class="stat-value"><?= $stats['punctuality_rate'] ?>%</span>
+            <span class="stat-label">Pontualidade</span>
         </div>
     </div>
 </div>
