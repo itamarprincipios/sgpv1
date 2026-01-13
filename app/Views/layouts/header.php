@@ -24,6 +24,7 @@
             elseif($role == 'semed') echo 'SEMED';
             elseif($role == 'professor') echo 'Professor';
             elseif($role == 'admin') echo 'Admin';
+            elseif($role == 'supervisor_edfis') echo 'Supervisão de Educação Física';
         ?></div>
         
         <!-- Hamburger Menu Button (Mobile Only) -->
@@ -103,7 +104,7 @@
             <?php if(auth()): ?>
                 <span class="d-none d-md-inline">Olá, <?= htmlspecialchars(auth()['name']) ?></span>
                 
-                <?php if(in_array(auth()['role'], ['semed', 'professor', 'coordinator'])): ?>
+                <?php if(in_array(auth()['role'], ['semed', 'professor', 'coordinator', 'supervisor_edfis'])): ?>
                     <button onclick="document.getElementById('modal-password-global').style.display='block'" class="btn btn-sm" style="background:transparent; border:1px solid var(--border-color); color: var(--text-color); cursor:pointer; margin-left:10px; width:35px; height:35px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%;" title="Alterar Senha">
                         <i class="fas fa-key"></i>
                     </button>
