@@ -136,7 +136,7 @@
             <p class="text-muted mb-0">Gestão da rede municipal</p>
         </div>
         <div>
-            <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-outline-secondary" style="border-radius: 6px;">
+            <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-secondary px-4" style="border-radius: 6px; font-weight: 500;">
                 <i class="fas fa-arrow-left me-2"></i> Voltar ao Painel
             </a>
         </div>
@@ -268,5 +268,10 @@
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>
+    <!-- Botão Voltar Rodapé -->
+    <div class="d-flex justify-content-center mt-4 mb-5">
+        <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-secondary px-4 py-2" style="border-radius: 6px;">
+            <i class="fas fa-arrow-left me-2"></i> Voltar ao Painel
+        </a>
     </div>
 </div>
