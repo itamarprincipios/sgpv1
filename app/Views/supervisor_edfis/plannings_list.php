@@ -201,7 +201,7 @@
             <!-- Escola -->
             <div class="filter-group" style="flex: 2;">
                 <label for="school_id" class="filter-label">Filtrar por Escola</label>
-                <select name="school_id" id="school_id" class="filter-select cursor-pointer" onchange="this.form.submit()">
+                <select name="school_id" id="school_id" class="filter-select cursor-pointer">
                     <option value="">Todas as Escolas</option>
                     <?php foreach ($schools as $school): ?>
                         <option value="<?= $school['id'] ?>" <?= (isset($_GET['school_id']) && $_GET['school_id'] == $school['id']) ? 'selected' : '' ?>>
@@ -214,7 +214,7 @@
             <!-- Bimestre -->
             <div class="filter-group">
                 <label for="period_name" class="filter-label">Bimestre</label>
-                <select name="period_name" id="period_name" class="filter-select cursor-pointer" onchange="this.form.submit()">
+                <select name="period_name" id="period_name" class="filter-select cursor-pointer">
                     <option value="">Todos</option>
                     <?php foreach ($periods as $period): ?>
                         <option value="<?= htmlspecialchars($period['name']) ?>" <?= (isset($_GET['period_name']) && $_GET['period_name'] == $period['name']) ? 'selected' : '' ?>>
@@ -227,7 +227,7 @@
              <!-- Status -->
              <div class="filter-group">
                 <label for="status" class="filter-label">Status</label>
-                <select name="status" id="status" class="filter-select cursor-pointer" onchange="this.form.submit()">
+                <select name="status" id="status" class="filter-select cursor-pointer">
                     <option value="">Todos os Status</option>
                     <option value="enviado" <?= (isset($_GET['status']) && $_GET['status'] == 'enviado') ? 'selected' : '' ?>>Enviado</option>
                     <option value="aprovado" <?= (isset($_GET['status']) && $_GET['status'] == 'aprovado') ? 'selected' : '' ?>>Aprovado</option>
