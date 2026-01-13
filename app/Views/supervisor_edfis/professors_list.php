@@ -1,6 +1,4 @@
-<?php 
-// Atualizado em: 13/05/2026 - Correcao Layout
-require __DIR__ . '/../layouts/header.php'; ?>
+<?php require __DIR__ . '/../layouts/header.php'; ?>
 
 <div class="main-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -72,7 +70,7 @@ require __DIR__ . '/../layouts/header.php'; ?>
                             <div class="d-flex flex-column flex-md-row align-items-center gap-4">
                                 <!-- Foto do Professor -->
                                 <?php 
-                                    $photoUrl = !empty($prof['school_cover']) // Ops, school_cover não, profile_photo (mantendo lógica anterior corrigida)
+                                    $photoUrl = !empty($prof['school_cover']) // Legado: checando campo alternativo se existir
                                         ? url('public/uploads/profiles/' . $prof['profile_photo']) 
                                         : 'https://ui-avatars.com/api/?name=' . urlencode($prof['name']) . '&background=random&size=150';
                                     
@@ -87,30 +85,29 @@ require __DIR__ . '/../layouts/header.php'; ?>
                                     <h3 class="card-title mb-1 text-dark fw-bold">
                                         <?= htmlspecialchars($prof['name']) ?>
                                     </h3>
-                                    
-                                    <div class="mb-3 text-muted" style="font-size: 1.1rem;">
-                                        <i class="fas fa-school me-1 text-primary"></i> 
-                                        <?= htmlspecialchars($prof['school_name'] ?? 'Sem escola vinculada') ?>
-                                    </div>
 
-                                    <!-- Botão WhatsApp Professor (Sempre Visível) -->
-                                    <div class="mb-3">
+                                    <!-- Botão WhatsApp Professor (Reposicionado) -->
+                                    <div class="mb-2">
                                         <?php if (!empty($prof['whatsapp'])): ?>
                                             <?php
                                                 $phone = preg_replace('/[^0-9]/', '', $prof['whatsapp']);
                                                 $msg = urlencode("Olá professor(a) {$prof['name']}, sou da Supervisão de Ed. Física do SGP.");
                                             ?>
                                             <a href="https://wa.me/55<?= $phone ?>?text=<?= $msg ?>" target="_blank" 
-                                               class="btn btn-success btn-lg shadow-sm text-uppercase fw-bold w-100" 
-                                               style="border-radius: 50px; padding: 10px 25px; font-size: 0.9rem;">
-                                                <i class="fab fa-whatsapp fa-lg me-2"></i> WhatsApp Professor
+                                               class="btn btn-success btn-sm fw-bold rounded-pill px-3" 
+                                               style="font-size: 0.9rem;">
+                                                <i class="fab fa-whatsapp me-1"></i> WhatsApp
                                             </a>
                                         <?php else: ?>
-                                            <button class="btn btn-secondary btn-lg shadow-sm text-uppercase fw-bold w-100" disabled
-                                                    style="border-radius: 50px; padding: 10px 25px; font-size: 0.9rem; opacity: 0.6;">
-                                                <i class="fab fa-whatsapp fa-lg me-2"></i> Sem WhatsApp
-                                            </button>
+                                            <span class="badge bg-light text-muted border rounded-pill px-3 py-2">
+                                                <i class="fas fa-phone-slash me-1"></i> Sem WhatsApp
+                                            </span>
                                         <?php endif; ?>
+                                    </div>
+                                    
+                                    <div class="mb-3 text-muted">
+                                        <i class="fas fa-school me-1 text-primary"></i> 
+                                        <?= htmlspecialchars($prof['school_name'] ?? 'Sem escola vinculada') ?>
                                     </div>
 
                                     <hr style="border-top: 1px dashed #dee2e6;">
