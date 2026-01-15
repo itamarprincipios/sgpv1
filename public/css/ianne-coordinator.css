@@ -351,6 +351,41 @@
     font-size: 12px;
 }
 
+/* Responsividade Tablet - Reduz tamanho da IANNE */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #ianne-fab {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    #ianne-fab-avatar {
+        width: 140px;
+        height: 140px;
+        border: 3px solid white;
+    }
+
+    #ianne-badge {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+        top: -3px;
+        right: -3px;
+    }
+
+    #ianne-modal {
+        width: 85%;
+        max-width: 550px;
+    }
+
+    #ianne-modal-header h3 {
+        font-size: 18px;
+    }
+
+    #ianne-modal-body {
+        padding: 18px;
+    }
+}
+
 /* Responsividade Mobile */
 @media (max-width: 768px) {
     #ianne-fab {
