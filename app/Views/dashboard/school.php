@@ -83,23 +83,99 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     
+    
     @media (max-width: 768px) {
         .navigation-grid {
             grid-template-columns: 1fr;
-        }
-        
-        .school-hero h1 {
-            font-size: 1.5rem;
+            gap: 15px;
         }
         
         .school-hero {
-            padding: 25px 15px;
+            padding: 20px 15px !important;
+        }
+        
+        .school-hero > div {
+            flex-direction: column !important;
+            align-items: center !important;
+            text-align: center;
+            gap: 15px !important;
+        }
+        
+        .school-hero img {
+            width: 120px !important;
+            height: 120px !important;
+        }
+        
+        .school-hero button {
+            width: 35px !important;
+            height: 35px !important;
+            bottom: 5px !important;
+            right: 5px !important;
+        }
+        
+        .school-hero button i {
+            font-size: 16px !important;
+        }
+        
+        .school-hero h1 {
+            font-size: 1.3rem !important;
+            text-align: center;
+            line-height: 1.3;
+        }
+        
+        .school-hero h1 i {
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .school-hero p {
+            font-size: 0.9rem;
         }
         
         .stats-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr !important;
+            gap: 12px;
+        }
+        
+        .stat-card {
+            padding: 15px !important;
+        }
+        
+        .nav-card {
+            padding: 20px;
+        }
+        
+        .nav-card-icon {
+            font-size: 2rem;
+        }
+        
+        .nav-card h3 {
+            font-size: 1.1rem;
+        }
+        
+        .nav-card p {
+            font-size: 0.85rem;
+        }
+        
+        /* Gamification cards mobile */
+        .gamification-card {
+            padding: 15px !important;
+        }
+        
+        .rank-table {
+            font-size: 0.85rem;
+        }
+        
+        .rank-table th,
+        .rank-table td {
+            padding: 8px 5px !important;
+        }
+        
+        .g-header h3 {
+            font-size: 1rem !important;
         }
     }
+
 </style>
 
 <div class="school-hero">
