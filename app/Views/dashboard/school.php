@@ -470,4 +470,11 @@
     <?php endif; ?>
 </div>
 
+<!-- IANNE AI Widget -->
+<?php if ($user['role'] === 'coordinator'): ?>
+    <?php require __DIR__ . '/../partials/coordinator_ai_widget.php'; ?>
+<?php elseif ($user['role'] === 'director'): ?>
+    <?php require __DIR__ . '/../partials/coordinator_ai_widget.php'; ?>
+<?php endif; ?>
+
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
