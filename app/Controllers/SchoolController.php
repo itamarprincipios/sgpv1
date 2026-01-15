@@ -776,6 +776,356 @@ class SchoolController extends Controller {
             'period' => $period
         ]);
     }
+
+    // --- NEW: Separate Page Methods ---
+    
+    public function plannings() {
+        checkAuth(['coordinator', 'director']);
+        $user = auth();
+        
+        $userModel = new User();
+        $schoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        if (!in_array($user['school_id'], $schoolIds) && !empty($user['school_id'])) {
+            $schoolIds[] = $user['school_id'];
+        }
+        if (empty($schoolIds)) $schoolIds = [0];
+        
+        $schoolModel = new School();
+        $schools = [];
+        $schoolsMap = [];
+        foreach($schoolIds as $sid) {
+            $s = $schoolModel->findById($sid);
+            if ($s) {
+                $schools[] = $s;
+                $schoolsMap[$sid] = $s['name'];
+            }
+        }
+        
+        $school = !empty($schools) ? $schools[0] : null;
+        
+        $planningModel = new Planning();
+        $plannings = [];
+        foreach($schoolIds as $sid) {
+            $p = $planningModel->getBySchoolId($sid);
+            if($p) {
+                foreach($p as &$val) $val['school_name'] = $schoolsMap[$sid] ?? '';
+                $plannings = array_merge($plannings, $p);
+            }
+        }
+        
+        $this->view('school/school_plannings', [
+            'user' => $user,
+            'school' => $school,
+            'schools' => $schools,
+            'plannings' => $plannings
+        ]);
+    }
+    
+    public function bimesters() {
+        checkAuth(['coordinator', 'director']);
+        $user = auth();
+        
+        $userModel = new User();
+        $schoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        if (!in_array($user['school_id'], $schoolIds) && !empty($user['school_id'])) {
+            $schoolIds[] = $user['school_id'];
+        }
+        if (empty($schoolIds)) $schoolIds = [0];
+        
+        $schoolModel = new School();
+        $schools = [];
+        $schoolsMap = [];
+        foreach($schoolIds as $sid) {
+            $s = $schoolModel->findById($sid);
+            if ($s) {
+                $schools[] = $s;
+                $schoolsMap[$sid] = $s['name'];
+            }
+        }
+        
+        $school = !empty($schools) ? $schools[0] : null;
+        
+        $planningModel = new Planning();
+        $plannings = [];
+        foreach($schoolIds as $sid) {
+            $p = $planningModel->getBySchoolId($sid);
+            if($p) {
+                foreach($p as &$val) $val['school_name'] = $schoolsMap[$sid] ?? '';
+                $plannings = array_merge($plannings, $p);
+            }
+        }
+        
+        $this->view('school/school_bimesters', [
+            'user' => $user,
+            'school' => $school,
+            'schools' => $schools,
+            'plannings' => $plannings
+        ]);
+    }
+    
+    public function pending() {
+        checkAuth(['coordinator', 'director']);
+        $user = auth();
+        
+        $userModel = new User();
+        $schoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        if (!in_array($user['school_id'], $schoolIds) && !empty($user['school_id'])) {
+            $schoolIds[] = $user['school_id'];
+        }
+        if (empty($schoolIds)) $schoolIds = [0];
+        
+        $schoolModel = new School();
+        $schools = [];
+        $schoolsMap = [];
+        foreach($schoolIds as $sid) {
+            $s = $schoolModel->findById($sid);
+            if ($s) {
+                $schools[] = $s;
+                $schoolsMap[$sid] = $s['name'];
+            }
+        }
+        
+        $school = !empty($schools) ? $schools[0] : null;
+        
+        $planningModel = new Planning();
+        $pendingSubmissions = [];
+        foreach($schoolIds as $sid) {
+            $sub = $planningModel->getPendingSubmissions($sid);
+            if($sub) {
+                foreach($sub as &$val) $val['school_name'] = $schoolsMap[$sid] ?? '';
+                $pendingSubmissions = array_merge($pendingSubmissions, $sub);
+            }
+        }
+        
+        $this->view('school/school_pending', [
+            'user' => $user,
+            'school' => $school,
+            'schools' => $schools,
+            'pendingSubmissions' => $pendingSubmissions
+        ]);
+    }
+    
+    public function uploads() {
+        checkAuth(['coordinator', 'director']);
+        $user = auth();
+        
+        $userModel = new User();
+        $schoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        if (!in_array($user['school_id'], $schoolIds) && !empty($user['school_id'])) {
+            $schoolIds[] = $user['school_id'];
+        }
+        if (empty($schoolIds)) $schoolIds = [0];
+        
+        $schoolModel = new School();
+        $schools = [];
+        $schoolsMap = [];
+        foreach($schoolIds as $sid) {
+            $s = $schoolModel->findById($sid);
+            if ($s) {
+                $schools[] = $s;
+                $schoolsMap[$sid] = $s['name'];
+            }
+        }
+        
+        $school = !empty($schools) ? $schools[0] : null;
+        
+        $filters = [
+            'period_id' => $_GET['period_id'] ?? null,
+            'professor_id' => $_GET['professor_id'] ?? null,
+            'status' => $_GET['status'] ?? null
+        ];
+        
+        $docModel = new Document();
+        $documents = [];
+        foreach($schoolIds as $sid) {
+            $docs = $docModel->getBySchoolIdWithFilters($sid, $filters);
+            if($docs) {
+                foreach($docs as &$val) $val['school_name'] = $schoolsMap[$sid] ?? '';
+                $documents = array_merge($documents, $docs);
+            }
+        }
+        
+        $newUploadsCount = 0;
+        $lastViewed = $_SESSION['last_viewed_uploads'] ?? null;
+        foreach ($documents as $d) {
+            if (in_array($d['status'], ['enviado', 'atrasado'])) {
+                if (!$lastViewed || strtotime($d['submitted_at']) > $lastViewed) {
+                    $newUploadsCount++;
+                }
+            }
+        }
+        
+        $planningModel = new Planning();
+        $plannings = [];
+        foreach($schoolIds as $sid) {
+            $p = $planningModel->getBySchoolId($sid);
+            if($p) {
+                foreach($p as &$val) $val['school_name'] = $schoolsMap[$sid] ?? '';
+                $plannings = array_merge($plannings, $p);
+            }
+        }
+        
+        $professors = [];
+        foreach($schoolIds as $sid) {
+            $p = $userModel->getProfessorsBySchoolWithClass($sid);
+            if($p) {
+                foreach($p as &$val) $val['school_name'] = $schoolsMap[$sid] ?? '';
+                $professors = array_merge($professors, $p);
+            }
+        }
+        
+        $this->view('school/school_uploads', [
+            'user' => $user,
+            'school' => $school,
+            'schools' => $schools,
+            'documents' => $documents,
+            'plannings' => $plannings,
+            'professors' => $professors,
+            'filters' => $filters,
+            'newUploadsCount' => $newUploadsCount
+        ]);
+    }
+    
+    public function classes() {
+        checkAuth(['coordinator', 'director']);
+        $user = auth();
+        
+        $userModel = new User();
+        $schoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        if (!in_array($user['school_id'], $schoolIds) && !empty($user['school_id'])) {
+            $schoolIds[] = $user['school_id'];
+        }
+        if (empty($schoolIds)) $schoolIds = [0];
+        
+        $schoolModel = new School();
+        $schools = [];
+        $schoolsMap = [];
+        foreach($schoolIds as $sid) {
+            $s = $schoolModel->findById($sid);
+            if ($s) {
+                $schools[] = $s;
+                $schoolsMap[$sid] = $s['name'];
+            }
+        }
+        
+        $school = !empty($schools) ? $schools[0] : null;
+        
+        $classModel = new ClassModel();
+        $classes = [];
+        foreach($schoolIds as $sid) {
+            $c = $classModel->getBySchoolIdWithProfessor($sid);
+            if($c) {
+                foreach($c as &$val) {
+                    $val['school_id'] = $sid;
+                    $val['school_name'] = $schoolsMap[$sid] ?? '';
+                }
+                $classes = array_merge($classes, $c);
+            }
+        }
+        
+        $this->view('school/school_classes', [
+            'user' => $user,
+            'school' => $school,
+            'schools' => $schools,
+            'classes' => $classes
+        ]);
+    }
+    
+    public function professors() {
+        checkAuth(['coordinator', 'director']);
+        $user = auth();
+        
+        $userModel = new User();
+        $schoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        if (!in_array($user['school_id'], $schoolIds) && !empty($user['school_id'])) {
+            $schoolIds[] = $user['school_id'];
+        }
+        if (empty($schoolIds)) $schoolIds = [0];
+        
+        $schoolModel = new School();
+        $schools = [];
+        $schoolsMap = [];
+        foreach($schoolIds as $sid) {
+            $s = $schoolModel->findById($sid);
+            if ($s) {
+                $schools[] = $s;
+                $schoolsMap[$sid] = $s['name'];
+            }
+        }
+        
+        $school = !empty($schools) ? $schools[0] : null;
+        
+        $professors = [];
+        foreach($schoolIds as $sid) {
+            $p = $userModel->getProfessorsBySchoolWithClass($sid);
+            if($p) {
+                foreach($p as &$val) $val['school_name'] = $schoolsMap[$sid] ?? '';
+                $professors = array_merge($professors, $p);
+            }
+        }
+        
+        $classModel = new ClassModel();
+        $classes = [];
+        foreach($schoolIds as $sid) {
+            $c = $classModel->getBySchoolIdWithProfessor($sid);
+            if($c) {
+                foreach($c as &$val) {
+                    $val['school_id'] = $sid;
+                    $val['school_name'] = $schoolsMap[$sid] ?? '';
+                }
+                $classes = array_merge($classes, $c);
+            }
+        }
+        
+        $this->view('school/school_professors', [
+            'user' => $user,
+            'school' => $school,
+            'schools' => $schools,
+            'professors' => $professors,
+            'classes' => $classes
+        ]);
+    }
+    
+    public function coordinators() {
+        checkAuth('director');
+        $user = auth();
+        
+        $userModel = new User();
+        $schoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        if (!in_array($user['school_id'], $schoolIds) && !empty($user['school_id'])) {
+            $schoolIds[] = $user['school_id'];
+        }
+        if (empty($schoolIds)) $schoolIds = [0];
+        
+        $schoolModel = new School();
+        $schools = [];
+        $schoolsMap = [];
+        foreach($schoolIds as $sid) {
+            $s = $schoolModel->findById($sid);
+            if ($s) {
+                $schools[] = $s;
+                $schoolsMap[$sid] = $s['name'];
+            }
+        }
+        
+        $school = !empty($schools) ? $schools[0] : null;
+        
+        $coordinators = [];
+        foreach($schoolIds as $sid) {
+            $coords = $userModel->getCoordinatorsBySchool($sid);
+            if($coords) {
+                foreach($coords as &$val) $val['school_name'] = $schoolsMap[$sid] ?? '';
+                $coordinators = array_merge($coordinators, $coords);
+            }
+        }
+        
+        $this->view('school/school_coordinators', [
+            'user' => $user,
+            'school' => $school,
+            'schools' => $schools,
+            'coordinators' => $coordinators
+        ]);
+    }
 }
 
 
