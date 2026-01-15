@@ -43,6 +43,109 @@
     .status-badge.status-rejeitado { background: #dc3545; color: #fff; font-weight: bold; }
     .status-badge.status-atrasado { background: #6c757d; color: #fff; }
     .status-badge.status-enviado { background: #e3f2fd; color: #1976d2; }
+
+    /* Mobile Responsiveness for Professor Dashboard */
+    @media (max-width: 768px) {
+        /* Dashboard Header - Stack vertically on mobile */
+        .dashboard-header > div:first-child {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+        }
+
+        .dashboard-header > div:first-child > div:first-child {
+            flex-direction: column !important;
+            align-items: center !important;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        /* Avatar - Reduce size on mobile */
+        .dashboard-header img[alt="Perfil"] {
+            width: 120px !important;
+            height: 120px !important;
+            margin-right: 0 !important;
+            margin-bottom: 1rem;
+        }
+
+        /* Camera button - Adjust position for smaller avatar */
+        .dashboard-header button[title="Alterar Foto"] {
+            width: 35px !important;
+            height: 35px !important;
+            bottom: 5px !important;
+            right: 5px !important;
+        }
+
+        .dashboard-header button[title="Alterar Foto"] i {
+            font-size: 14px !important;
+        }
+
+        /* Title and school info - Center on mobile */
+        .dashboard-header h2 {
+            font-size: 1.3rem !important;
+            text-align: center;
+        }
+
+        .dashboard-header > div:first-child > div:last-child {
+            text-align: center;
+            width: 100%;
+        }
+
+        .dashboard-header > div:first-child > div:last-child > div {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .dashboard-header > div:first-child > div:last-child span {
+            margin-left: 0 !important;
+        }
+
+        /* Alterar Senha button - Full width on mobile */
+        .dashboard-header button.btn-secondary {
+            width: 100% !important;
+            margin-top: 1rem;
+            font-size: 0.9rem !important;
+        }
+
+        /* Stats cards - Single column on mobile */
+        .dashboard-header .stats-cards {
+            grid-template-columns: 1fr !important;
+        }
+
+        /* WhatsApp button - Adjust position for mobile */
+        a[href*="wa.me"] {
+            bottom: 15px !important;
+            right: 15px !important;
+            padding: 12px 16px !important;
+            font-size: 0.85rem !important;
+        }
+
+        a[href*="wa.me"] i {
+            font-size: 1.2rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        /* Even smaller adjustments for very small phones */
+        .dashboard-header img[alt="Perfil"] {
+            width: 100px !important;
+            height: 100px !important;
+        }
+
+        .dashboard-header h2 {
+            font-size: 1.1rem !important;
+        }
+
+        .dashboard-header > div:first-child > div:last-child > div {
+            font-size: 0.85rem;
+        }
+
+        /* WhatsApp button - Smaller on tiny screens */
+        a[href*="wa.me"] {
+            padding: 10px 14px !important;
+            font-size: 0.8rem !important;
+            gap: 6px !important;
+        }
+    }
 </style>
 
 <div class="dashboard-header">

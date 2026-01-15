@@ -27,12 +27,14 @@
             elseif($role == 'supervisor_edfis') echo 'Supervisão de Educação Física';
         ?></div>
         
-        <!-- Hamburger Menu Button (Mobile Only) -->
+        <!-- Hamburger Menu Button (Mobile Only) - Hidden for Professors -->
+        <?php if ($role !== 'professor'): ?>
         <button class="hamburger-menu" id="hamburger-btn" aria-label="Menu">
             <span></span>
             <span></span>
             <span></span>
         </button>
+        <?php endif; ?>
         <div class="nav-tabs" id="nav-menu" style="display: flex; gap: 15px; flex-wrap: wrap;">
             <?php if ($role === 'admin'): ?>
                 <a href="<?= url('admin/dashboard') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/dashboard') !== false ? 'active' : '' ?>">
