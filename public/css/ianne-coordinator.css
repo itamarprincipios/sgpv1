@@ -7,6 +7,51 @@
     --ianne-shadow: rgba(102, 126, 234, 0.3);
 }
 
+/* Supervisor EdFis Widget Styles */
+.ianne-widget {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+}
+
+.ianne-avatar {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.ianne-avatar img {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    box-shadow: 0 8px 30px var(--ianne-shadow);
+    border: 5px solid white;
+    animation: pulse 2s infinite;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    object-fit: cover;
+    object-position: center 20%;
+}
+
+.ianne-avatar:hover img {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px var(--ianne-shadow);
+    animation: none;
+}
+
+.ianne-avatar .status-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background: #10b981;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
 /* Avatar Flutuante (FAB - Floating Action Button) */
 #ianne-fab {
     position: fixed;
@@ -353,6 +398,8 @@
 
 /* Responsividade Tablet - Reduz tamanho da IANNE */
 @media (min-width: 769px) and (max-width: 1024px) {
+
+    /* Coordinator FAB Widget */
     #ianne-fab {
         bottom: 20px;
         right: 20px;
@@ -372,6 +419,26 @@
         right: -3px;
     }
 
+    /* Supervisor EdFis Widget */
+    .ianne-widget {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    .ianne-avatar img {
+        width: 140px;
+        height: 140px;
+        border: 3px solid white;
+    }
+
+    .ianne-avatar .status-indicator {
+        width: 16px;
+        height: 16px;
+        bottom: 5px;
+        right: 5px;
+        border: 2px solid white;
+    }
+
     #ianne-modal {
         width: 85%;
         max-width: 550px;
@@ -388,6 +455,8 @@
 
 /* Responsividade Mobile */
 @media (max-width: 768px) {
+
+    /* Coordinator FAB Widget */
     #ianne-fab {
         bottom: 20px;
         right: 20px;
@@ -396,6 +465,26 @@
     #ianne-fab-avatar {
         width: 100px;
         height: 100px;
+    }
+
+    /* Supervisor EdFis Widget */
+    .ianne-widget {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .ianne-avatar img {
+        width: 100px;
+        height: 100px;
+        border: 3px solid white;
+    }
+
+    .ianne-avatar .status-indicator {
+        width: 14px;
+        height: 14px;
+        bottom: 3px;
+        right: 3px;
+        border: 2px solid white;
     }
 
     #ianne-modal {

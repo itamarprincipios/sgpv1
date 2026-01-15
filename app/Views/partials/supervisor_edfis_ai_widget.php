@@ -36,7 +36,7 @@
     </div>
 </div>
 
-<link rel="stylesheet" href="<?= url('public/css/ianne-coordinator.css') ?>">
+<link rel="stylesheet" href="<?= url('public/css/ianne-coordinator.css') ?>?v=<?= time() ?>">
 <script src="<?= url('public/js/ianne-coordinator.js') ?>"></script>
 
 <script>
