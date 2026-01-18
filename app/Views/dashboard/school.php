@@ -286,7 +286,7 @@
             ];
         }
         usort($profStats, function($a, $b) { return $b['points'] <=> $a['points']; });
-        $topProfessors = array_slice($profStats, 0, 5);
+        $topProfessors = array_slice($profStats, 0, 3);
 
         $coordStats = [];
         foreach($coordinators as $c) {
@@ -298,6 +298,7 @@
                 'id' => $c['id']
             ];
         }
+        $coordStats = array_slice($coordStats, 0, 3);
     ?>
 
     <style>
