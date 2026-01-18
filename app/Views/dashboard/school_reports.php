@@ -227,39 +227,214 @@
 </div>
 
 <style>
+    /* Professional Print Styles - Corporate Layout */
     @media print {
-        @page { margin: 1cm; size: A4; }
-        body { background: #fff !important; font-size: 12px; font-family: sans-serif; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-        .navbar, .btn, form, .dashboard-header div:last-child { display: none !important; }
-        .main-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; }
-        .list-section { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
-        h2 { font-size: 18px !important; margin-bottom: 10px !important; color: #000 !important; text-align: center; }
-        h3 { font-size: 16px !important; margin-bottom: 10px !important; color: #333 !important; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+        @page { 
+            margin: 1.5cm; 
+            size: A4 portrait; 
+        }
         
-        table { width: 100% !important; border-collapse: collapse !important; font-size: 11px !important; }
-        th, td { padding: 4px 8px !important; border: 1px solid #ddd !important; text-align: left; }
-        th { background-color: #f0f0f0 !important; font-weight: bold; color: #000 !important; }
+        body { 
+            background: #fff !important; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            color: #000 !important;
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important;
+        }
         
-        /* Ensure single line rows */
-        tr { page-break-inside: avoid; height: auto !important; }
-        td, th { vertical-align: middle !important; padding: 4px 5px !important; }
+        /* Hide non-printable elements */
+        .navbar, 
+        .btn, 
+        .filter-container,
+        .dashboard-header div:last-child,
+        .btn-icon,
+        img[alt="Foto"] {
+            display: none !important;
+        }
         
-        /* Stats Grid Compact */
-        .dashboard-header + .list-section > div > div { display: grid; grid-template-columns: repeat(6, 1fr) !important; gap: 5px !important; }
-        .dashboard-header + .list-section > div > div > div { padding: 5px !important; border: 1px solid #ccc !important; }
-        .dashboard-header + .list-section > div > div > div > div:first-child { font-size: 10px !important; }
-        .dashboard-header + .list-section > div > div > div > div:last-child { font-size: 14px !important; }
-
-        /* Hide badge background colors for saving ink, allow text color */
-        .status-badge { background: none !important; border: none !important; padding: 0; color: #000 !important; }
-        .btn-icon { display: none !important; }
+        .main-container { 
+            padding: 0 !important; 
+            width: 100% !important; 
+            max-width: 100% !important; 
+            margin: 0 !important; 
+        }
         
-        /* Enforce black text for scores in print */
-        span { color: #000 !important; }
+        .list-section { 
+            border: none !important; 
+            box-shadow: none !important; 
+            padding: 0 !important; 
+            margin: 0 !important; 
+            page-break-inside: avoid;
+        }
         
-        /* Ensure photos print */
-        img { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        /* Professional Header */
+        .dashboard-header::before {
+            content: "SISTEMA DE GESTÃO PEDAGÓGICA - RELATÓRIOS DA ESCOLA";
+            display: block;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .dashboard-header::after {
+            content: "Emitido em: " attr(data-print-date);
+            display: block;
+            text-align: right;
+            font-size: 10px;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 14px !important;
+            text-align: center;
+            margin: 10px 0 15px 0 !important;
+            color: #444 !important;
+            font-weight: 600;
+        }
+        
+        h3 {
+            font-size: 13px !important;
+            margin: 15px 0 10px 0 !important;
+            color: #333 !important;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        /* Professional Table Styling */
+        .data-table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin-top: 10px;
+            font-size: 10px !important;
+        }
+        
+        .data-table thead {
+            background-color: #2c3e50 !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .data-table th {
+            padding: 8px 6px !important;
+            border: 1px solid #34495e !important;
+            font-weight: 600 !important;
+            font-size: 10px !important;
+            text-align: left !important;
+            color: #fff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        .data-table td {
+            padding: 6px !important;
+            border: 1px solid #ddd !important;
+            font-size: 9px !important;
+            color: #000 !important;
+            vertical-align: middle !important;
+        }
+        
+        .data-table tbody tr {
+            page-break-inside: avoid;
+        }
+        
+        .data-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        /* Column Width Adjustments for Different Reports */
+        .data-table th:nth-child(1),
+        .data-table td:nth-child(1) {
+            width: 30%;
+        }
+        
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2) {
+            width: 30%;
+        }
+        
+        /* Stats Grid for Professor Dashboard */
+        .list-section > div > div[style*="grid-template-columns"] {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+            gap: 8px !important;
+            margin-bottom: 15px !important;
+            page-break-inside: avoid;
+        }
+        
+        .list-section > div > div[style*="grid-template-columns"] > div {
+            padding: 8px !important;
+            border: 1px solid #ccc !important;
+            border-radius: 4px !important;
+            text-align: center !important;
+        }
+        
+        .list-section > div > div[style*="grid-template-columns"] > div > div:first-child {
+            font-size: 9px !important;
+            margin-bottom: 4px !important;
+        }
+        
+        .list-section > div > div[style*="grid-template-columns"] > div > div:last-child {
+            font-size: 14px !important;
+            font-weight: bold !important;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            color: #000 !important;
+            font-weight: normal !important;
+        }
+        
+        /* Ensure proper page breaks */
+        h3 {
+            page-break-after: avoid;
+        }
+        
+        table {
+            page-break-inside: auto;
+        }
+        
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        
+        /* Footer with page numbers */
+        @page {
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 9px;
+                color: #666;
+            }
+        }
     }
 </style>
+
+<script>
+    // Auto-insert current date/time for print header
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const dateStr = now.toLocaleString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        document.querySelector('.dashboard-header')?.setAttribute('data-print-date', dateStr);
+    });
+</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
