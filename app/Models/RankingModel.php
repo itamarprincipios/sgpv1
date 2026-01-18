@@ -3,10 +3,21 @@ require_once __DIR__ . '/../Core/Model.php';
 
 class RankingModel extends Model {
     
-    public function getProfessorRanking($filter = 'annual', $year = null, $schoolIds = []) {
+    public function getProfessorRanking($filter = 'annual', $year = null, $schoolIds = [], $category = 'regular') {
         if (!$year) $year = date('Y');
         $where = "YEAR(d.submitted_at) = :year";
         $params = ['year' => $year];
+
+        // Category Filtering
+        if ($category === 'pe') {
+             $where .= " AND u.is_physical_education = 1";
+        } elseif ($category === 'monitor') {
+             $where .= " AND u.is_monitor = 1";
+        } else {
+             // Regular: Not PE AND Not Monitor
+             $where .= " AND (u.is_physical_education = 0 OR u.is_physical_education IS NULL)";
+             $where .= " AND (u.is_monitor = 0 OR u.is_monitor IS NULL)";
+        }
 
         if ($filter === 'monthly') {
             $where .= " AND MONTH(d.submitted_at) = :month";

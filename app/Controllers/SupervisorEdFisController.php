@@ -68,7 +68,7 @@ class SupervisorEdFisController extends Controller {
         
         // Buscar rankings filtrados para Ed. Física
         $rankSchools = $rankingModel->getSchoolRanking($filter, null, $schoolIds);
-        $rankProfessors = $rankingModel->getProfessorRanking($filter, null, $schoolIds);
+        $rankProfessors = $rankingModel->getProfessorRanking($filter, null, $schoolIds, 'pe');
         $rankCoordinators = $rankingModel->getCoordinatorRanking($filter, null, $schoolIds);
         
         require __DIR__ . '/../Views/supervisor_edfis/dashboard.php';

@@ -21,7 +21,8 @@ class SemedController extends Controller {
         
         $filter = $_GET['filter'] ?? 'annual';
         $rankSchools = $rankingModel->getSchoolRanking($filter, null, $assignedSchoolIds);
-        $rankProfessors = $rankingModel->getProfessorRanking($filter, null, $assignedSchoolIds);
+        $rankProfessors = $rankingModel->getProfessorRanking($filter, null, $assignedSchoolIds, 'regular');
+        $rankMonitors = $rankingModel->getProfessorRanking($filter, null, $assignedSchoolIds, 'monitor');
         $rankCoordinators = $rankingModel->getCoordinatorRanking($filter, null, $assignedSchoolIds);
         
         $chartData = $docModel->getDocumentStatsBySchool($assignedSchoolIds);
@@ -32,6 +33,7 @@ class SemedController extends Controller {
             'stats' => $stats,
             'rankSchools' => $rankSchools,
             'rankProfessors' => $rankProfessors,
+            'rankMonitors' => $rankMonitors,
             'rankCoordinators' => $rankCoordinators,
             'chartData' => $chartData,
             'monthlyData' => $monthlyData,

@@ -446,7 +446,7 @@
         </div>
     </div>
 
-    <div class="rankings-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+    <div class="rankings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
         <!-- Professors Ranking -->
         <div class="ranking-section">
             <div class="ranking-title">
@@ -494,6 +494,61 @@
                             </td>
                         </tr>
                     <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Monitors Ranking -->
+        <div class="ranking-section">
+            <div class="ranking-title">
+                <i class="fas fa-user-friends" style="color: #17a2b8;"></i>
+                <span>👩‍🏫 Monitores Destaque</span>
+            </div>
+            <table class="data-table" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th style="width: 15%;">Pos.</th>
+                        <th>Nome</th>
+                        <th style="text-align: center;">Pontos</th>
+                        <th style="width: 15%;">Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($rankMonitors)): ?>
+                        <tr><td colspan="4" style="text-align: center; padding: 20px; color: #9ca3af;">Sem dados</td></tr>
+                    <?php else: ?>
+                        <?php foreach ($rankMonitors as $index => $prof): ?>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <span style="font-size: 1.3rem; font-weight: 700;">
+                                        <?php if($index == 0): ?>🥇<?php elseif($index == 1): ?>🥈<?php elseif($index == 2): ?>🥉<?php else: ?><?= $index + 1 ?>º<?php endif; ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <strong><?= htmlspecialchars($prof['professor_name']) ?></strong>
+                                    <br>
+                                    <small style="color:#9ca3af;"><?= htmlspecialchars($prof['school_name']) ?></small>
+                                </td>
+                                <td style="text-align: center;">
+                                    <span style="font-size: 1.1rem; font-weight: 700; color: #17a2b8;">
+                                        <?= number_format($prof['total_points'], 1) ?>
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php if (!empty($prof['whatsapp'])): 
+                                        $phone = preg_replace('/\D/', '', $prof['whatsapp']);
+                                        if (strlen($phone) >= 10 && substr($phone, 0, 2) != '55') {
+                                            $phone = '55' . $phone;
+                                        }
+                                    ?>
+                                        <a href="https://wa.me/<?= $phone ?>?text=Olá, <?= urlencode($prof['professor_name']) ?>! Parabéns pelo desempenho como Monitor!" target="_blank" class="whatsapp-btn">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
