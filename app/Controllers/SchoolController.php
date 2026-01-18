@@ -747,7 +747,19 @@ class SchoolController extends Controller {
             return;
         }
 
-        $schools = $userModel->getManagedSchools($user['id']);
+        $schoolModel = new School();
+        
+        // Get schools for this director
+        if (empty($assignedSchoolIds)) {
+            $schools = $schoolModel->all();
+        } else {
+            $allSchools = $schoolModel->all();
+            $schools = array_filter($allSchools, function($school) use ($assignedSchoolIds) {
+                return in_array($school['id'], $assignedSchoolIds);
+            });
+            $schools = array_values($schools); // Re-index array
+        }
+        
         $professors = $schoolId ? $userModel->getBySchoolId($schoolId, 'professor') : [];
 
         $data = [];
@@ -773,7 +785,8 @@ class SchoolController extends Controller {
             'professors' => $professors,
             'schoolId' => $schoolId,
             'professorId' => $professorId,
-            'period' => $period
+            'period' => $period,
+            'user' => $user
         ]);
     }
 
