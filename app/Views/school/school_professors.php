@@ -159,19 +159,26 @@
             font-size: 16px;
             font-weight: bold;
             color: #1a1a1a;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             padding-bottom: 8px;
             border-bottom: 2px solid #333;
         }
         
+        .list-section {
+            position: relative;
+        }
+        
         .list-section::after {
-            content: "Emitido em: " attr(data-print-date);
+            content: "Escola: " attr(data-school-name) "\A Diretor(a): " attr(data-director-name) "\A Emitido em: " attr(data-print-date);
             display: block;
-            text-align: right;
-            font-size: 10px;
-            color: #666;
-            margin-top: 5px;
+            text-align: left;
+            font-size: 11px;
+            color: #444;
+            margin-top: 8px;
             margin-bottom: 15px;
+            white-space: pre-line;
+            line-height: 1.6;
+            font-weight: 500;
         }
         
         h3 {
@@ -283,7 +290,7 @@
 </style>
 
 <script>
-    // Auto-insert current date/time for print header
+    // Auto-insert current date/time, school name, and director name for print header
     document.addEventListener('DOMContentLoaded', function() {
         const now = new Date();
         const dateStr = now.toLocaleString('pt-BR', {
@@ -293,7 +300,24 @@
             hour: '2-digit',
             minute: '2-digit'
         });
-        document.querySelector('.list-section')?.setAttribute('data-print-date', dateStr);
+        
+        const section = document.querySelector('.list-section');
+        if (section) {
+            section.setAttribute('data-print-date', dateStr);
+            
+            // Get school name from PHP
+            <?php if (isset($schools) && !empty($schools)): ?>
+                section.setAttribute('data-school-name', '<?= htmlspecialchars($schools[0]['name'] ?? 'N/A') ?>');
+            <?php endif; ?>
+            
+            // Get director name from user session
+            <?php 
+            $user = auth();
+            if (isset($user)): 
+            ?>
+                section.setAttribute('data-director-name', '<?= htmlspecialchars($user['name'] ?? 'N/A') ?>');
+            <?php endif; ?>
+        }
     });
 </script>
 
