@@ -14,7 +14,8 @@ class User extends Model {
     }
 
     public function createProfessor($data) {
-        $fields = ['school_id', 'name', 'email', 'password', 'role', 'whatsapp', 'class_id', 'is_physical_education', 'is_monitor'];
+        // 'role' is hardcoded in SQL, so we don't need it in parameters
+        $fields = ['school_id', 'name', 'email', 'password', 'whatsapp', 'class_id', 'is_physical_education', 'is_monitor'];
         $dbData = [];
         foreach ($fields as $field) {
             $dbData[$field] = $data[$field] ?? null;
