@@ -19,7 +19,7 @@ class ProfessorController extends Controller {
         $documents = $docModel->getByUserId($user['id']);
         
         $planningModel = new Planning();
-        $periods = $planningModel->getReleasedBySchoolIdAndType($user['school_id'], $user['is_physical_education'] ?? 0);
+        $periods = $planningModel->getReleasedBySchoolIdAndType($user['school_id'], $user['is_physical_education'] ?? 0, $user['is_monitor'] ?? 0);
 
         require_once __DIR__ . '/../Models/RankingModel.php';
         $rankingModel = new RankingModel();

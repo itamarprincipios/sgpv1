@@ -48,6 +48,11 @@
                 <input type="checkbox" name="is_physical_education" id="is_physical_education" value="1" style="width: 18px; height: 18px;">
                 <label for="is_physical_education" style="margin: 0; cursor: pointer;">Este planejamento é exclusivo para <strong>Educação Física</strong>?</label>
             </div>
+            
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                <input type="checkbox" name="is_monitor" id="is_monitor" value="1" style="width: 18px; height: 18px;">
+                <label for="is_monitor" style="margin: 0; cursor: pointer;">Este planejamento é exclusivo para <strong>Professor Monitor</strong>?</label>
+            </div>
 
             <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Salvar Planejamento</button>
         </form>

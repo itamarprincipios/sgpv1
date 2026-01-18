@@ -48,6 +48,10 @@
                 <input type="checkbox" name="is_physical_education" id="prof_is_pe" value="1" style="width: 18px; height: 18px;">
                 <label for="prof_is_pe" style="margin: 0; cursor: pointer;">Professor de Educação Física?</label>
             </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                <input type="checkbox" name="is_monitor" id="prof_is_monitor" value="1" style="width: 18px; height: 18px;">
+                <label for="prof_is_monitor" style="margin: 0; cursor: pointer;">Professor Monitor?</label>
+            </div>
             <button type="submit" class="btn btn-primary">Cadastrar Professor</button>
         </form>
     </div>

@@ -4,8 +4,8 @@ require_once __DIR__ . '/../Core/Model.php';
 
 class Planning extends Model {
     public function create($data) {
-        $sql = "INSERT INTO periods (name, description, start_date, end_date, deadline, opening_date, is_active, school_id, is_physical_education) 
-                VALUES (:name, :description, :start_date, :end_date, :deadline, :opening_date, 1, :school_id, :is_physical_education)";
+        $sql = "INSERT INTO periods (name, description, start_date, end_date, deadline, opening_date, is_active, school_id, is_physical_education, is_monitor) 
+                VALUES (:name, :description, :start_date, :end_date, :deadline, :opening_date, 1, :school_id, :is_physical_education, :is_monitor)";
         return $this->db->query($sql, $data);
     }
 
@@ -14,27 +14,31 @@ class Planning extends Model {
         return $this->db->query($sql, ['school_id' => $schoolId])->fetchAll();
     }
 
-    public function getBySchoolIdAndType($schoolId, $isPhysicalEducation) {
+    public function getBySchoolIdAndType($schoolId, $isPhysicalEducation, $isMonitor = 0) {
         $sql = "SELECT * FROM periods 
                 WHERE school_id = :school_id 
                 AND is_physical_education = :is_pe 
+                AND is_monitor = :is_monitor
                 ORDER BY id DESC";
         return $this->db->query($sql, [
             'school_id' => $schoolId, 
-            'is_pe' => $isPhysicalEducation ? 1 : 0
+            'is_pe' => $isPhysicalEducation ? 1 : 0,
+            'is_monitor' => $isMonitor ? 1 : 0
         ])->fetchAll();
     }
 
-    public function getReleasedBySchoolIdAndType($schoolId, $isPhysicalEducation) {
+    public function getReleasedBySchoolIdAndType($schoolId, $isPhysicalEducation, $isMonitor = 0) {
         // Regra: Liberado apenas se a data atual for maior ou igual à data de abertura
         $sql = "SELECT * FROM periods 
                 WHERE school_id = :school_id 
                 AND is_physical_education = :is_pe 
+                AND is_monitor = :is_monitor
                 AND NOW() >= opening_date
                 ORDER BY deadline DESC";
         return $this->db->query($sql, [
             'school_id' => $schoolId, 
-            'is_pe' => $isPhysicalEducation ? 1 : 0
+            'is_pe' => $isPhysicalEducation ? 1 : 0,
+            'is_monitor' => $isMonitor ? 1 : 0
         ])->fetchAll();
     }
 
@@ -45,7 +49,8 @@ class Planning extends Model {
                     deadline = :deadline, 
                     opening_date = :opening_date, 
                     start_date = :start_date,
-                    is_physical_education = :is_physical_education 
+                    is_physical_education = :is_physical_education,
+                    is_monitor = :is_monitor
                 WHERE id = :id";
         $data['id'] = $id;
         return $this->db->query($sql, $data);
@@ -59,7 +64,7 @@ class Planning extends Model {
         return $this->db->query("SELECT * FROM periods WHERE id = :id", ['id' => $id])->fetch();
     }
 
-    public function getPlanningStats($periodId, $schoolId, $isPE = 0) {
+    public function getPlanningStats($periodId, $schoolId, $isPE = 0, $isMonitor = 0) {
         if ($isPE) {
             // Caso Educação Física: Mostra apenas professores de Ed. Física
             $sql = "SELECT 
@@ -77,8 +82,25 @@ class Planning extends Model {
                     AND u.role = 'professor'
                     AND u.is_physical_education = 1
                     ORDER BY c.name, u.name";
+        } elseif ($isMonitor) {
+            // Caso Monitor: Mostra apenas professores Monitores
+            $sql = "SELECT 
+                        COALESCE(c.name, 'Monitoria') as class_name, 
+                        u.name as professor_name, 
+                        u.whatsapp,
+                        d.status,
+                        d.submitted_at,
+                        d.file_path,
+                        d.id
+                    FROM users u
+                    LEFT JOIN classes c ON u.class_id = c.id
+                    LEFT JOIN documents d ON u.id = d.user_id AND d.period_id = :period_id
+                    WHERE u.school_id = :school_id 
+                    AND u.role = 'professor'
+                    AND u.is_monitor = 1
+                    ORDER BY c.name, u.name";
         } else {
-            // Caso Regular: Mantém original (centrado em turmas) mas ignora profs de Ed. Física
+            // Caso Regular: Ignora Ed. Física e Monitores
             $sql = "SELECT 
                         c.name as class_name, 
                         u.name as professor_name, 
@@ -91,6 +113,7 @@ class Planning extends Model {
                     LEFT JOIN users u ON c.id = u.class_id 
                         AND u.role = 'professor' 
                         AND (u.is_physical_education = 0 OR u.is_physical_education IS NULL)
+                        AND (u.is_monitor = 0 OR u.is_monitor IS NULL)
                     LEFT JOIN documents d ON u.id = d.user_id AND d.period_id = :period_id
                     WHERE c.school_id = :school_id
                     ORDER BY c.name, u.name";
@@ -115,13 +138,21 @@ class Planning extends Model {
                     p.deadline,
                     u.name as professor_name,
                     u.whatsapp,
-                    COALESCE(c.name, 'Educação Física') as class_name
+                    COALESCE(c.name, CASE 
+                        WHEN p.is_physical_education = 1 THEN 'Educação Física'
+                        WHEN p.is_monitor = 1 THEN 'Monitoria'
+                        ELSE 'Turma'
+                    END) as class_name
                 FROM periods p
                 JOIN users u ON u.school_id = p.school_id AND u.role = 'professor'
                      AND (
                          (p.is_physical_education = 1 AND u.is_physical_education = 1)
                          OR 
-                         (p.is_physical_education = 0 AND (u.is_physical_education = 0 OR u.is_physical_education IS NULL))
+                         (p.is_monitor = 1 AND u.is_monitor = 1)
+                         OR
+                         (p.is_physical_education = 0 AND p.is_monitor = 0 
+                          AND (u.is_physical_education = 0 OR u.is_physical_education IS NULL)
+                          AND (u.is_monitor = 0 OR u.is_monitor IS NULL))
                      )
                 LEFT JOIN classes c ON u.class_id = c.id
                 LEFT JOIN documents d ON d.period_id = p.id AND d.user_id = u.id

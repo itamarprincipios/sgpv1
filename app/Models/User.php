@@ -14,10 +14,16 @@ class User extends Model {
     }
 
     public function createProfessor($data) {
-        $sql = "INSERT INTO users (school_id, name, email, password, role, whatsapp, class_id, is_physical_education) 
-                VALUES (:school_id, :name, :email, :password, 'professor', :whatsapp, :class_id, :is_physical_education)";
-        // Password should be hashed before passed here or here. Assuming hashed.
-        return $this->db->query($sql, $data);
+        $fields = ['school_id', 'name', 'email', 'password', 'role', 'whatsapp', 'class_id', 'is_physical_education', 'is_monitor'];
+        $dbData = [];
+        foreach ($fields as $field) {
+            $dbData[$field] = $data[$field] ?? null;
+        }
+        
+        $sql = "INSERT INTO users (school_id, name, email, password, role, whatsapp, class_id, is_physical_education, is_monitor) 
+                VALUES (:school_id, :name, :email, :password, 'professor', :whatsapp, :class_id, :is_physical_education, :is_monitor)";
+        
+        return $this->db->query($sql, $dbData);
     }
 
     public function getProfessorsBySchoolWithClass($schoolId) {
