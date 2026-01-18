@@ -299,12 +299,19 @@
             font-size: 10pt;
             page-break-inside: auto;
             display: table !important;
+            table-layout: fixed !important;
         }
         
         .data-table thead {
             background: #34495e !important;
             color: white !important;
             display: table-header-group !important;
+            width: 100% !important;
+        }
+        
+        .data-table thead tr {
+            width: 100% !important;
+            display: table-row !important;
         }
         
         .data-table thead th {
