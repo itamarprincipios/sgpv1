@@ -229,6 +229,26 @@
 <style>
     /* Professional Print Styles - Corporate Layout */
     @media print {
+        /* CRITICAL: Force thead to display - must override mobile CSS */
+        table.data-table thead,
+        .data-table thead {
+            display: table-header-group !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        table.data-table thead tr,
+        .data-table thead tr {
+            display: table-row !important;
+            visibility: visible !important;
+        }
+        
+        table.data-table thead th,
+        .data-table thead th {
+            display: table-cell !important;
+            visibility: visible !important;
+        }
+        
         @page { 
             margin: 1.5cm; 
             size: A4 portrait; 
