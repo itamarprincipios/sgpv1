@@ -17,6 +17,7 @@ class AuthController extends Controller {
             $user = $userModel->findByEmail($email);
 
             if ($user && password_verify($password, $user['password'])) {
+                session_regenerate_id(true);
                 $_SESSION['user'] = $user;
                 $this->redirectBasedOnRole($user['role']);
             } else {

@@ -6,6 +6,9 @@ function url($path = '') {
 }
 
 function redirect($path) {
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
     header("Location: " . url($path));
     exit;
 }
