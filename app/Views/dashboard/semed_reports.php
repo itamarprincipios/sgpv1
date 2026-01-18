@@ -362,27 +362,34 @@
             text-align: center !important;
         }
         
-        /* Column width optimization for print */
-        .data-table th:nth-child(1),
-        .data-table td:nth-child(1) {
-            width: 25% !important;
-            max-width: 25%;
+        /* Flexible column widths - prevent text overlap */
+        .data-table th,
+        .data-table td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Specific widths for submissions table (5 columns) */
+        .data-table th:first-child,
+        .data-table td:first-child {
+            width: 22% !important;
         }
         
         .data-table th:nth-child(2),
         .data-table td:nth-child(2) {
-            width: 35% !important;
-            max-width: 35%;
+            width: 30% !important;
         }
         
+        /* Allow other columns to auto-size */
         .data-table th:nth-child(3),
         .data-table td:nth-child(3),
         .data-table th:nth-child(4),
         .data-table td:nth-child(4),
         .data-table th:nth-child(5),
         .data-table td:nth-child(5) {
-            width: 13.33% !important;
-            max-width: 13.33%;
+            width: auto !important;
+            min-width: 80px;
         }
         
         /* Status badges */
