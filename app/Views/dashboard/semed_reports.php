@@ -217,12 +217,200 @@
 
 <style>
     @media print {
-        .navbar, .btn, form, .dashboard-header div:last-child { display: none !important; }
-        .main-container { padding: 0 !important; }
-        .list-section { border: none !important; box-shadow: none !important; }
-        h2, h3 { color: #000 !important; }
-        body { background: #fff !important; }
+        /* Reset and hide UI elements */
+        .navbar, .btn, form, .dashboard-header div:last-child, .filter-container { 
+            display: none !important; 
+        }
+        
+        body {
+            background: #fff !important;
+            color: #000 !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-container {
+            padding: 0 !important;
+            max-width: 100% !important;
+        }
+        
+        .list-section {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        /* Professional Header */
+        .dashboard-header {
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            page-break-after: avoid;
+        }
+        
+        .dashboard-header::before {
+            content: "SISTEMA DE GESTÃO PEDAGÓGICA";
+            display: block;
+            font-size: 9pt;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .dashboard-header h2 {
+            color: #2c3e50 !important;
+            font-size: 18pt;
+            font-weight: 600;
+            margin: 0 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Report Metadata */
+        .dashboard-header::after {
+            content: "Data de Emissão: " attr(data-date);
+            display: block;
+            font-size: 9pt;
+            color: #7f8c8d;
+            margin-top: 8px;
+        }
+        
+        /* Section Titles */
+        h3 {
+            color: #34495e !important;
+            font-size: 13pt;
+            font-weight: 600;
+            margin: 20px 0 12px 0 !important;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #ecf0f1;
+            page-break-after: avoid;
+        }
+        
+        /* Professional Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 10pt;
+            page-break-inside: auto;
+        }
+        
+        .data-table thead {
+            background: #34495e !important;
+            color: white !important;
+        }
+        
+        .data-table thead th {
+            background: #34495e !important;
+            color: white !important;
+            padding: 10px 8px !important;
+            text-align: left;
+            font-weight: 600;
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border: none !important;
+        }
+        
+        .data-table thead th[style*="center"] {
+            text-align: center !important;
+        }
+        
+        .data-table tbody tr {
+            page-break-inside: avoid;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .data-table tbody tr:nth-child(even) {
+            background: #f8f9fa !important;
+        }
+        
+        .data-table tbody tr:hover {
+            background: inherit !important;
+            transform: none !important;
+        }
+        
+        .data-table tbody td {
+            padding: 8px !important;
+            border: none !important;
+            color: #2c3e50 !important;
+        }
+        
+        .data-table tbody td[style*="center"] {
+            text-align: center !important;
+        }
+        
+        /* Status badges */
+        .status-badge {
+            padding: 3px 8px !important;
+            border-radius: 3px;
+            font-size: 8pt;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-approved { background: #d4edda !important; color: #155724 !important; }
+        .status-adjusted { background: #fff3cd !important; color: #856404 !important; }
+        .status-rejected { background: #f8d7da !important; color: #721c24 !important; }
+        .status-sent { background: #d1ecf1 !important; color: #0c5460 !important; }
+        
+        /* Color preservation */
+        td[style*="green"] { color: #27ae60 !important; font-weight: 600; }
+        td[style*="red"] { color: #e74c3c !important; font-weight: 600; }
+        
+        /* Page footer */
+        @page {
+            margin: 1.5cm 1.5cm 2cm 1.5cm;
+            
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 8pt;
+                color: #7f8c8d;
+            }
+            
+            @bottom-right {
+                content: "SGP - Sistema de Gestão Pedagógica";
+                font-size: 8pt;
+                color: #7f8c8d;
+            }
+        }
+        
+        /* Empty state message */
+        td[colspan] {
+            text-align: center !important;
+            padding: 30px !important;
+            color: #95a5a6 !important;
+            font-style: italic;
+        }
+        
+        /* Ensure proper spacing */
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
     }
 </style>
+
+<script>
+    // Add current date to header for print
+    document.addEventListener('DOMContentLoaded', function() {
+        const header = document.querySelector('.dashboard-header');
+        if (header) {
+            const today = new Date().toLocaleDateString('pt-BR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            header.setAttribute('data-date', today);
+        }
+    });
+</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
