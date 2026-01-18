@@ -329,6 +329,17 @@
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             display: table-header-group !important;
+            visibility: visible !important;
+        }
+        
+        .data-table thead tr {
+            display: table-row !important;
+            visibility: visible !important;
+        }
+        
+        .data-table thead th {
+            display: table-cell !important;
+            visibility: visible !important;
         }
         
         .data-table tbody {
