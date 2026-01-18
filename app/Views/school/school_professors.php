@@ -54,7 +54,7 @@
     <div class="list-section">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="margin: 0;">Professores da Escola</h3>
-            <button type="button" onclick="window.print()" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;">
+            <button type="button" onclick="window.print()" class="btn btn-secondary" style="padding: 0.5rem 1rem; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem;" title="Imprimir lista de professores">
                 <i class="fas fa-print"></i> Imprimir
             </button>
         </div>
