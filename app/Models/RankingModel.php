@@ -29,7 +29,7 @@ class RankingModel extends Model {
                 WHERE u.role = 'professor' AND $where AND d.status = 'aprovado'
                 GROUP BY u.id
                 ORDER BY total_points DESC
-                LIMIT 10";
+                LIMIT 3";
         
         return $this->db->query($sql, $params)->fetchAll();
     }
@@ -59,7 +59,7 @@ class RankingModel extends Model {
                 WHERE $where AND d.status = 'aprovado'
                 GROUP BY s.id
                 ORDER BY punctuality_percentage DESC
-                LIMIT 10";
+                LIMIT 3";
         
         return $this->db->query($sql, $params)->fetchAll();
     }
@@ -89,7 +89,7 @@ class RankingModel extends Model {
                 WHERE uc.role = 'coordinator' AND up.role = 'professor' AND $where AND d.status = 'aprovado'
                 GROUP BY uc.id
                 ORDER BY punctuality_percentage DESC
-                LIMIT 10";
+                LIMIT 3";
         
         return $this->db->query($sql, $params)->fetchAll();
     }
