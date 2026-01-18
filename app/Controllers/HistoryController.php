@@ -26,18 +26,24 @@ class HistoryController extends Controller {
 
         // Restriction for SEMED
         if ($isSemed) {
-            $assignedSchools = $userModel->getAssignedSchoolIds($user['id']);
-            if ($schoolId && !in_array($schoolId, $assignedSchools)) {
-                $schoolId = null; // Reset if trying to access unauthorized school
-            }
-            // If no school selected, maybe default to first? Or allow searching all assigned.
-            // Search logic in Document model handles logic if we pass list of schools.
-            // For MVP simplicity: If schoolId is empty for SEMED, limit query to assigned schools.
-            // But Document::search logic currently takes single school_id.
-            // Let's rely on Semed users picking a school from dropdown. 
+            $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
             
-            // Get schools managed by this SEMED user
-            $schools = $userModel->getManagedSchools($user['id']);
+            // Fallback: If no schools assigned in user_schools table, get all schools
+            // This maintains backward compatibility for SEMED users not yet migrated to user_schools
+            if (empty($assignedSchoolIds)) {
+                $schools = $schoolModel->all();
+            } else {
+                // Filter schools to only show assigned ones
+                $allSchools = $schoolModel->all();
+                $schools = array_filter($allSchools, function($school) use ($assignedSchoolIds) {
+                    return in_array($school['id'], $assignedSchoolIds);
+                });
+                
+                // Security: If trying to access unauthorized school, reset it
+                if ($schoolId && !in_array($schoolId, $assignedSchoolIds)) {
+                    $schoolId = null;
+                }
+            }
         } else {
             $schools = $schoolModel->all(); // Admin sees all
         }
