@@ -371,6 +371,13 @@ class SemedController extends Controller {
         // 1. Get Assigned Schools
         $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
         
+        // Fallback: If no schools assigned in user_schools table, get all schools
+        // This maintains backward compatibility for SEMED users not yet migrated to user_schools
+        if (empty($assignedSchoolIds)) {
+            $allSchools = $schoolModel->all();
+            $assignedSchoolIds = array_column($allSchools, 'id');
+        }
+        
         $filters = [
             'school_id' => $_GET['school_id'] ?? null,
             'bimester' => $_GET['bimester'] ?? null,
