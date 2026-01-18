@@ -196,6 +196,10 @@ class Document extends Model {
         if (!empty($filters['school_id'])) {
             $sql .= " AND u.school_id = :school_id";
             $params['school_id'] = $filters['school_id'];
+        } elseif (!empty($filters['allowed_school_ids'])) {
+            // If no specific school selected, but allowed schools are provided, filter by them
+            $placeholders = implode(',', array_map('intval', $filters['allowed_school_ids']));
+            $sql .= " AND u.school_id IN ($placeholders)";
         }
         
         if (!empty($filters['bimester'])) {
