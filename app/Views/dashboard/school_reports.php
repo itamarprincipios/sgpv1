@@ -235,18 +235,26 @@
             display: table-header-group !important;
             visibility: visible !important;
             opacity: 1 !important;
+            background-color: #eee !important; /* Light gray background for print */
+            color: #000 !important; /* Black text for print */
+            border-bottom: 2px solid #000 !important;
         }
         
         table.data-table thead tr,
         .data-table thead tr {
             display: table-row !important;
             visibility: visible !important;
+            background-color: #eee !important;
+            color: #000 !important;
         }
         
         table.data-table thead th,
         .data-table thead th {
             display: table-cell !important;
             visibility: visible !important;
+            background-color: #eee !important;
+            color: #000 !important; /* Black text is critical */
+            border: 1px solid #000 !important;
         }
         
         @page { 
