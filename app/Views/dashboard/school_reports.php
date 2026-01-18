@@ -371,15 +371,34 @@
             print-color-adjust: exact !important;
         }
         
-        /* Column Width Adjustments for Different Reports */
+        /* Hide School column in submissions report (already in header) */
         .data-table th:nth-child(1),
         .data-table td:nth-child(1) {
-            width: 30%;
+            display: none !important;
         }
         
+        /* Column Width Adjustments for Different Reports */
         .data-table th:nth-child(2),
         .data-table td:nth-child(2) {
-            width: 30%;
+            width: 40%;
+        }
+        
+        .data-table th:nth-child(3),
+        .data-table td:nth-child(3) {
+            width: 20%;
+            text-align: center !important;
+        }
+        
+        .data-table th:nth-child(4),
+        .data-table td:nth-child(4) {
+            width: 20%;
+            text-align: center !important;
+        }
+        
+        .data-table th:nth-child(5),
+        .data-table td:nth-child(5) {
+            width: 20%;
+            text-align: center !important;
         }
         
         /* Stats Grid for Professor Dashboard */
