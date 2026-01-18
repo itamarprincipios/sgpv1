@@ -1036,9 +1036,9 @@ body {
    PART 4: RESPONSIVE TABLES
    ======================================== */
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
 
-    /* Hide table headers */
+    /* Hide table headers on mobile screens only (not in print) */
     .data-table thead {
         display: none;
     }
