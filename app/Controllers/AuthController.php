@@ -34,6 +34,8 @@ class AuthController extends Controller {
     private function redirectBasedOnRole($role) {
         file_put_contents(__DIR__ . '/../../public/debug_loop.log', date('Y-m-d H:i:s') . " - AuthController redirect user role: " . var_export($role, true) . "\n", FILE_APPEND);
         
+        $role = strtolower(trim($role));
+        
         switch ($role) {
             case 'semed':
                 redirect('semed/dashboard');
