@@ -52,7 +52,12 @@
         </form>
     </div>
     <div class="list-section">
-        <h3>Professores da Escola</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">Professores da Escola</h3>
+            <button type="button" onclick="window.print()" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;">
+                <i class="fas fa-print"></i> Imprimir
+            </button>
+        </div>
         <table class="data-table">
             <thead>
                 <tr>
@@ -101,5 +106,195 @@
         </table>
     </div>
 </div>
+
+<style>
+    /* Professional Print Styles - Corporate Layout */
+    @media print {
+        @page { 
+            margin: 1.5cm; 
+            size: A4 portrait; 
+        }
+        
+        body { 
+            background: #fff !important; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            color: #000 !important;
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important;
+        }
+        
+        /* Hide non-printable elements */
+        .navbar, 
+        .btn, 
+        .upload-section,
+        .btn-icon,
+        button {
+            display: none !important;
+        }
+        
+        .main-container { 
+            padding: 0 !important; 
+            width: 100% !important; 
+            max-width: 100% !important; 
+            margin: 0 !important; 
+        }
+        
+        .content-row {
+            display: block !important;
+        }
+        
+        .list-section { 
+            border: none !important; 
+            box-shadow: none !important; 
+            padding: 0 !important; 
+            margin: 0 !important; 
+            page-break-inside: avoid;
+        }
+        
+        /* Professional Header */
+        .list-section::before {
+            content: "SISTEMA DE GESTÃO PEDAGÓGICA - LISTA DE PROFESSORES";
+            display: block;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .list-section::after {
+            content: "Emitido em: " attr(data-print-date);
+            display: block;
+            text-align: right;
+            font-size: 10px;
+            color: #666;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            font-size: 14px !important;
+            text-align: center;
+            margin: 10px 0 15px 0 !important;
+            color: #444 !important;
+            font-weight: 600;
+        }
+        
+        /* Professional Table Styling */
+        .data-table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin-top: 10px;
+            font-size: 10px !important;
+            display: table !important;
+        }
+        
+        .data-table thead {
+            background-color: #2c3e50 !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            display: table-header-group !important;
+        }
+        
+        .data-table tbody {
+            display: table-row-group !important;
+        }
+        
+        .data-table tr {
+            display: table-row !important;
+            page-break-inside: avoid;
+        }
+        
+        .data-table th {
+            padding: 8px 6px !important;
+            border: 1px solid #34495e !important;
+            font-weight: 600 !important;
+            font-size: 10px !important;
+            text-align: left !important;
+            color: #fff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            display: table-cell !important;
+        }
+        
+        .data-table td {
+            padding: 6px !important;
+            border: 1px solid #ddd !important;
+            font-size: 9px !important;
+            color: #000 !important;
+            vertical-align: middle !important;
+            display: table-cell !important;
+        }
+        
+        .data-table tbody tr:nth-child(even) {
+            background-color: #f8f9fa !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+        
+        /* Column widths */
+        .data-table th:nth-child(1),
+        .data-table td:nth-child(1) {
+            width: 35%;
+        }
+        
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2) {
+            width: 30%;
+        }
+        
+        .data-table th:nth-child(3),
+        .data-table td:nth-child(3) {
+            width: 35%;
+        }
+        
+        /* Hide actions column */
+        .data-table th:last-child,
+        .data-table td:last-child {
+            display: none !important;
+        }
+        
+        /* Badges */
+        .badge {
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            color: #000 !important;
+            font-weight: normal !important;
+        }
+        
+        /* Ensure proper page breaks */
+        h3 {
+            page-break-after: avoid;
+        }
+        
+        table {
+            page-break-inside: auto;
+        }
+        
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+    }
+</style>
+
+<script>
+    // Auto-insert current date/time for print header
+    document.addEventListener('DOMContentLoaded', function() {
+        const now = new Date();
+        const dateStr = now.toLocaleString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        document.querySelector('.list-section')?.setAttribute('data-print-date', dateStr);
+    });
+</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
