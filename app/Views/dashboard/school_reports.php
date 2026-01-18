@@ -313,6 +313,7 @@
             border-collapse: collapse !important;
             margin-top: 10px;
             font-size: 10px !important;
+            display: table !important;
         }
         
         .data-table thead {
@@ -320,6 +321,16 @@
             color: white !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            display: table-header-group !important;
+        }
+        
+        .data-table tbody {
+            display: table-row-group !important;
+        }
+        
+        .data-table tr {
+            display: table-row !important;
+            page-break-inside: avoid;
         }
         
         .data-table th {
@@ -331,6 +342,7 @@
             color: #fff !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            display: table-cell !important;
         }
         
         .data-table td {
@@ -339,6 +351,7 @@
             font-size: 9px !important;
             color: #000 !important;
             vertical-align: middle !important;
+            display: table-cell !important;
         }
         
         .data-table tbody tr {
