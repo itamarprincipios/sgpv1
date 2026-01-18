@@ -59,7 +59,33 @@
             $submissions = $data['submissions'];
         ?>
         <div style="margin-bottom: 30px;">
-            <h3>Dashboard de Desempenho do Professor</h3>
+            <?php 
+            // Find selected professor details
+            $selectedProf = null;
+            foreach ($professors as $p) {
+                if ($p['id'] == $professorId) {
+                    $selectedProf = $p;
+                    break;
+                }
+            }
+            
+            $profName = $selectedProf ? $selectedProf['name'] : 'Professor';
+            $profPhoto = $selectedProf['profile_photo'] ?? null;
+            
+            if ($profPhoto && file_exists(__DIR__ . '/../../../public/uploads/avatars/' . $profPhoto)) {
+                $avatarUrl = url('uploads/avatars/' . $profPhoto);
+            } else {
+                $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($profName) . "&background=random&color=fff&size=128";
+            }
+            ?>
+            
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+                <img src="<?= $avatarUrl ?>" alt="Foto do Professor" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid #ddd;">
+                <div>
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 1.4rem;"><?= htmlspecialchars($profName) ?></h3>
+                    <span style="color: #666; font-size: 0.9rem;">Dashboard de Desempenho</span>
+                </div>
+            </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
                 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #ddd;">
                     <div style="font-size: 0.9rem; color: #666;">Total Enviado</div>
