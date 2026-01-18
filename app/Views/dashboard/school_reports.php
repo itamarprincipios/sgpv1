@@ -372,9 +372,22 @@
         }
         
         /* Hide School column in submissions report (already in header) */
-        .data-table th:nth-child(1),
-        .data-table td:nth-child(1) {
+        .data-table thead th:first-child,
+        .data-table tbody td:first-child {
             display: none !important;
+        }
+        
+        /* Ensure other headers are visible */
+        .data-table thead {
+            display: table-header-group !important;
+        }
+        
+        .data-table thead tr {
+            display: table-row !important;
+        }
+        
+        .data-table thead th {
+            display: table-cell !important;
         }
         
         /* Column Width Adjustments for Different Reports */
