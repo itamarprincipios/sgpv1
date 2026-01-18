@@ -211,10 +211,9 @@
         }
         
         .data-table thead {
-            background-color: #2c3e50 !important;
-            color: white !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+            background-color: transparent !important;
+            color: #000 !important;
+            border-bottom: 2px solid #000 !important;
             display: table-header-group !important;
         }
         
@@ -229,13 +228,11 @@
         
         .data-table th {
             padding: 8px 6px !important;
-            border: 1px solid #34495e !important;
-            font-weight: 600 !important;
+            border: 1px solid #000 !important;
+            font-weight: bold !important;
             font-size: 10px !important;
             text-align: left !important;
-            color: #fff !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+            color: #000 !important;
             display: table-cell !important;
         }
         
