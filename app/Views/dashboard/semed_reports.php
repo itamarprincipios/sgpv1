@@ -298,11 +298,13 @@
             margin: 15px 0;
             font-size: 10pt;
             page-break-inside: auto;
+            display: table !important;
         }
         
         .data-table thead {
             background: #34495e !important;
             color: white !important;
+            display: table-header-group !important;
         }
         
         .data-table thead th {
@@ -315,15 +317,21 @@
             text-transform: uppercase;
             letter-spacing: 0.3px;
             border: none !important;
+            display: table-cell !important;
         }
         
         .data-table thead th[style*="center"] {
             text-align: center !important;
         }
         
+        .data-table tbody {
+            display: table-row-group !important;
+        }
+        
         .data-table tbody tr {
             page-break-inside: avoid;
             border-bottom: 1px solid #ecf0f1;
+            display: table-row !important;
         }
         
         .data-table tbody tr:nth-child(even) {
@@ -339,6 +347,8 @@
             padding: 8px !important;
             border: none !important;
             color: #2c3e50 !important;
+            display: table-cell !important;
+            vertical-align: middle;
         }
         
         .data-table tbody td[style*="center"] {
