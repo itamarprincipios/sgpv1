@@ -53,6 +53,9 @@ class AuthController extends Controller {
             case 'supervisor_edfis':
                 redirect('supervisor-edfis/dashboard');
                 break;
+            case 'supervisor_monitor':
+                redirect('supervisor-monitor/dashboard');
+                break;
             default:
                 file_put_contents(__DIR__ . '/../../public/debug_loop.log', date('Y-m-d H:i:s') . " - Role not matched, destroying session and redirecting to login.\n", FILE_APPEND);
                 session_destroy(); // FORCE LOGOUT if role is weird

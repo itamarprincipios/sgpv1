@@ -167,4 +167,9 @@ class Planning extends Model {
         $sql = "SELECT DISTINCT name, id FROM periods WHERE is_physical_education = 1 GROUP BY name ORDER BY id DESC";
         return $this->db->query($sql)->fetchAll();
     }
+
+    public function getUniqueNamesMonitor() {
+        $sql = "SELECT DISTINCT name, id FROM periods WHERE is_monitor = 1 GROUP BY name ORDER BY id DESC";
+        return $this->db->query($sql)->fetchAll();
+    }
 }

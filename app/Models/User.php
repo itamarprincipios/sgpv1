@@ -210,6 +210,22 @@ class User extends Model {
     }
 
     /**
+     * Busca TODOS os professores Monitores da rede
+     */
+    public function getMonitorProfessors() {
+        $sql = "SELECT u.*, 
+                       s.name as school_name,
+                       c.name as class_name
+                FROM users u
+                LEFT JOIN schools s ON u.school_id = s.id
+                LEFT JOIN classes c ON u.class_id = c.id
+                WHERE u.role = 'professor' 
+                AND u.is_monitor = 1
+                ORDER BY s.name ASC, u.name ASC";
+        return $this->db->query($sql)->fetchAll();
+    }
+
+    /**
      * Busca par um coordenador por classe_id
      * @param int $classId ID da classe
      * @return array Lista de professores

@@ -381,4 +381,25 @@ class Document extends Model {
                 ORDER BY d.submitted_at DESC";
         return $this->db->query($sql)->fetchAll();
     }
+
+    /**
+     * Busca TODOS os planejamentos de professores Monitores
+     * @return array Lista de documentos com dados do professor, escola e período
+     */
+    public function getByMonitor() {
+        $sql = "SELECT d.*, 
+                       u.name as professor_name,
+                       u.school_id,
+                       s.name as school_name,
+                       p.name as period_name,
+                       p.deadline
+                FROM documents d
+                JOIN users u ON d.user_id = u.id
+                LEFT JOIN schools s ON u.school_id = s.id
+                JOIN periods p ON d.period_id = p.id
+                WHERE u.role = 'professor'
+                AND u.is_monitor = 1
+                ORDER BY d.submitted_at DESC";
+        return $this->db->query($sql)->fetchAll();
+    }
 }

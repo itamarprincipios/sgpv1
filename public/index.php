@@ -132,6 +132,14 @@ $routes = [
     'admin/supervisor-edfis/update' => 'AdminController@updateSupervisorEdFis',
     'admin/supervisor-edfis/delete' => 'AdminController@deleteSupervisorEdFis',
     'admin/supervisor-edfis/reset-password' => 'AdminController@resetSupervisorPassword',
+
+    // Supervisor Monitor Routes
+    'supervisor-monitor/dashboard' => 'SupervisorMonitorController@dashboard',
+    'supervisor-monitor/professors' => 'SupervisorMonitorController@professors',
+    'supervisor-monitor/plannings' => 'SupervisorMonitorController@plannings',
+    'supervisor-monitor/planning/view' => 'SupervisorMonitorController@viewPlanning',
+    'supervisor-monitor/punctuality_report' => 'SupervisorMonitorController@punctualityReport',
+    'supervisor-monitor/photo/upload' => 'SupervisorMonitorController@uploadPhoto',
 ];
 
 if (array_key_exists($uri, $routes)) {
