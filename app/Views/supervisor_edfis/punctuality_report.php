@@ -174,12 +174,215 @@
     }
 
     @media print {
-        .btn, .navbar, .filter-container, .dashboard-header .btn { 
+        /* Reset and hide UI elements */
+        .btn, .navbar, .filter-container, .dashboard-header .btn, .dashboard-header div:last-child { 
             display: none !important; 
         }
-        .main-container { padding: 0; margin: 0; }
-        .list-section { border: none; box-shadow: none; }
+        
+        body {
+            background: #fff !important;
+            color: #000 !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-container {
+            padding: 0 !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+        
+        .list-section {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        
+        /* Professional Header */
+        .dashboard-header {
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            page-break-after: avoid;
+        }
+        
+        .dashboard-header::before {
+            content: "SISTEMA DE GESTÃO PEDAGÓGICA - EDUCAÇÃO FÍSICA";
+            display: block;
+            font-size: 9pt;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .dashboard-header h2 {
+            color: #2c3e50 !important;
+            font-size: 18pt;
+            font-weight: 600;
+            margin: 0 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .dashboard-header p {
+            display: none;
+        }
+        
+        /* Report Metadata */
+        .dashboard-header::after {
+            content: "Data de Emissão: " attr(data-date);
+            display: block;
+            font-size: 9pt;
+            color: #7f8c8d;
+            margin-top: 8px;
+        }
+        
+        /* Professional Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 10pt;
+            page-break-inside: auto;
+            display: table !important;
+            table-layout: fixed !important;
+        }
+        
+        .data-table thead {
+            background: #34495e !important;
+            color: white !important;
+            display: table-header-group !important;
+            width: 100% !important;
+        }
+        
+        .data-table thead tr {
+            width: 100% !important;
+            display: table-row !important;
+        }
+        
+        .data-table thead th {
+            background: #34495e !important;
+            color: white !important;
+            padding: 10px 8px !important;
+            text-align: left;
+            font-weight: 600;
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border: none !important;
+            display: table-cell !important;
+        }
+        
+        .data-table thead th.text-center {
+            text-align: center !important;
+        }
+        
+        .data-table tbody {
+            display: table-row-group !important;
+        }
+        
+        .data-table tbody tr {
+            page-break-inside: avoid;
+            border-bottom: 1px solid #ecf0f1;
+            display: table-row !important;
+        }
+        
+        .data-table tbody tr:nth-child(even) {
+            background: #f8f9fa !important;
+        }
+        
+        .data-table tbody tr:hover {
+            background: inherit !important;
+            transform: none !important;
+        }
+        
+        .data-table tbody td {
+            padding: 8px !important;
+            border: none !important;
+            color: #2c3e50 !important;
+            display: table-cell !important;
+            vertical-align: middle;
+        }
+        
+        .data-table tbody td.text-center {
+            text-align: center !important;
+        }
+        
+        /* Column widths for punctuality report */
+        .data-table th:nth-child(1),
+        .data-table td:nth-child(1) {
+            width: 25% !important;
+        }
+        
+        .data-table th:nth-child(2),
+        .data-table td:nth-child(2) {
+            width: 25% !important;
+        }
+        
+        .data-table th:nth-child(3),
+        .data-table td:nth-child(3),
+        .data-table th:nth-child(4),
+        .data-table td:nth-child(4),
+        .data-table th:nth-child(5),
+        .data-table td:nth-child(5) {
+            width: auto !important;
+            min-width: 80px;
+        }
+        
+        .data-table th:nth-child(6),
+        .data-table td:nth-child(6) {
+            display: none !important;
+        }
+        
+        /* Rate badges */
+        .rate-badge {
+            padding: 3px 8px !important;
+            border-radius: 3px;
+            font-size: 8pt;
+            font-weight: 600;
+        }
+        
+        .rate-excellent { background: #d4edda !important; color: #155724 !important; border: 1px solid #c3e6cb !important; }
+        .rate-good { background: #fff3cd !important; color: #856404 !important; border: 1px solid #ffeaa7 !important; }
+        .rate-poor { background: #f8d7da !important; color: #721c24 !important; border: 1px solid #f5c6cb !important; }
+        
+        /* Page footer */
+        @page {
+            margin: 1.5cm 1.5cm 2cm 1.5cm;
+            
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 8pt;
+                color: #7f8c8d;
+            }
+            
+            @bottom-right {
+                content: "SGP - Educação Física";
+                font-size: 8pt;
+                color: #7f8c8d;
+            }
+        }
+        
+        /* Empty state message */
+        td[colspan] {
+            text-align: center !important;
+            padding: 30px !important;
+            color: #95a5a6 !important;
+            font-style: italic;
+        }
+        
+        /* Ensure proper spacing */
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
     }
+
 </style>
 
 <div class="main-container">
@@ -309,5 +512,22 @@
     </div>
 
 </div>
+
+<script>
+    // Add current date to header for print
+    document.addEventListener('DOMContentLoaded', function() {
+        const header = document.querySelector('.dashboard-header');
+        if (header) {
+            const today = new Date().toLocaleDateString('pt-BR', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            header.setAttribute('data-date', today);
+        }
+    });
+</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
