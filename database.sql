@@ -56,7 +56,7 @@ CREATE TABLE `users` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('semed','coordinator','professor') NOT NULL,
+  `role` enum('semed','coordinator','professor','director','supervisor_edfis','supervisor_monitor') NOT NULL,
   `whatsapp` varchar(20) DEFAULT NULL,
   `is_physical_education` tinyint(1) DEFAULT 0,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
