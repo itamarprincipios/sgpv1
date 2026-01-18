@@ -214,6 +214,43 @@
             font-size: 0.75rem;
         }
     }
+    
+    /* Period Filter Select - Matching semed-nav-btn style */
+    .period-filter-select {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        color: #495057;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23495057'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 1.2rem;
+        padding-right: 45px;
+        min-width: 180px;
+    }
+    
+    .period-filter-select:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
+        background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    }
+    
+    .period-filter-select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
 
 </style>
 
@@ -248,18 +285,17 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 30px;">
     <h2>Visão Geral da Rede (SEMED)</h2>
-    <div style="display:flex; gap: 10px; align-items:center;">
-        <a href="<?= url('semed/history') ?>" class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.9rem;">
-            <i class="fas fa-history"></i> Banco de Planejamentos
+    <div style="display:flex; gap: 12px; align-items:center;">
+        <a href="<?= url('semed/history') ?>" class="semed-nav-btn">
+            <i class="fas fa-history"></i>
+            <span>Banco de Planejamentos</span>
         </a>
-        <form action="" method="GET" class="filter-container" style="margin: 0; width: auto; min-width: 200px;">
-            <div class="filter-group" style="margin: 0; flex: 1;">
-                <select name="filter" id="filter" onchange="this.form.submit()" class="filter-select">
-                    <option value="annual" <?= ($filter == 'annual') ? 'selected' : '' ?>>Anual</option>
-                    <option value="bimestral" <?= ($filter == 'bimestral') ? 'selected' : '' ?>>Bimestral</option>
-                    <option value="monthly" <?= ($filter == 'monthly') ? 'selected' : '' ?>>Mensal</option>
-                </select>
-            </div>
+        <form action="" method="GET" style="margin: 0;">
+            <select name="filter" id="filter" onchange="this.form.submit()" class="period-filter-select">
+                <option value="annual" <?= ($filter == 'annual') ? 'selected' : '' ?>>📅 Anual</option>
+                <option value="bimestral" <?= ($filter == 'bimestral') ? 'selected' : '' ?>>📊 Bimestral</option>
+                <option value="monthly" <?= ($filter == 'monthly') ? 'selected' : '' ?>>📆 Mensal</option>
+            </select>
         </form>
     </div>
 </div>
