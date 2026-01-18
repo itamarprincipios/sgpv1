@@ -196,16 +196,10 @@ class Document extends Model {
         if (!empty($filters['school_id'])) {
             $sql .= " AND u.school_id = :school_id";
             $params['school_id'] = $filters['school_id'];
-        } elseif (isset($filters['allowed_school_ids'])) {
-            // If allowed_school_ids is set (even if empty), we must filter
-            if (empty($filters['allowed_school_ids'])) {
-                // Empty array means no schools allowed - return no results
-                $sql .= " AND 1=0";
-            } else {
-                // Filter by allowed schools
-                $placeholders = implode(',', array_map('intval', $filters['allowed_school_ids']));
-                $sql .= " AND u.school_id IN ($placeholders)";
-            }
+        } elseif (!empty($filters['allowed_school_ids'])) {
+            // Filter by allowed schools only if array is not empty
+            $placeholders = implode(',', array_map('intval', $filters['allowed_school_ids']));
+            $sql .= " AND u.school_id IN ($placeholders)";
         }
         
         if (!empty($filters['bimester'])) {
