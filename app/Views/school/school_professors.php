@@ -52,7 +52,7 @@
         </form>
     </div>
     <div class="list-section">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div class="print-header-anchor" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h3 style="margin: 0;">Professores da Escola</h3>
             <button type="button" onclick="window.print()" class="btn btn-secondary" style="padding: 0.5rem 1rem; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem;" title="Imprimir lista de professores">
                 <i class="fas fa-print"></i> Imprimir
@@ -158,24 +158,29 @@
             text-align: center;
             font-size: 16px;
             font-weight: bold;
-            color: #1a1a1a;
-            margin-bottom: 8px;
+            color: #000;
+            margin-bottom: 15px;
             padding-bottom: 8px;
-            border-bottom: 2px solid #333;
+            border-bottom: 2px solid #000;
         }
         
         .list-section {
             position: relative;
         }
-        
-        .list-section::after {
+
+        /* Anchor for school info - positioning it right after the title */
+        .print-header-anchor {
+            display: block !important; /* Force block in print */
+            margin-bottom: 20px !important;
+        }
+
+        .print-header-anchor::after {
             content: "Escola: " attr(data-school-name) "\A Diretor(a): " attr(data-director-name) "\A Emitido em: " attr(data-print-date);
             display: block;
             text-align: left;
             font-size: 11px;
-            color: #444;
-            margin-top: 8px;
-            margin-bottom: 15px;
+            color: #000;
+            margin-top: 10px;
             white-space: pre-line;
             line-height: 1.6;
             font-weight: 500;
@@ -301,13 +306,13 @@
             minute: '2-digit'
         });
         
-        const section = document.querySelector('.list-section');
-        if (section) {
-            section.setAttribute('data-print-date', dateStr);
+        const anchor = document.querySelector('.print-header-anchor');
+        if (anchor) {
+            anchor.setAttribute('data-print-date', dateStr);
             
             // Get school name from PHP
             <?php if (isset($schools) && !empty($schools)): ?>
-                section.setAttribute('data-school-name', '<?= htmlspecialchars($schools[0]['name'] ?? 'N/A') ?>');
+                anchor.setAttribute('data-school-name', '<?= htmlspecialchars($schools[0]['name'] ?? 'N/A') ?>');
             <?php endif; ?>
             
             // Get director name from user session
@@ -315,7 +320,7 @@
             $user = auth();
             if (isset($user)): 
             ?>
-                section.setAttribute('data-director-name', '<?= htmlspecialchars($user['name'] ?? 'N/A') ?>');
+                anchor.setAttribute('data-director-name', '<?= htmlspecialchars($user['name'] ?? 'N/A') ?>');
             <?php endif; ?>
         }
     });
