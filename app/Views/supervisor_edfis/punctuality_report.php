@@ -172,6 +172,52 @@
         color: white;
         transform: translateY(-1px);
     }
+    
+    /* Modern Action Buttons */
+    .btn-print-modern {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 24px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+    }
+    
+    .btn-print-modern:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+        background: linear-gradient(135deg, #5a67d8 0%, #6a3d9a 100%) !important;
+    }
+    
+    .btn-back-modern {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+        color: #495057 !important;
+        border: 2px solid #dee2e6 !important;
+        padding: 12px 24px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 0.95rem !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        text-decoration: none !important;
+    }
+    
+    .btn-back-modern:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+        border-color: #adb5bd !important;
+        color: #212529 !important;
+    }
 
     @media print {
         /* Reset and hide UI elements */
@@ -394,11 +440,11 @@
             <p class="text-muted mb-0">Acompanhamento de prazos de entrega dos professores de Educação Física</p>
         </div>
         <div style="display: flex; gap: 10px;">
-            <button onclick="window.print()" class="btn btn-outline-secondary px-4" style="border-radius: 6px; font-weight: 500;">
-                <i class="fas fa-print me-2"></i> Imprimir
+            <button onclick="window.print()" class="btn-print-modern">
+                <i class="fas fa-print"></i> Imprimir
             </button>
-            <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn btn-secondary px-4" style="border-radius: 6px; font-weight: 500;">
-                <i class="fas fa-arrow-left me-2"></i> Voltar ao Painel
+            <a href="<?= url('supervisor-edfis/dashboard') ?>" class="btn-back-modern">
+                <i class="fas fa-arrow-left"></i> Voltar ao Painel
             </a>
         </div>
     </div>
