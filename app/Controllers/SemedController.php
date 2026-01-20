@@ -84,6 +84,40 @@ class SemedController extends Controller {
         $this->view('dashboard/registrations', ['stats' => $stats]);
     }
 
+    public function allocation() {
+        checkAuth('semed');
+        $user = auth();
+        $userModel = new User();
+        $schoolModel = new School();
+        
+        require_once __DIR__ . '/../Models/ClassModel.php';
+        $classModel = new ClassModel();
+        
+        // Get assigned schools for filtering
+        $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        $schools = $schoolModel->all(); // For filter dropdown
+        
+        // Apply school filter if provided
+        $schoolId = $_GET['school_id'] ?? null;
+        
+        // Get allocation data
+        if ($schoolId) {
+            $allocations = $classModel->getAllWithAllocation($schoolId);
+        } else {
+            $allocations = $classModel->getAllWithAllocation(null, $assignedSchoolIds);
+        }
+        
+        // Count vacant classes for alert badge
+        $vacantCount = $classModel->countVacantClasses($assignedSchoolIds);
+        
+        $this->view('dashboard/allocation', [
+            'allocations' => $allocations,
+            'schools' => $schools,
+            'selectedSchoolId' => $schoolId,
+            'vacantCount' => $vacantCount
+        ]);
+    }
+
     public function editSchool() {
         checkAuth('semed');
         $id = $_GET['id'] ?? null;

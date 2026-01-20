@@ -19,6 +19,18 @@
         <div class="nav-brand">SGP - <?php
             $user = auth(); // Get the full user object
             $role = $user['role'] ?? '';
+            
+            // Fetch vacant class count for SEMED users (for badge)
+            $vacantClassCount = 0;
+            if ($role === 'semed') {
+                require_once __DIR__ . '/../../app/Models/User.php';
+                require_once __DIR__ . '/../../app/Models/ClassModel.php';
+                $userModel = new User();
+                $classModel = new ClassModel();
+                $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+                $vacantClassCount = $classModel->countVacantClasses($assignedSchoolIds);
+            }
+            
             if($role == 'coordinator') echo 'Coordenador';
             elseif($role == 'director') echo 'Diretor';
             elseif($role == 'semed') echo 'DEAPS';
@@ -91,7 +103,18 @@
     <a href="<?= url('admin/reports') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/reports') !== false ? 'active' : '' ?>">
         <i class="fas fa-chart-pie"></i>
         <span>Relatórios</span>
-    </a>            </a>
+    </a>
+    
+    <!-- Lotação (Staffing Allocation) with Vacancy Alert Badge -->
+    <a href="<?= url('semed/lotacao') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/lotacao') !== false ? 'active' : '' ?>" style="position: relative;">
+        <i class="fas fa-users-cog"></i>
+        <span>Lotação</span>
+        <?php if ($vacantClassCount > 0): ?>
+            <span style="position: absolute; top: -5px; right: -5px; background: #dc2626; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                <?= $vacantClassCount ?>
+            </span>
+        <?php endif; ?>
+    </a>
                 <a href="<?= url('semed/history') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/history') !== false ? 'active' : '' ?>">
                     <i class="fas fa-history"></i>
                     <span>Banco de Planejamentos</span>

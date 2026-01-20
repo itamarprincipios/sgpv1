@@ -65,6 +65,7 @@ $routes = [
     'school/document/review' => 'SchoolController@reviewDocument',
     'semed/dashboard' => 'SemedController@dashboard',
     'semed/cadastros' => 'SemedController@registrations', // NEW HUD
+    'semed/lotacao' => 'SemedController@allocation', // NEW Staffing Allocation
     'semed/schools' => 'SemedController@schools',
     'semed/school/store' => 'SemedController@storeSchool',
     'semed/school/edit' => 'SemedController@editSchool',
