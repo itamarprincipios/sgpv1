@@ -137,7 +137,7 @@ class AdminController extends Controller {
 
             $_SESSION['success'] = "Usuário criado com sucesso!";
         }
-        redirect('admin/dashboard');
+        redirect('admin/semed-users');
     }
     
     public function editUser() {
