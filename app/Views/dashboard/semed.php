@@ -393,6 +393,9 @@
                             </td>
                             <td>
                                 <strong><?= htmlspecialchars($prof['professor_name']) ?></strong>
+                                <?php if (!empty($prof['is_monitor'])): ?>
+                                    <span style="background-color: #17a2b8; color: #fff; padding: 2px 5px; border-radius: 4px; font-size: 11px; margin-left: 5px;">M.A.E</span>
+                                <?php endif; ?>
                                 <br>
                                 <small style="color:#9ca3af;"><?= htmlspecialchars($prof['school_name']) ?></small>
                             </td>
@@ -447,6 +450,9 @@
                                 </td>
                                 <td>
                                     <strong><?= htmlspecialchars($prof['professor_name']) ?></strong>
+                                    <?php if (!empty($prof['is_monitor'])): ?>
+                                        <span style="background-color: #17a2b8; color: #fff; padding: 2px 5px; border-radius: 4px; font-size: 11px; margin-left: 5px;">M.A.E</span>
+                                    <?php endif; ?>
                                     <br>
                                     <small style="color:#9ca3af;"><?= htmlspecialchars($prof['school_name']) ?></small>
                                 </td>

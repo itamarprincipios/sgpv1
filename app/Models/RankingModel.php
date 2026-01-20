@@ -33,7 +33,7 @@ class RankingModel extends Model {
             $where .= " AND u.school_id IN ($placeholders)";
         }
 
-        $sql = "SELECT u.name as professor_name, u.whatsapp, s.name as school_name, SUM(d.score_final) as total_points
+        $sql = "SELECT u.name as professor_name, u.whatsapp, u.is_monitor, s.name as school_name, SUM(d.score_final) as total_points
                 FROM users u
                 JOIN schools s ON u.school_id = s.id
                 JOIN documents d ON u.id = d.user_id
