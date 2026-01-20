@@ -276,4 +276,20 @@ class User extends Model {
         }
         return $map;
     }
+    
+    /**
+     * Retorna escolas vinculadas ao usuário SEMED
+     * @param int $userId ID do usuário SEMED
+     * @return array Lista de escolas
+     */
+    public function getSemedSchools($userId) {
+        $sql = "SELECT DISTINCT s.* 
+                FROM schools s
+                INNER JOIN user_schools us ON s.id = us.school_id
+                WHERE us.user_id = :user_id
+                ORDER BY s.name";
+        
+        $stmt = $this->db->query($sql, ['user_id' => $userId]);
+        return $stmt->fetchAll();
+    }
 }

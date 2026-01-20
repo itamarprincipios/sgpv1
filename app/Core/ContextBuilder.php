@@ -137,6 +137,68 @@ class ContextBuilder {
     }
     
     /**
+     * Recupera contexto agregado de múltiplas escolas
+     * @param array $schoolIds Array de IDs das escolas
+     * @return array Contexto estruturado multi-escola
+     */
+    public function getMultiSchoolContext($schoolIds) {
+        $schoolModel = new School();
+        $documentModel = new Document();
+        $userModel = new User();
+        
+        $schools = [];
+        $allProfessors = [];
+        $allDocuments = [];
+        $allCoordinators = [];
+        
+        foreach ($schoolIds as $schoolId) {
+            $school = $schoolModel->findById($schoolId);
+            if (!$school) continue;
+            
+            $schools[] = $school;
+            
+            // Professores da escola
+            $professors = $userModel->getBySchoolId($schoolId, 'professor');
+            foreach ($professors as &$prof) {
+                $prof['school_name'] = $school['name'];
+            }
+            $allProfessors = array_merge($allProfessors, $professors);
+            
+            // Coordenadores da escola
+            $coordinators = $userModel->getBySchoolId($schoolId, 'coordinator');
+            foreach ($coordinators as &$coord) {
+                $coord['school_name'] = $school['name'];
+            }
+            $allCoordinators = array_merge($allCoordinators, $coordinators);
+            
+            // Documentos da escola
+            $docs = $documentModel->getBySchoolId($schoolId);
+            foreach ($docs as &$doc) {
+                $doc['school_name'] = $school['name'];
+            }
+            $allDocuments = array_merge($allDocuments, $docs);
+        }
+        
+        return [
+            'tipo' => 'multi_escola',
+            'descricao' => 'Contexto agregado de ' . count($schools) . ' escola(s)',
+            'escolas' => $this->extractSchoolsInfo($schools),
+            'estatisticas' => [
+                'total_escolas' => count($schools),
+                'total_professores' => count($allProfessors),
+                'total_coordenadores' => count($allCoordinators),
+                'total_planejamentos' => count($allDocuments),
+                'planejamentos_enviados' => $this->countByStatus($allDocuments, 'enviado'),
+                'planejamentos_aprovados' => $this->countByStatus($allDocuments, 'aprovado'),
+                'planejamentos_rejeitados' => $this->countByStatus($allDocuments, 'rejeitado')
+            ],
+            'professores' => $this->extractProfessorsInfo($allProfessors),
+            'coordenadores' => $this->extractCoordinatorsInfo($allCoordinators),
+            'planejamentos_recentes' => $this->extractPlanningsInfo(array_slice($allDocuments, 0, 20))
+        ];
+    }
+    
+    /**
      * Recupera contexto global da rede municipal
      * @return array Contexto estruturado da rede
      */

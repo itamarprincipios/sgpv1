@@ -81,10 +81,38 @@ class RAGController {
                 
                 // Forçar filtro de escola (sobrescreve qualquer filtro enviado)
                 $filters['school_id'] = $schoolId;
+                
+            } elseif ($_SESSION['user']['role'] === 'semed') {
+                // SEMED pode selecionar escola específica ou consultar todas suas escolas
+                if (isset($filters['school_id']) && !empty($filters['school_id'])) {
+                    // Validar se escola pertence ao SEMED
+                    if (!$this->validateSemedSchoolAccess($_SESSION['user']['id'], $filters['school_id'])) {
+                        throw new Exception('Você não tem acesso a esta escola.');
+                    }
+                } else {
+                    // Se não selecionou, agregar todas as escolas do SEMED
+                    $schoolIds = $this->getSemedSchoolIds($_SESSION['user']['id']);
+                    if (empty($schoolIds)) {
+                        throw new Exception('Usuário SEMED não está vinculado a nenhuma escola.');
+                    }
+                    $filters['school_ids'] = $schoolIds;
+                }
+                
+            } elseif ($_SESSION['user']['role'] === 'superadmin') {
+                // SUPERADMIN tem acesso total
+                if (isset($filters['school_id']) && !empty($filters['school_id'])) {
+                    // Se selecionou escola específica, usar
+                    // Não precisa validar - superadmin tem acesso a todas
+                } else {
+                    // Se não selecionou, contexto da rede completa
+                    $filters['context_type'] = 'network';
+                }
+                
             } elseif ($_SESSION['user']['role'] === 'supervisor_edfis') {
                  // Supervisor Ed. Física recebe tratamento especial no buildContext
                  $filters['context_type'] = 'physical_education';
             }
+
             
             // Executar fluxo RAG
             $result = $this->executeRAG($question, $filters);
@@ -143,7 +171,7 @@ class RAGController {
      * @return array Contexto estruturado
      */
     private function buildContext($filters) {
-        // Prioridade: Professor > Escola > Rede
+        // Prioridade: Professor > Escola > Multi-Escola > Rede
         
         if (isset($filters['professor_id'])) {
             return $this->contextBuilder->getProfessorContext(
@@ -156,13 +184,23 @@ class RAGController {
             return $this->contextBuilder->getSchoolContext($filters['school_id']);
         }
         
+        // NOVO: Suporte para múltiplas escolas (SEMED)
+        if (isset($filters['school_ids']) && is_array($filters['school_ids']) && !empty($filters['school_ids'])) {
+            return $this->contextBuilder->getMultiSchoolContext($filters['school_ids']);
+        }
+        
         if (isset($filters['context_type']) && $filters['context_type'] === 'physical_education') {
             return $this->contextBuilder->getPhysicalEducationContext();
+        }
+        
+        if (isset($filters['context_type']) && $filters['context_type'] === 'network') {
+            return $this->contextBuilder->getNetworkContext();
         }
         
         // Se não especificou nada, retorna contexto da rede
         return $this->contextBuilder->getNetworkContext();
     }
+
     
     /**
      * Salva consulta no histórico
@@ -252,6 +290,49 @@ class RAGController {
         } catch (Exception $e) {
             error_log("Erro ao buscar escola do coordenador: " . $e->getMessage());
             return null;
+        }
+    }
+    
+    /**
+     * Retorna IDs de todas as escolas do SEMED
+     * @param int $userId ID do usuário SEMED
+     * @return array Array de school_ids
+     */
+    private function getSemedSchoolIds($userId) {
+        try {
+            $db = Database::getInstance();
+            $sql = "SELECT school_id FROM user_schools WHERE user_id = :user_id";
+            $stmt = $db->query($sql, ['user_id' => $userId]);
+            $results = $stmt->fetchAll();
+            
+            return array_column($results, 'school_id');
+        } catch (Exception $e) {
+            error_log("Erro ao buscar escolas do SEMED: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Valida se SEMED tem acesso à escola
+     * @param int $userId ID do usuário SEMED
+     * @param int $schoolId ID da escola
+     * @return bool True se tem acesso, false caso contrário
+     */
+    private function validateSemedSchoolAccess($userId, $schoolId) {
+        try {
+            $db = Database::getInstance();
+            $sql = "SELECT COUNT(*) as count FROM user_schools 
+                    WHERE user_id = :user_id AND school_id = :school_id";
+            $stmt = $db->query($sql, [
+                'user_id' => $userId,
+                'school_id' => $schoolId
+            ]);
+            $result = $stmt->fetch();
+            
+            return $result['count'] > 0;
+        } catch (Exception $e) {
+            error_log("Erro ao validar acesso do SEMED: " . $e->getMessage());
+            return false;
         }
     }
 }

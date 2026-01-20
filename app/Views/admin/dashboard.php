@@ -326,4 +326,7 @@
     </div>
 </div>
 
+<!-- IANNE AI Widget -->
+<?php require __DIR__ . '/../partials/superadmin_ai_widget.php'; ?>
+
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
