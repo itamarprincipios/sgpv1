@@ -17,12 +17,8 @@ class SemedController extends Controller {
         $stats = $docModel->getGlobalStats($assignedSchoolIds);
         
         // Add directors count
-        $whereClauseUsers = "";
-        if (!empty($assignedSchoolIds)) {
-            $placeholders = implode(',', array_map('intval', $assignedSchoolIds));
-            $whereClauseUsers = " AND school_id IN ($placeholders)";
-        }
-        $stats['total_directors'] = $userModel->db->query("SELECT COUNT(*) as count FROM users WHERE role = 'director' $whereClauseUsers")->fetch()['count'];
+        // Add directors count
+        $stats['total_directors'] = $userModel->countDirectors($assignedSchoolIds);
 
         require_once __DIR__ . '/../Models/RankingModel.php';
         $rankingModel = new RankingModel();

@@ -346,4 +346,14 @@ class User extends Model {
         $stmt = $this->db->query($sql, ['user_id' => $userId]);
         return $stmt->fetchAll();
     }
+
+    public function countDirectors($schoolIds = []) {
+        $whereClause = "";
+        if (!empty($schoolIds)) {
+            $placeholders = implode(',', array_map('intval', $schoolIds));
+            $whereClause = " AND school_id IN ($placeholders)";
+        }
+        $sql = "SELECT COUNT(*) as count FROM users WHERE role = 'director' $whereClause";
+        return $this->db->query($sql)->fetch()['count'];
+    }
 }
