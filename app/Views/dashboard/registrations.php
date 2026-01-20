@@ -187,9 +187,22 @@
     </div>
 
     <div class="registration-grid">
+        <?php 
+            // Define routes based on role
+            $schoolsUrl = isAdminSemed() ? url('adminsemed/escolas') : url('admin/schools'); // Note: Team uses admin/schools? Or semed/schools? 
+            // Original code had: admin/schools for schools. For Team, probably restricted in AdminController? 
+            // Let's stick to what was there for team (admin/schools) or check if we need to change it.
+            // Wait, existing code: url('admin/schools')
+            // Plan: AdminSemed -> adminsemed/escolas. Team -> admin/schools (filtered inside AdminController)
+            
+            $directorsUrl = isAdminSemed() ? url('adminsemed/diretores') : url('semed/directors');
+            $coordinatorsUrl = isAdminSemed() ? url('adminsemed/coordenadores') : url('semed/coordinators');
+            $teamUrl = url('adminsemed/equipe'); // Exclusive to Admin
+        ?>
+
         <?php if (isAdminSemed()): ?>
         <!-- Schools Card - Only Admin SEMED -->
-        <a href="<?= url('admin/schools') ?>" class="reg-card blue">
+        <a href="<?= $schoolsUrl ?>" class="reg-card blue">
             <div class="reg-icon-wrapper">
                 <i class="fas fa-school"></i>
             </div>
@@ -202,7 +215,7 @@
         <?php endif; ?>
 
         <!-- Directors Card -->
-        <a href="<?= url('semed/directors') ?>" class="reg-card purple">
+        <a href="<?= $directorsUrl ?>" class="reg-card purple">
             <div class="reg-icon-wrapper">
                 <i class="fas fa-user-check"></i>
             </div>
@@ -214,7 +227,7 @@
         </a>
 
         <!-- Coordinators Card -->
-        <a href="<?= url('semed/coordinators') ?>" class="reg-card orange">
+        <a href="<?= $coordinatorsUrl ?>" class="reg-card orange">
             <div class="reg-icon-wrapper">
                 <i class="fas fa-user-tie"></i>
             </div>
@@ -227,7 +240,7 @@
 
         <?php if (isAdminSemed()): ?>
         <!-- DEAPS Users Card - Only Admin SEMED -->
-        <a href="<?= url('admin/semed-users') ?>" class="reg-card green">
+        <a href="<?= $teamUrl ?>" class="reg-card green">
             <div class="reg-icon-wrapper">
                 <i class="fas fa-users-cog"></i>
             </div>

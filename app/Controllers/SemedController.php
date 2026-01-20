@@ -311,9 +311,23 @@ class SemedController extends Controller {
         $userModel = new User();
         $schoolModel = new School();
         
-        // 1. Get Schools Managed by SEMED User
-        $schools = $schoolModel->all(); // Get all schools for dropdown
-        $schoolIds = array_column($schools, 'id');
+        $schoolIds = [];
+        
+        if (isAdminSemed()) {
+            // Admin Global: Fetch ALL schools and ALL coordinators
+            $schools = $schoolModel->all(); 
+            // array_column logic below would filter by these schools, which is ALL, so it's fine.
+            $schoolIds = array_column($schools, 'id');
+        } else {
+            // Team Filter: Fetch only assigned schools
+            $assignedIds = $userModel->getAssignedSchoolIds($user['id']);
+            if (empty($assignedIds)) $assignedIds = [-1]; // Block if no schools
+            
+            // Allow selecting only from assigned schools
+            $placeholders = implode(',', array_map('intval', $assignedIds));
+            $schools = $schoolModel->db->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
+            $schoolIds = $assignedIds;
+        }
         
         // 2. Get Coordinators linked to these schools
         $coordinators = $userModel->getBySchoolIds($schoolIds, 'coordinator');
@@ -446,14 +460,29 @@ class SemedController extends Controller {
         $userModel = new User();
         $schoolModel = new School();
         
-        $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
-        $directors = $userModel->getByRole('director');
-        
-        // Filter directors belonging to my schools (optional, currently SEMED sees all or we filter)
-        // Ideally filter by $assignedSchoolIds if multi-tenant SEMED, but usually SEMED sees all.
-        // Let's filter if assignedSchoolIds is restricted.
-        
-        $schools = $schoolModel->all(); // Get all schools for dropdown
+        $directors = [];
+        $schools = [];
+
+        if (isAdminSemed()) {
+            // Admin: All directors, All schools
+            $directors = $userModel->getByRole('director');
+            $schools = $schoolModel->all(); 
+        } else {
+            // Team: Filtered by assigned schools
+            $assignedIds = $userModel->getAssignedSchoolIds($user['id']);
+            if (empty($assignedIds)) $assignedIds = [-1];
+
+            // Get directors ONLY for these schools
+            // Assuming getByRole doesn't filter, we might need a new method or filter manually.
+            // But wait, existing code used getByRole('director') which is ALL. 
+            // We should filter directors by the assigned schools.
+            // Using getBySchoolIds equivalent for directors? 
+            $directors = $userModel->getBySchoolIds($assignedIds, 'director'); 
+            
+            // Filter schools dropdown
+            $placeholders = implode(',', array_map('intval', $assignedIds));
+            $schools = $schoolModel->db->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
+        }
         
         $this->view('dashboard/semed_directors', [
             'directors' => $directors,
