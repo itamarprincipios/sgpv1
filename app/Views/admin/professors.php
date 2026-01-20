@@ -26,7 +26,12 @@
             <?php else: ?>
                 <?php foreach($professors as $p): ?>
                     <tr>
-                        <td><?= htmlspecialchars($p['name']) ?></td>
+                        <td>
+                            <?= htmlspecialchars($p['name']) ?>
+                            <?php if (!empty($p['is_monitor'])): ?>
+                                <span style="background-color: #17a2b8; color: #fff; padding: 2px 5px; border-radius: 4px; font-size: 11px; margin-left: 5px;">M.A.E</span>
+                            <?php endif; ?>
+                        </td>
                         <td><?= htmlspecialchars($p['school_name'] ?? $p['school_id']) ?></td>
                         <td>
                             <a href="<?= url('admin/user/reset-password?id='.$p['id']) ?>" class="btn-icon" title="Resetar Senha para '123456'" onclick="return confirm('Tem certeza que deseja resetar a senha deste usuário para 123456?')"><i class="fas fa-key"></i></a>
