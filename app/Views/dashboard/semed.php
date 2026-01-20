@@ -367,7 +367,7 @@
         </div>
     </div>
 
-    <div class="rankings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+    <div class="rankings-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; align-items: start;">
         <!-- Professors Ranking -->
         <div class="ranking-section">
             <div class="ranking-title">
@@ -527,6 +527,16 @@
     </div>
     
     <style>
+        .ranking-section {
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .ranking-section .data-table {
+            flex: 1;
+        }
+        
         @media (max-width: 768px) {
             .rankings-grid {
                 grid-template-columns: 1fr !important;
