@@ -38,8 +38,31 @@ echo "</div>";
 // 2. Verificar Banco de Dados
 echo "<div class='section'>";
 echo "<h2>2️⃣ Verificação do Banco de Dados</h2>";
+
+// Handle Auto-Fix Request
+if (isset($_POST['fix_admin_role'])) {
+    try {
+        require_once __DIR__ . '/../app/Core/Database.php';
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("UPDATE users SET role = 'admin' WHERE email = 'admin@sgp.com'");
+        if ($stmt->execute()) {
+             echo "<div class='success'><strong>✅ Role corrigida com sucesso para 'admin'!</strong> Atualize a página.</div>";
+        } else {
+             echo "<div class='error'>❌ Falha ao atualizar role.</div>";
+        }
+    } catch (Exception $e) {
+        echo "<div class='error'>Error: " . $e->getMessage() . "</div>";
+    }
+}
+
 try {
-    require_once __DIR__ . '/app/Core/Database.php';
+    // FIX PROD PATH: Use ../app because we are in public/
+    if (file_exists(__DIR__ . '/../app/Core/Database.php')) {
+        require_once __DIR__ . '/../app/Core/Database.php';
+    } else {
+         throw new Exception("Arquivo de banco de dados não encontrado em ../app/Core/Database.php");
+    }
+
     $db = Database::getInstance()->getConnection();
     
     echo "<div class='success'><strong>✅ Conexão com banco OK</strong></div>";
@@ -55,26 +78,30 @@ try {
         print_r($admin);
         echo "</pre>";
         
-        echo "<p><strong>Role no banco:</strong> <code>" . $admin['role'] . "</code></p>";
-        echo "<p><strong>Tipo da role:</strong> <code>" . gettype($admin['role']) . "</code></p>";
-        echo "<p><strong>Comprimento:</strong> <code>" . strlen($admin['role']) . " caracteres</code></p>";
+        $roleValue = $admin['role'];
+        if ($roleValue === null) $roleValue = '(NULL)';
+        if ($roleValue === '') $roleValue = '(Vazio)';
+
+        echo "<p><strong>Role no banco:</strong> <code>" . htmlspecialchars($roleValue) . "</code></p>";
         
-        // Verificar se é "admin" ou "Administrador"
+        // Verificar se é "admin"
         if ($admin['role'] === 'admin') {
             echo "<div class='success'>✅ Role está correta: 'admin'</div>";
-        } elseif ($admin['role'] === 'Administrador') {
-            echo "<div class='warning'>⚠️ Role está como 'Administrador' - precisa mudar para 'admin'</div>";
-            echo "<p><strong>SQL para corrigir:</strong></p>";
-            echo "<pre>UPDATE users SET role = 'admin' WHERE email = 'admin@sgp.com';</pre>";
         } else {
-            echo "<div class='error'>❌ Role inesperada: '" . $admin['role'] . "'</div>";
+            echo "<div class='error'>❌ Role incorreta ou ausente! Encontrado: '$roleValue'</div>";
+            echo "<form method='post' style='margin-top:10px;'>
+                    <input type='hidden' name='fix_admin_role' value='1'>
+                    <button type='submit' style='background:#dc3545; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:16px;'>
+                        🚨 clique aqui para CORRIGIR ROLE AGORA
+                    </button>
+                  </form>";
         }
     } else {
-        echo "<div class='error'><strong>❌ Usuário admin não encontrado</strong></div>";
+        echo "<div class='error'><strong>❌ Usuário admin@sgp.com não encontrado</strong></div>";
     }
     
 } catch (Exception $e) {
-    echo "<div class='error'><strong>❌ Erro ao conectar ao banco:</strong> " . $e->getMessage() . "</div>";
+    echo "<div class='error'><strong>❌ Erro crítico:</strong> " . $e->getMessage() . "</div>";
 }
 echo "</div>";
 
