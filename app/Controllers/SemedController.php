@@ -316,6 +316,7 @@ class SemedController extends Controller {
         checkAuth('semed');
         $user = auth();
         $userModel = new User();
+        $schoolModel = new School();
         
         $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
         $directors = $userModel->getByRole('director');
@@ -324,7 +325,7 @@ class SemedController extends Controller {
         // Ideally filter by $assignedSchoolIds if multi-tenant SEMED, but usually SEMED sees all.
         // Let's filter if assignedSchoolIds is restricted.
         
-        $schools = $userModel->getManagedSchools($user['id']);
+        $schools = $schoolModel->all(); // Get all schools for dropdown
         
         $this->view('dashboard/semed_directors', [
             'directors' => $directors,
