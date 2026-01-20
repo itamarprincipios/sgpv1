@@ -51,6 +51,7 @@ class AuthController extends Controller {
                 redirect('professor/dashboard');
                 break;
             case 'admin':
+            case 'administrador':
                 redirect('admin/dashboard');
                 break;
             case 'supervisor_edfis':
