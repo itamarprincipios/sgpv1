@@ -281,22 +281,32 @@
     </div>
 </div>
 
-
-
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 30px;">
-    <h2>Visão Geral da Rede (SEMED)</h2>
-    <div style="display:flex; gap: 12px; align-items:center;">
-        <a href="<?= url('semed/history') ?>" class="semed-nav-btn">
-            <i class="fas fa-history"></i>
-            <span>Banco de Planejamentos</span>
-        </a>
-        <form action="" method="GET" style="margin: 0;">
-            <select name="filter" id="filter" onchange="this.form.submit()" class="period-filter-select">
-                <option value="annual" <?= ($filter == 'annual') ? 'selected' : '' ?>>📅 Anual</option>
-                <option value="bimestral" <?= ($filter == 'bimestral') ? 'selected' : '' ?>>📊 Bimestral</option>
-                <option value="monthly" <?= ($filter == 'monthly') ? 'selected' : '' ?>>📆 Mensal</option>
+<div class="filter-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+    <h2 style="font-size: 1.5rem; color: #1e293b; margin: 0;">Visão Geral da Rede (SEMED)</h2>
+    
+    <div style="display: flex; gap: 10px; align-items: center;">
+        
+        <div class="filter-group">
+            <i class="fas fa-calendar-alt filter-icon"></i>
+            <select name="filter" id="periodFilter" onchange="updateDashboard(this.value)" class="filter-select">
+                <option value="annual" <?= $filter == 'annual' ? 'selected' : '' ?>>Anual</option>
+                <option value="1" <?= $filter == '1' ? 'selected' : '' ?>>1º Bimestre</option>
+                <option value="2" <?= $filter == '2' ? 'selected' : '' ?>>2º Bimestre</option>
+                <option value="3" <?= $filter == '3' ? 'selected' : '' ?>>3º Bimestre</option>
+                <option value="4" <?= $filter == '4' ? 'selected' : '' ?>>4º Bimestre</option>
+                
+                <?php 
+                $months = [
+                    '01' => 'Janeiro', '02' => 'Fevereiro', '03' => 'Março', 
+                    '04' => 'Abril', '05' => 'Maio', '06' => 'Junho',
+                    '07' => 'Julho', '08' => 'Agosto', '09' => 'Setembro', 
+                    '10' => 'Outubro', '11' => 'Novembro', '12' => 'Dezembro'
+                ];
+                foreach($months as $k => $v): ?>
+                    <option value="<?= $k ?>" <?= $filter == $k ? 'selected' : '' ?>><?= $v ?></option>
+                <?php endforeach; ?>
             </select>
-        </form>
+        </div>
     </div>
 </div>
 

@@ -105,6 +105,10 @@
                     <i class="fas fa-chart-pie"></i>
                     <span>Relatórios</span>
                 </a>
+                <a href="<?= url('semed/history') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/history') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-history"></i>
+                    <span>Banco de Planejamentos</span>
+                </a>
             <?php elseif ($role === 'coordinator' || $role === 'director'): ?>
                 <a href="<?= url('school/dashboard') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'school/dashboard') !== false ? 'active' : '' ?>">
                     <i class="fas fa-th-large"></i>
