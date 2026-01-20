@@ -21,7 +21,7 @@
             $role = $user['role'] ?? '';
             if($role == 'coordinator') echo 'Coordenador';
             elseif($role == 'director') echo 'Diretor';
-            elseif($role == 'semed') echo 'SEMED';
+            elseif($role == 'semed') echo 'DEAPS';
             elseif($role == 'professor') echo 'Professor';
             elseif($role == 'admin' || $role == 'Administrador') echo 'Admin';
             elseif($role == 'supervisor_edfis') echo 'Supervisão de Educação Física';
