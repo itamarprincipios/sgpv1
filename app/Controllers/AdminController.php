@@ -94,7 +94,7 @@ class AdminController extends Controller {
             $assignedIds = $userModel->getAssignedSchoolIds(auth()['id']);
             if (!empty($assignedIds)) {
                 $placeholders = implode(',', array_map('intval', $assignedIds));
-                $schools = $schoolModel->db->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
+                $schools = $schoolModel->getDb()->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
             } else {
                 $schools = [];
             }
