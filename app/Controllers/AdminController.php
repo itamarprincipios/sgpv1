@@ -230,7 +230,7 @@ class AdminController extends Controller {
     // --- School Management (mirrored capability) ---
     // --- School Management (mirrored capability) ---
     public function storeSchool() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to create schools
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 error_log("School creation attempt - Data: " . json_encode($_POST));
@@ -258,7 +258,7 @@ class AdminController extends Controller {
     }
 
     public function editSchool() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to edit schools
         $id = $_GET['id'] ?? null;
         if (!$id) {
             redirect('admin/schools');
@@ -276,7 +276,7 @@ class AdminController extends Controller {
     }
 
     public function updateSchool() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to update schools
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $schoolModel = new School();
@@ -287,7 +287,7 @@ class AdminController extends Controller {
     }
     
     public function deleteSchool() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to delete schools
         $id = $_GET['id'] ?? null;
         if ($id) {
             $schoolModel = new School();
