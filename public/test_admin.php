@@ -56,12 +56,39 @@ if (isset($_POST['fix_admin_role'])) {
              // Check for warnings (like truncated data for ENUM)
              $warnings = $db->query("SHOW WARNINGS")->fetchAll(PDO::FETCH_ASSOC);
              if ($warnings) {
-                 echo "<div class='error'><strong>⚠️ Avisos do MySQL:</strong> <pre>" . print_r($warnings, true) . "</pre></div>";
-                 echo "<p>Isso geralmente significa que 'admin' não é um valor válido para esta coluna (ENUM).</p>";
+                 $isTruncated = false;
+                 foreach ($warnings as $w) {
+                     if ($w['Code'] == 1265) $isTruncated = true;
+                 }
+
+                 if ($isTruncated) {
+                     echo "<div class='warning'><strong>⚠️ Detectado ENUM incompleto!</strong> Tentando corrigir schema...</div>";
+                     
+                     // Get current ENUM structure to preserve other roles
+                     $desc = $db->query("DESCRIBE users role")->fetch(PDO::FETCH_ASSOC);
+                     preg_match("/^enum\((.*)\)$/", $desc['Type'], $matches);
+                     $currentEnums = $matches[1];
+                     
+                     if (strpos($currentEnums, "'admin'") === false) {
+                         $newEnums = $currentEnums . ",'admin'";
+                         $alterQuery = "ALTER TABLE users MODIFY COLUMN role ENUM($newEnums)";
+                         
+                         try {
+                            $db->exec($alterQuery);
+                            echo "<div class='success'>✅ Schema atualizada: 'admin' adicionado ao ENUM!</div>";
+                            
+                            // Retry Update
+                            if ($db->exec("UPDATE users SET role = 'admin' WHERE email = 'admin@sgp.com'")) {
+                                echo "<div class='success'><strong>✅ Role corrigida com sucesso para 'admin'!</strong> (Após correção de schema)</div>";
+                            }
+                         } catch (Exception $ex) {
+                            echo "<div class='error'>❌ Erro ao alterar tabela: " . $ex->getMessage() . "</div>";
+                         }
+                     }
+                 } else {
+                     echo "<div class='error'><strong>⚠️ Avisos do MySQL:</strong> <pre>" . print_r($warnings, true) . "</pre></div>";
+                 }
                  
-                 // Fallback: try 'Administrador' if 'admin' failed
-                 echo "<p>Tentando reverter para 'Administrador'...</p>";
-                 $db->exec("UPDATE users SET role = 'Administrador' WHERE email = 'admin@sgp.com'");
              } else {
                  echo "<div class='success'>Nenhum aviso do MySQL. Atualize a página.</div>";
              }
