@@ -713,8 +713,23 @@ class SemedController extends Controller {
             $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
             $data = $docModel->getGlobalPendencies($targetSchools);
         } elseif ($type === 'punctuality') {
-            $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
-            $data = $docModel->getSchoolPunctuality($targetSchools);
+            // For punctuality, we need professor-level data, not school-level
+            if ($schoolId) {
+                $data = $docModel->getProfessorPunctualityBySchool($schoolId);
+            } else {
+                // Aggregate professors from all assigned schools
+                $data = [];
+                foreach ($assignedSchoolIds as $sid) {
+                    $schoolData = $docModel->getProfessorPunctualityBySchool($sid);
+                    if ($schoolData) {
+                        $data = array_merge($data, $schoolData);
+                    }
+                }
+                // Sort by avg_score descending
+                usort($data, function($a, $b) {
+                    return ($b['avg_score'] ?? 0) <=> ($a['avg_score'] ?? 0);
+                });
+            }
         } else {
             $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
             $data = $docModel->getSubmissionsReport($targetSchools);
