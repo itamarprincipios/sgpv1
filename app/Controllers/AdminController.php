@@ -37,7 +37,7 @@ class AdminController extends Controller {
     }
 
     public function schools() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to view all schools
         $schoolModel = new School();
         $schools = $schoolModel->all();
         $this->view('admin/schools', ['schools' => $schools]);
@@ -58,7 +58,7 @@ class AdminController extends Controller {
     }
 
     public function semedUsers() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to view/manage SEMED users (self-management or others)
         $userModel = new User();
         $schoolModel = new School();
         
@@ -72,7 +72,7 @@ class AdminController extends Controller {
     }
 
     public function professors() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to view all professors
         $userModel = new User();
         $schoolModel = new School();
         
@@ -280,7 +280,7 @@ class AdminController extends Controller {
     }
 
     public function reports() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to view global reports
         
         $type = $_GET['type'] ?? 'general';
         $id = $_GET['id'] ?? null;
