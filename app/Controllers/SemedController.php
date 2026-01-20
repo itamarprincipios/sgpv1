@@ -68,10 +68,10 @@ class SemedController extends Controller {
         $semedUserCount = $userModel->countSemedUsers(); // Logic inside model should already count all
 
         $stats = [
-            'schools' => $schoolCount,
-            'directors' => $directorCount,
-            'coordinators' => $coordinatorCount,
-            'semed_users' => $semedUserCount
+            'total_schools' => $schoolCount,
+            'total_directors' => $directorCount,
+            'total_coordinators' => $coordinatorCount,
+            'total_semed' => $semedUserCount
         ];
         
         $this->view('dashboard/registrations', ['stats' => $stats]);
