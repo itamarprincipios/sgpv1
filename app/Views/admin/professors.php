@@ -5,12 +5,100 @@
     <p>Visualize e gerencie os professores da rede.</p>
 </div>
 
-    <div class="list-section filter-section" style="margin-bottom: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-        <form method="GET" action="<?= url('admin/professors') ?>" style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
+    <style>
+        .filter-container {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 25px;
+            border: 1px solid #f1f5f9;
+        }
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+        .filter-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+        }
+        .filter-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #334155;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            appearance: none; /* Remove default arrow for custom styling if desired, but keeping simple for now */
+        }
+        .filter-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            grid-column: 1 / -1; /* Span full width on mobile, but we'll adjust for desktop */
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        @media (min-width: 1024px) {
+            .filter-form {
+                grid-template-columns: 1fr 1fr 1fr 1fr auto; /* Inputs take space, buttons auto */
+            }
+            .filter-actions {
+                grid-column: auto; /* Revert span */
+                margin-top: 0;
+                justify-content: flex-start;
+            }
+        }
+        .btn-filter {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            height: 42px;
+        }
+        .btn-filter-primary {
+            background-color: #3b82f6;
+            color: white;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+        }
+        .btn-filter-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+        }
+        .btn-filter-secondary {
+            background-color: #f1f5f9;
+            color: #64748b;
+            text-decoration: none;
+        }
+        .btn-filter-secondary:hover {
+            background-color: #e2e8f0;
+            color: #334155;
+        }
+    </style>
+
+    <div class="filter-container">
+        <form method="GET" action="<?= url('admin/professors') ?>" class="filter-form">
             
-            <div style="flex: 1; min-width: 200px;">
-                <label style="font-weight: bold; color: #555; font-size: 0.9rem;">Escola</label>
-                <select name="school_id" class="form-control" onchange="this.form.submit()" style="width: 100%;">
+            <div class="filter-group">
+                <label>Escola</label>
+                <select name="school_id" class="filter-control" onchange="this.form.submit()">
                     <option value="">Todas as Escolas</option>
                     <?php foreach($schools as $s): ?>
                         <option value="<?= $s['id'] ?>" <?= ($filters['school_id'] == $s['id']) ? 'selected' : '' ?>>
@@ -20,9 +108,9 @@
                 </select>
             </div>
 
-            <div style="flex: 1; min-width: 150px;">
-                <label style="font-weight: bold; color: #555; font-size: 0.9rem;">Turma</label>
-                <select name="class_id" class="form-control" onchange="this.form.submit()" style="width: 100%;" <?= empty($filters['school_id']) ? 'disabled' : '' ?>>
+            <div class="filter-group">
+                <label>Turma</label>
+                <select name="class_id" class="filter-control" onchange="this.form.submit()" <?= empty($filters['school_id']) ? 'disabled' : '' ?>>
                     <option value="">Todas as Turmas</option>
                     <?php if (!empty($classes)): ?>
                         <?php foreach($classes as $c): ?>
@@ -34,28 +122,30 @@
                 </select>
             </div>
 
-            <div style="flex: 1; min-width: 150px;">
-                <label style="font-weight: bold; color: #555; font-size: 0.9rem;">Função</label>
-                <select name="function" class="form-control" onchange="this.form.submit()" style="width: 100%;">
+            <div class="filter-group">
+                <label>Função</label>
+                <select name="function" class="filter-control" onchange="this.form.submit()">
                     <option value="">Todas</option>
-                    <option value="titular" <?= ($filters['function'] == 'titular') ? 'selected' : '' ?>>Professor Titular (Regente)</option>
+                    <option value="titular" <?= ($filters['function'] == 'titular') ? 'selected' : '' ?>>Professor Titular</option>
                     <option value="edfis" <?= ($filters['function'] == 'edfis') ? 'selected' : '' ?>>Professor Ed. Física</option>
                     <option value="monitor" <?= ($filters['function'] == 'monitor') ? 'selected' : '' ?>>Professor Monitor</option>
                 </select>
             </div>
 
-             <div style="flex: 1; min-width: 200px;">
-                <label style="font-weight: bold; color: #555; font-size: 0.9rem;">Buscar Nome</label>
-                <input type="text" name="search" value="<?= htmlspecialchars($filters['search'] ?? '') ?>" placeholder="Nome do professor..." class="form-control" style="width: 100%;">
+             <div class="filter-group">
+                <label>Buscar Nome</label>
+                <input type="text" name="search" value="<?= htmlspecialchars($filters['search'] ?? '') ?>" placeholder="Digite o nome..." class="filter-control">
             </div>
 
-            <button type="submit" class="btn btn-primary" style="height: 42px;">
-                <i class="fas fa-search"></i> Filtrar
-            </button>
-            
-            <a href="<?= url('admin/professors') ?>" class="btn btn-secondary" style="height: 42px; line-height: 28px; text-decoration: none;">
-                Limpar
-            </a>
+            <div class="filter-actions">
+                <button type="submit" class="btn-filter btn-filter-primary">
+                    <i class="fas fa-search"></i> Filtrar
+                </button>
+                
+                <a href="<?= url('admin/professors') ?>" class="btn-filter btn-filter-secondary">
+                    Limpar
+                </a>
+            </div>
 
         </form>
     </div>
