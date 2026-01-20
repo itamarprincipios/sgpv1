@@ -36,7 +36,7 @@
             <span></span>
         </button>
         <?php endif; ?>
-        <div class="nav-tabs" id="nav-menu" style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <div class="nav-tabs" id="nav-menu" style="display: flex; gap: 10px; align-items: center; overflow-x: auto; white-space: nowrap; padding-bottom: 5px;">
             <?php if ($role === 'admin' || $role === 'Administrador'): ?>
                 <a href="<?= url('admin/dashboard') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/dashboard') !== false ? 'active' : '' ?>">
                     <i class="fas fa-shield-alt"></i>
