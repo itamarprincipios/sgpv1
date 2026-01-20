@@ -418,17 +418,41 @@ class AdminController extends Controller {
         } elseif ($type === 'general') {
             // General Lists
             $reportData['schools'] = $schoolModel->all(); 
+            
+            // Restrict schools for SEMED team
+            if (isSemedTeam()) {
+                $assignedIds = $userModel->getAssignedSchoolIds(auth()['id']);
+                if (empty($assignedIds)) $assignedIds = [-1];
+                
+                $reportData['schools'] = array_filter($reportData['schools'], function($s) use ($assignedIds) {
+                    return in_array($s['id'], $assignedIds);
+                });
+            }
+
             foreach ($reportData['schools'] as &$s) {
                 $s['managers'] = $schoolModel->getSemedUsers($s['id']);
             }
             
             $reportData['semed_users'] = $userModel->getByRole('semed');
+            // Check if we should restrict this list too? Probably just show self or all team?
+            // User request implies "Reports... same as Director", meaning "My Schools".
+            // So listing other SEMED users generally might be fine, but the SCHOOLS list is the critical part.
+            
             foreach ($reportData['semed_users'] as &$u) {
                 $u['school_count'] = count($userModel->getAssignedSchoolIds($u['id']));
             }
         }
         
         $allSchools = $schoolModel->all();
+        // Also restrict dropdowns/allSchools variable
+        if (isSemedTeam()) {
+             $assignedIds = $userModel->getAssignedSchoolIds(auth()['id']);
+             if (empty($assignedIds)) $assignedIds = [-1];
+             $allSchools = array_filter($allSchools, function($s) use ($assignedIds) {
+                return in_array($s['id'], $assignedIds);
+             });
+        }
+        
         $allSemedUsers = $userModel->getByRole('semed');
         
         $this->view('admin/reports', [

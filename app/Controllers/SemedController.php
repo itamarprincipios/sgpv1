@@ -722,14 +722,15 @@ class SemedController extends Controller {
             $data = $docModel->getSubmissionsReport($targetSchools);
         }
         
-        $this->view('dashboard/semed_reports', [
+        $this->view('dashboard/school_reports', [
             'type' => $type,
             'data' => $data,
             'schools' => $schools,
             'professors' => $professors,
             'schoolId' => $schoolId,
             'professorId' => $professorId,
-            'period' => $period
+            'period' => $period,
+            'user' => $user // Required for print header
         ]);
     }
 

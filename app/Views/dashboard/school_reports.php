@@ -19,6 +19,18 @@
         
         <!-- School Filter Removed for Director Context -->
         <input type="hidden" name="school_id" value="<?= $schoolId ?>">
+        
+        <?php if (count($schools) > 1): ?>
+        <div class="filter-group" style="flex: 0 0 250px; min-width: 200px;">
+            <label class="filter-label">Escola</label>
+            <select name="school_id" class="filter-select" onchange="this.form.submit()">
+                <option value="">Todas as Escolas Vinculadas</option>
+                <?php foreach($schools as $s): ?>
+                    <option value="<?= $s['id'] ?>" <?= ($schoolId == $s['id']) ? 'selected' : '' ?>><?= htmlspecialchars($s['name']) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <?php endif; ?>
 
         <?php if ($schoolId): ?>
         <div class="filter-group">
