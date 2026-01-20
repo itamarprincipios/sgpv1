@@ -95,7 +95,7 @@
                     </h3>
                     <span style="color: #666; font-size: 1.1rem; display: block; margin-top: 5px;">
                         <?php if (!empty($selectedProf['is_monitor'])): ?>
-                            Monitor de Apoio Educacional - Dashboard de Desempenho
+                            Monitor de Aluno Especial - Dashboard de Desempenho
                         <?php else: ?>
                             Dashboard de Desempenho
                         <?php endif; ?>
