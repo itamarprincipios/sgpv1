@@ -51,6 +51,60 @@ class User extends Model {
         return $this->db->query($sql, ['id' => $id]);
     }
 
+    public function getProfessorsWithFilters($filters = []) {
+        $params = [];
+        $sql = "SELECT u.*, 
+                    TRIM(BOTH ', ' FROM CONCAT(
+                        COALESCE(s.name, ''), 
+                        CASE WHEN COUNT(s_extra.id) > 0 THEN ', ' ELSE '' END,
+                        COALESCE(GROUP_CONCAT(s_extra.name SEPARATOR ', '), '')
+                    )) as school_name,
+                    c.name as class_name
+                FROM users u 
+                LEFT JOIN schools s ON u.school_id = s.id 
+                LEFT JOIN classes c ON u.class_id = c.id
+                LEFT JOIN user_schools us ON u.id = us.user_id
+                LEFT JOIN schools s_extra ON us.school_id = s_extra.id
+                WHERE u.role = 'professor'";
+
+        // Filter by School
+        if (!empty($filters['school_id'])) {
+            $sql .= " AND (u.school_id = :school_id OR us.school_id = :school_id)";
+            $params['school_id'] = $filters['school_id'];
+        }
+
+        // Filter by Class
+        if (!empty($filters['class_id'])) {
+            $sql .= " AND u.class_id = :class_id";
+            $params['class_id'] = $filters['class_id'];
+        }
+
+        // Filter by Function (Monitor, Ed. Fis, Titular)
+        if (!empty($filters['function'])) {
+            switch ($filters['function']) {
+                case 'monitor':
+                    $sql .= " AND u.is_monitor = 1";
+                    break;
+                case 'edfis':
+                    $sql .= " AND u.is_physical_education = 1";
+                    break;
+                case 'titular':
+                    $sql .= " AND (u.is_monitor = 0 OR u.is_monitor IS NULL) AND (u.is_physical_education = 0 OR u.is_physical_education IS NULL)";
+                    break;
+            }
+        }
+        
+        // Search by Name
+        if (!empty($filters['search'])) {
+            $sql .= " AND u.name LIKE :search";
+            $params['search'] = '%' . $filters['search'] . '%';
+        }
+
+        $sql .= " GROUP BY u.id ORDER BY u.name ASC";
+
+        return $this->db->query($sql, $params)->fetchAll();
+    }
+
     public function getByRole($role) {
         // Updated to support multiple schools via user_schools OR single school_id (legacy/hybrid)
         $sql = "SELECT u.*, 

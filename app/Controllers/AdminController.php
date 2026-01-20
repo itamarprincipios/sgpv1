@@ -47,8 +47,35 @@ class AdminController extends Controller {
     public function professors() {
         checkAuth('admin');
         $userModel = new User();
-        $professors = $userModel->getByRole('professor');
-        $this->view('admin/professors', ['professors' => $professors]);
+        $schoolModel = new School();
+        
+        // Filters
+        $filters = [
+            'school_id' => $_GET['school_id'] ?? null,
+            'class_id' => $_GET['class_id'] ?? null,
+            'function' => $_GET['function'] ?? null,
+            'search' => $_GET['search'] ?? null
+        ];
+        
+        // Data for dropdowns
+        $schools = $schoolModel->all();
+        $classes = [];
+        
+        if ($filters['school_id']) {
+            require_once __DIR__ . '/../Models/ClassModel.php';
+            $classModel = new ClassModel();
+            $classes = $classModel->getBySchoolId($filters['school_id']);
+        }
+        
+        // Use new method with filters
+        $professors = $userModel->getProfessorsWithFilters($filters);
+        
+        $this->view('admin/professors', [
+            'professors' => $professors,
+            'schools' => $schools,
+            'classes' => $classes,
+            'filters' => $filters
+        ]);
     }
     
     public function storeUser() {
