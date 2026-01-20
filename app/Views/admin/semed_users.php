@@ -249,6 +249,7 @@
                             ?>
                         </td>
                         <td>
+                            <a href="<?= url('admin/user/edit?id='.$u['id']) ?>" class="btn-icon" style="color: #3b82f6; margin-right: 10px;" title="Editar"><i class="fas fa-edit"></i></a>
                             <a href="<?= url('admin/user/reset-password?id='.$u['id']) ?>" class="btn-icon" title="Resetar Senha para '123456'" onclick="return confirm('Tem certeza que deseja resetar a senha deste usuário para 123456?')"><i class="fas fa-key"></i></a>
                             <a href="<?= url('admin/user/delete?id='.$u['id']) ?>" class="btn-icon" style="color: red;" title="Excluir Usuário" onclick="return confirm('Tem certeza que deseja excluir este usuário permanentemente?')"><i class="fas fa-trash"></i></a>
                         </td>
