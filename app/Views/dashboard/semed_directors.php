@@ -148,6 +148,14 @@
                 <label>Endereço</label>
                 <input type="text" name="address" placeholder="Rua, Número, Bairro...">
             </div>
+            <div class="form-group" style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin: 0;">
+                    <input type="checkbox" name="is_vice_director" value="1" style="width: 18px; height: 18px;">
+                    <span style="font-weight: 600; color: #6366f1;">
+                        <i class="fas fa-user-shield" style="color: #6366f1;"></i> Vice-Diretor
+                    </span>
+                </label>
+            </div>
             <button type="submit" class="btn btn-primary" style="height: 42px;">Salvar</button>
         </form>
         <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 10px;">* Senha padrão: <strong>123456</strong></p>
@@ -162,7 +170,14 @@
                             <?= strtoupper(substr($dir['name'], 0, 1)) ?>
                         </div>
                         <div class="dir-info">
-                            <h4><?= htmlspecialchars($dir['name']) ?></h4>
+                            <h4>
+                                <?= htmlspecialchars($dir['name']) ?>
+                                <?php if (!empty($dir['is_vice_director'])): ?>
+                                    <span style="background: #eef2ff; color: #6366f1; padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-left: 8px;">
+                                        <i class="fas fa-user-shield"></i> VICE
+                                    </span>
+                                <?php endif; ?>
+                            </h4>
                             <span><?= htmlspecialchars($dir['email']) ?></span>
                         </div>
                     </div>
