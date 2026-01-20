@@ -63,6 +63,7 @@ $routes = [
     'school/professor/reset-password' => 'SchoolController@resetProfessorPassword',
     'school/planning/associate-bimester' => 'SchoolController@associateToBimester',
     'school/document/review' => 'SchoolController@reviewDocument',
+    'adminsemed/dashboard' => 'SemedController@adminDashboard', // NEW Admin SEMED specific dashboard
     'semed/dashboard' => 'SemedController@dashboard',
     'semed/cadastros' => 'SemedController@registrations', // NEW HUD
     'semed/lotacao' => 'SemedController@allocation', // NEW Staffing Allocation

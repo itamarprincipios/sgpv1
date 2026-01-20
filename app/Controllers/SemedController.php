@@ -5,18 +5,75 @@ require_once __DIR__ . '/../Models/User.php';
 require_once __DIR__ . '/../Models/School.php';
 
 class SemedController extends Controller {
+    /**
+     * Dashboard specific for Admin SEMED (DEAPS) with global view
+     */
+    public function adminDashboard() {
+        checkAuth('semed');
+        $user = auth();
+        
+        // Ensure only Admin SEMED can access this
+        if (!isAdminSemed()) {
+            redirect('semed/dashboard');
+        }
+
+        $docModel = new Document();
+        $userModel = new User();
+        
+        // Admin SEMED sees ALL data (empty array = global in updated getGlobalStats context)
+        // However, to be explicit, we pass nothing.
+        $stats = $docModel->getGlobalStats([]); 
+        $stats['total_directors'] = $userModel->countDirectors([]);
+
+        require_once __DIR__ . '/../Models/RankingModel.php';
+        $rankingModel = new RankingModel();
+        
+        $filter = $_GET['filter'] ?? 'annual';
+        $rankSchools = $rankingModel->getSchoolRanking($filter, null, []);
+        $rankProfessors = $rankingModel->getProfessorRanking($filter, null, [], 'regular');
+        $rankMonitors = $rankingModel->getProfessorRanking($filter, null, [], 'monitor');
+        $rankCoordinators = $rankingModel->getCoordinatorRanking($filter, null, []);
+        
+        $chartData = $docModel->getDocumentStatsBySchool([]);
+        $monthlyData = $docModel->getMonthlyStats([]);
+        
+        $this->view('dashboard/semed', [
+            'user' => $user,
+            'stats' => $stats,
+            'rankSchools' => $rankSchools,
+            'rankProfessors' => $rankProfessors,
+            'rankMonitors' => $rankMonitors,
+            'rankCoordinators' => $rankCoordinators,
+            'chartData' => $chartData,
+            'monthlyData' => $monthlyData,
+            'filter' => $filter
+        ]);
+    }
+
+    /**
+     * Dashboard for SEMED Team Members (filtered by assigned schools)
+     */
     public function dashboard() {
         checkAuth('semed');
         $user = auth();
         
+        // If Admin SEMED tries to access this, redirect to their dashboard
+        if (isAdminSemed()) {
+            redirect('adminsemed/dashboard');
+        }
+        
         // Get assigned schools
         $userModel = new User();
         $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        
+        // CRITICAL: If team member has no schools, force empty result with invalid ID
+        if (empty($assignedSchoolIds)) {
+            $assignedSchoolIds = [-1];
+        }
 
         $docModel = new Document();
         $stats = $docModel->getGlobalStats($assignedSchoolIds);
         
-        // Add directors count
         // Add directors count
         $stats['total_directors'] = $userModel->countDirectors($assignedSchoolIds);
 

@@ -39,7 +39,14 @@ class AuthController extends Controller {
         
         switch ($role) {
             case 'semed':
-                redirect('semed/dashboard');
+                require_once __DIR__ . '/../Helpers/functions.php'; // Ensure helpers are loaded
+                // Check direct property just in case helper behaves odd during login transition
+                $user = auth() ?? $_SESSION['user'] ?? null;
+                if ($user && !empty($user['is_admin_semed'])) {
+                    redirect('adminsemed/dashboard');
+                } else {
+                    redirect('semed/dashboard');
+                }
                 break;
             case 'coordinator':
                 redirect('school/dashboard');
