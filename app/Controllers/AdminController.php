@@ -200,7 +200,29 @@ class AdminController extends Controller {
             unset($data['password']); 
             unset($data['id']);
             
-            $userModel->update($id, $data);
+            // Verify duplicate email only if it changed
+            $currentUser = $userModel->findById($id);
+            if ($currentUser && isset($data['email'])) {
+                if ($data['email'] === $currentUser['email']) {
+                    unset($data['email']); // Don't update if same
+                } else {
+                    // Check if exists for another user
+                    $existing = $userModel->findByEmail($data['email']);
+                    if ($existing && $existing['id'] != $id) {
+                        $_SESSION['error'] = "Email já cadastrado para outro usuário.";
+                        if (function_exists('isAdminSemed') && isAdminSemed()) {
+                            redirect('adminsemed/equipe');
+                        } else {
+                            redirect('admin/semed-users');
+                        }
+                        return;
+                    }
+                }
+            }
+
+            if (!empty($data)) {
+                $userModel->update($id, $data);
+            }
             
             // Always update assignments if it's a SEMED user (or others if we expand)
             // Ideally check role, but assigning empty array clears it which is fine.
