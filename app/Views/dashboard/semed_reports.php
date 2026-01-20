@@ -87,8 +87,19 @@
             <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
                 <img src="<?= $avatarUrl ?>" alt="Foto do Professor" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 4px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                 <div>
-                    <h3 style="margin: 0; color: #2c3e50; font-size: 2rem;"><?= htmlspecialchars($profName) ?></h3>
-                    <span style="color: #666; font-size: 1.1rem; display: block; margin-top: 5px;">Dashboard de Desempenho</span>
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 2rem;">
+                        <?= htmlspecialchars($profName) ?>
+                        <?php if (!empty($selectedProf['is_monitor'])): ?>
+                            <span style="background-color: #17a2b8; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; margin-left: 10px;">M.A.E</span>
+                        <?php endif; ?>
+                    </h3>
+                    <span style="color: #666; font-size: 1.1rem; display: block; margin-top: 5px;">
+                        <?php if (!empty($selectedProf['is_monitor'])): ?>
+                            Monitor de Apoio Educacional - Dashboard de Desempenho
+                        <?php else: ?>
+                            Dashboard de Desempenho
+                        <?php endif; ?>
+                    </span>
                     <?php if (isset($selectedProf['email']) || isset($selectedProf['whatsapp'])): ?>
                         <div style="margin-top: 10px; font-size: 0.9rem; color: #555;">
                             <?php if (!empty($selectedProf['whatsapp'])): ?>
