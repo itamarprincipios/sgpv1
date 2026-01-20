@@ -54,8 +54,15 @@ class AdminController extends Controller {
     public function semedUsers() {
         checkAuth('admin');
         $userModel = new User();
+        $schoolModel = new School();
+        
         $semedUsers = $userModel->getByRole('semed');
-        $this->view('admin/semed_users', ['semedUsers' => $semedUsers]);
+        $schools = $schoolModel->getAvailableSchools(); // For the registration form
+        
+        $this->view('admin/semed_users', [
+            'semedUsers' => $semedUsers, 
+            'schools' => $schools
+        ]);
     }
 
     public function professors() {
