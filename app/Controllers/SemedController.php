@@ -182,9 +182,10 @@ class SemedController extends Controller {
         checkAuth('semed');
         $user = auth();
         $userModel = new User();
+        $schoolModel = new School();
         
         // 1. Get Schools Managed by SEMED User
-        $schools = $userModel->getManagedSchools($user['id']);
+        $schools = $schoolModel->all(); // Get all schools for dropdown
         $schoolIds = array_column($schools, 'id');
         
         // 2. Get Coordinators linked to these schools
