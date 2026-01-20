@@ -66,6 +66,10 @@
                     <i class="fas fa-chart-pie"></i>
                     <span>Relatórios</span>
                 </a>
+                <a href="<?= url('admin/settings') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/settings') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
             <?php elseif ($role === 'semed'): ?>
                 <a href="<?= url('semed/dashboard') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/dashboard') !== false ? 'active' : '' ?>">
                     <i class="fas fa-chart-line"></i>

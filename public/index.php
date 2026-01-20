@@ -115,6 +115,7 @@ $routes = [
     'admin/directors' => 'AdminController@directors', // NEW
     'admin/semed-users' => 'AdminController@semedUsers', // NEW
     'admin/reports' => 'AdminController@reports',
+    'admin/settings' => 'AdminController@settings', // NEW
     'admin/history' => 'HistoryController@index', // NEW
     'admin/reset-year' => 'AdminController@resetSchoolYear', // NEW
     'semed/history' => 'HistoryController@index', // NEW

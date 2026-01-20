@@ -15,6 +15,7 @@ class AdminController extends Controller {
         $stats = [
             'semed' => count($userModel->getByRole('semed')),
             'coordinators' => count($userModel->getByRole('coordinator')),
+            'directors' => count($userModel->getByRole('director')),
             'professors' => count($userModel->getByRole('professor')),
             'schools' => count($schoolModel->all())
         ];
@@ -28,6 +29,11 @@ class AdminController extends Controller {
             'semedUsers' => $semedUsers,
             'schools' => $schools
         ]);
+    }
+
+    public function settings() {
+        checkAuth('admin');
+        $this->view('admin/settings');
     }
 
     public function schools() {
