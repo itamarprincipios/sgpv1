@@ -106,7 +106,7 @@ class AdminController extends Controller {
     }
     
     public function storeUser() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to create users
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = new User();
             $data = $_POST;
@@ -141,7 +141,7 @@ class AdminController extends Controller {
     }
     
     public function editUser() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to edit users
         $id = $_GET['id'] ?? null;
         if (!$id) redirect('admin/dashboard');
         
@@ -164,7 +164,7 @@ class AdminController extends Controller {
     }
     
     public function updateUser() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to update users
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userModel = new User();
             $id = $_POST['id'];
@@ -190,7 +190,7 @@ class AdminController extends Controller {
     }
     
     public function deleteUser() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to delete users
         $id = $_GET['id'] ?? null;
         $redirect = 'admin/dashboard';
         
@@ -209,7 +209,7 @@ class AdminController extends Controller {
     }
     
     public function resetPassword() {
-        checkAuth('admin');
+        checkAuth(['admin', 'semed']); // Allow SEMED to reset passwords
         $id = $_GET['id'] ?? null;
         $redirect = 'admin/dashboard';
         
