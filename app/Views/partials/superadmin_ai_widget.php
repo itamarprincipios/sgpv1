@@ -1,101 +1,125 @@
 <?php
+/**
+ * IANNE Superadmin Widget - Avatar Flutuante com Modal + Seletor de Escola
+ */
+
+// Verificar se usuário é superadmin
+$user = auth();
+if (!$user || $user['role'] !== 'superadmin') {
+    return;
+}
+
 // Buscar TODAS as escolas do sistema
 $schoolModel = new School();
 $allSchools = $schoolModel->all();
 ?>
 
-<style>
-.ianne-school-selector {
-    margin-bottom: 15px;
-    padding: 12px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
+<!-- IANNE Floating Avatar Widget -->
+<link rel="stylesheet" href="/css/ianne-coordinator.css">
 
-.ianne-school-selector label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #374151;
-    font-size: 0.9rem;
-}
+<!-- Avatar Flutuante (FAB) -->
+<div id="ianne-fab" onclick="openIanneModal()">
+    <img id="ianne-fab-avatar" src="/img/ianne-avatar.png" alt="IANNE - Assistente IA" title="Clique para falar com a IANNE">
+    <span id="ianne-badge">3</span>
+</div>
 
-.ianne-school-selector select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    background: white;
-    cursor: pointer;
-}
-
-.ianne-school-selector select:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-</style>
-
-<div class="ai-widget">
-    <div class="ai-header">
-        <div class="ai-avatar">
-            <i class="fas fa-robot"></i>
+<!-- Modal Overlay -->
+<div id="ianne-modal-overlay" onclick="closeIanneModal()">
+    <div id="ianne-modal" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div id="ianne-modal-header">
+            <img src="/img/ianne-avatar.png" alt="IANNE">
+            <div>
+                <h3>🤖 IANNE - Assistente Pedagógica IA</h3>
+                <p>Visão completa da rede municipal</p>
+            </div>
+            <button id="ianne-close-btn" onclick="closeIanneModal()" title="Fechar">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <div>
-            <h3>IANNE</h3>
-            <p>Assistente Pedagógica IA - Visão Completa</p>
+        
+        <!-- Body -->
+        <div id="ianne-modal-body">
+            <!-- Seletor de Escola -->
+            <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #1e293b;">
+                <label style="display: block; font-weight: 600; margin-bottom: 8px; color: #374151; font-size: 0.9rem;">
+                    <i class="fas fa-school"></i> Filtrar por escola:
+                </label>
+                <select id="ianne-school-filter" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.95rem; background: white; cursor: pointer;">
+                    <option value="">🌐 Toda a rede municipal (<?= count($allSchools) ?> escolas)</option>
+                    <?php foreach ($allSchools as $school): ?>
+                        <option value="<?= $school['id'] ?>">
+                            <?= htmlspecialchars($school['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            
+            <!-- Campo de Pergunta -->
+            <div id="ianne-question-box">
+                <label for="ianne-question">💬 Faça sua pergunta:</label>
+                <textarea 
+                    id="ianne-question" 
+                    placeholder="Ex: Qual o ranking de escolas mais pontuais? Quantos professores temos na rede?"
+                ></textarea>
+            </div>
+            
+            <!-- Botão Perguntar -->
+            <button id="ianne-ask-btn" onclick="askIanneSuperadmin()">
+                🚀 Perguntar à IANNE
+            </button>
+            
+            <!-- Loading -->
+            <div id="ianne-loading">
+                <div class="ianne-spinner"></div>
+                <p>Analisando dados e consultando IA...</p>
+            </div>
+            
+            <!-- Resposta -->
+            <div id="ianne-response-container">
+                <div id="ianne-response-box">
+                    <h4>
+                        <i class="fas fa-brain"></i>
+                        Resposta da IANNE
+                    </h4>
+                    <div id="ianne-response-text"></div>
+                </div>
+            </div>
+            
+            <!-- Histórico -->
+            <div id="ianne-history-container">
+                <h4>
+                    <i class="fas fa-history"></i>
+                    Consultas recentes
+                </h4>
+                <div id="ianne-history-list"></div>
+            </div>
         </div>
-    </div>
-    
-    <!-- SELETOR DE ESCOLA -->
-    <div class="ianne-school-selector">
-        <label>
-            <i class="fas fa-school"></i> Filtrar por escola:
-        </label>
-        <select id="ianne-school-filter">
-            <option value="">🌐 Toda a rede municipal (<?= count($allSchools) ?> escolas)</option>
-            <?php foreach ($allSchools as $school): ?>
-                <option value="<?= $school['id'] ?>">
-                    <?= htmlspecialchars($school['name']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-    
-    <div class="ai-chat" id="ianne-chat">
-        <div class="ai-message ai-message-assistant">
-            <p>Olá, Superadmin! Tenho acesso a dados de toda a rede municipal (<?= count($allSchools) ?> escolas). 
-            Você pode consultar uma escola específica ou analisar dados de toda a rede. Como posso ajudar?</p>
-        </div>
-    </div>
-    
-    <div class="ai-input-container">
-        <textarea id="ianne-question" placeholder="Digite sua pergunta..." rows="2"></textarea>
-        <button onclick="askIanneSuperadmin()" class="ai-send-btn">
-            <i class="fas fa-paper-plane"></i>
-        </button>
     </div>
 </div>
 
+<!-- JavaScript -->
+<script src="/js/ianne-coordinator.js"></script>
 <script>
+// Override askIanne para incluir school_id
 function askIanneSuperadmin() {
     const question = document.getElementById('ianne-question').value.trim();
-    if (!question) return;
+    if (!question) {
+        alert('Por favor, digite uma pergunta.');
+        return;
+    }
     
     const schoolId = document.getElementById('ianne-school-filter').value;
+    
+    // Mostrar loading
+    document.getElementById('ianne-loading').style.display = 'block';
+    document.getElementById('ianne-response-container').style.display = 'none';
+    document.getElementById('ianne-ask-btn').disabled = true;
     
     const filters = {};
     if (schoolId) {
         filters.school_id = parseInt(schoolId);
     }
-    
-    // Adicionar mensagem do usuário
-    addIanneMessage(question, 'user');
-    document.getElementById('ianne-question').value = '';
-    
-    // Mostrar loading
-    const loadingId = addIanneMessage('Analisando dados...', 'assistant', true);
     
     fetch('<?= url('rag/query') ?>', {
         method: 'POST',
@@ -104,37 +128,34 @@ function askIanneSuperadmin() {
     })
     .then(res => res.json())
     .then(data => {
-        removeIanneMessage(loadingId);
+        document.getElementById('ianne-loading').style.display = 'none';
+        document.getElementById('ianne-ask-btn').disabled = false;
+        
         if (data.success) {
-            addIanneMessage(data.response, 'assistant');
+            document.getElementById('ianne-response-text').innerHTML = data.response.replace(/\n/g, '<br>');
+            document.getElementById('ianne-response-container').style.display = 'block';
+            
+            // Limpar campo
+            document.getElementById('ianne-question').value = '';
+            
+            // Atualizar histórico se a função existir
+            if (typeof loadHistory === 'function') {
+                loadHistory();
+            }
         } else {
-            addIanneMessage('Erro: ' + data.error, 'assistant error');
+            document.getElementById('ianne-response-text').innerHTML = '<p style="color: #e74c3c;">❌ Erro: ' + data.error + '</p>';
+            document.getElementById('ianne-response-container').style.display = 'block';
         }
     })
     .catch(err => {
-        removeIanneMessage(loadingId);
-        addIanneMessage('Erro ao conectar com a IANNE.', 'assistant error');
+        document.getElementById('ianne-loading').style.display = 'none';
+        document.getElementById('ianne-ask-btn').disabled = false;
+        document.getElementById('ianne-response-text').innerHTML = '<p style="color: #e74c3c;">❌ Erro ao conectar com a IANNE.</p>';
+        document.getElementById('ianne-response-container').style.display = 'block';
     });
 }
 
-function addIanneMessage(text, type, isLoading = false) {
-    const chat = document.getElementById('ianne-chat');
-    const msgId = 'msg-' + Date.now();
-    const div = document.createElement('div');
-    div.id = msgId;
-    div.className = 'ai-message ai-message-' + type;
-    div.innerHTML = '<p>' + text + '</p>';
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    return msgId;
-}
-
-function removeIanneMessage(msgId) {
-    const msg = document.getElementById(msgId);
-    if (msg) msg.remove();
-}
-
-// Permitir envio com Enter (Shift+Enter para nova linha)
+// Permitir Enter para enviar
 document.getElementById('ianne-question').addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
