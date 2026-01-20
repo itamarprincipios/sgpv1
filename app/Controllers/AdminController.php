@@ -90,7 +90,18 @@ class AdminController extends Controller {
         ];
         
         // Data for dropdowns
-        $schools = $schoolModel->all();
+        if (isSemedTeam()) {
+            $assignedIds = $userModel->getAssignedSchoolIds(auth()['id']);
+            if (!empty($assignedIds)) {
+                $placeholders = implode(',', array_map('intval', $assignedIds));
+                $schools = $schoolModel->db->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
+            } else {
+                $schools = [];
+            }
+        } else {
+            $schools = $schoolModel->all();
+        }
+        
         $classes = [];
         
         if ($filters['school_id']) {
