@@ -232,9 +232,27 @@ class AdminController extends Controller {
     public function storeSchool() {
         checkAuth('admin');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $schoolModel = new School();
-            $schoolModel->create($_POST);
-            $_SESSION['success'] = "Escola criada com sucesso!";
+            try {
+                error_log("School creation attempt - Data: " . json_encode($_POST));
+                
+                $schoolModel = new School();
+                $result = $schoolModel->create($_POST);
+                
+                error_log("School creation result: " . ($result ? "SUCCESS" : "FAILED"));
+                
+                if ($result) {
+                    $_SESSION['success'] = "Escola criada com sucesso!";
+                } else {
+                    $_SESSION['error'] = "Erro ao criar escola. Verifique os dados e tente novamente.";
+                    error_log("School creation returned false");
+                }
+            } catch (PDOException $e) {
+                $_SESSION['error'] = "Erro de banco de dados: " . $e->getMessage();
+                error_log("School creation PDO error: " . $e->getMessage());
+            } catch (Exception $e) {
+                $_SESSION['error'] = "Erro ao criar escola: " . $e->getMessage();
+                error_log("School creation error: " . $e->getMessage());
+            }
         }
         redirect('admin/schools');
     }

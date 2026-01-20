@@ -1,5 +1,19 @@
 <?php require __DIR__ . '/../layouts/header.php'; ?>
 
+<?php if (isset($_SESSION['success'])): ?>
+    <div style="background: #d1fae5; border-left: 4px solid #10b981; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; color: #065f46;">
+        <i class="fas fa-check-circle"></i> <?= $_SESSION['success'] ?>
+    </div>
+    <?php unset($_SESSION['success']); ?>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error'])): ?>
+    <div style="background: #fee2e2; border-left: 4px solid #dc2626; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; color: #991b1b;">
+        <i class="fas fa-exclamation-triangle"></i> <?= $_SESSION['error'] ?>
+    </div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif; ?>
+
 <div class="dashboard-header" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px;">
     <h1>🏫 Gestão de Escolas</h1>
     <p>Cadastre e gerencie as unidades escolares do sistema.</p>
