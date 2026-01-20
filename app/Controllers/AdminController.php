@@ -172,8 +172,8 @@ class AdminController extends Controller {
         if (!$user) redirect('admin/dashboard');
         
         $schoolModel = new School();
-        // Get all schools available for assignment + schools ALREADY assigned to this user
-        $availableSchools = $schoolModel->getAvailableSchools($id);
+        // Get all schools available for assignment (Allow multi-assignment for SEMED team)
+        $availableSchools = $schoolModel->all();
         
         // Get currently assigned school IDs for pre-selection
         $assignedSchoolIds = $userModel->getAssignedSchoolIds($id);
