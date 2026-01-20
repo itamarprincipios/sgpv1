@@ -44,6 +44,20 @@ class AdminController extends Controller {
         $this->view('admin/coordinators', ['coordinators' => $coordinators]);
     }
 
+    public function directors() {
+        checkAuth('admin');
+        $userModel = new User();
+        $directors = $userModel->getByRole('director');
+        $this->view('admin/directors', ['directors' => $directors]);
+    }
+
+    public function semedUsers() {
+        checkAuth('admin');
+        $userModel = new User();
+        $semedUsers = $userModel->getByRole('semed');
+        $this->view('admin/semed_users', ['semedUsers' => $semedUsers]);
+    }
+
     public function professors() {
         checkAuth('admin');
         $userModel = new User();

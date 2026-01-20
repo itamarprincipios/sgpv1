@@ -50,9 +50,17 @@
                     <i class="fas fa-user-tie"></i>
                     <span>Coordenadores</span>
                 </a>
+                <a href="<?= url('admin/directors') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/directors') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-user-check"></i>
+                    <span>Diretores</span>
+                </a>
                 <a href="<?= url('admin/professors') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/professors') !== false ? 'active' : '' ?>">
                     <i class="fas fa-chalkboard-teacher"></i>
                     <span>Professores</span>
+                </a>
+                 <a href="<?= url('admin/semed-users') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/semed-users') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-building"></i>
+                    <span>SEMED</span>
                 </a>
                 <a href="<?= url('admin/reports') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/reports') !== false ? 'active' : '' ?>">
                     <i class="fas fa-chart-pie"></i>
