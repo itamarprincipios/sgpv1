@@ -63,6 +63,11 @@ class AdminController extends Controller {
         $schoolModel = new School();
         
         $semedUsers = $userModel->getByRole('semed');
+        // Filter out Admin SEMED users (only show team members)
+        $semedUsers = array_filter($semedUsers, function($user) {
+            return empty($user['is_admin_semed']);
+        });
+        
         $schools = $schoolModel->getAvailableSchools(); // For the registration form
         
         $this->view('admin/semed_users', [
