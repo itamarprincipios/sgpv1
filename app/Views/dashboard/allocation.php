@@ -165,9 +165,6 @@
         </div>
     </div>
 
-    <!-- DEBUG -->
-    <div style="background: #333; color: #fff; padding: 10px; margin-bottom: 20px;">DEBUG: vacantCount = <?= var_export($vacantCount, true) ?></div>
-    
     <?php if ($vacantCount > 0): ?>
         <div class="vacant-alert">
             <i class="fas fa-exclamation-triangle vacant-alert-icon"></i>
