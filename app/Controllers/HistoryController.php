@@ -23,6 +23,8 @@ class HistoryController extends Controller {
         $year = $_GET['year'] ?? date('Y');
         $schoolId = $_GET['school_id'] ?? null;
         $professorId = $_GET['professor_id'] ?? null;
+        $bimesterId = $_GET['bimester_id'] ?? null;
+        $classId = $_GET['class_id'] ?? null;
 
         // Restriction for SEMED
         if ($isSemed) {
@@ -51,7 +53,9 @@ class HistoryController extends Controller {
         $filters = [
             'year' => $year,
             'school_id' => $schoolId,
-            'professor_id' => $professorId
+            'professor_id' => $professorId,
+            'bimester_id' => $bimesterId,
+            'class_id' => $classId
         ];
 
         // If Semed and no school selected, we might want to restrict search? 
@@ -68,11 +72,27 @@ class HistoryController extends Controller {
              $documents = []; // Force selection
         }
 
-        // Get Professors for dropdown (reactive to school_id would be nice, but load all for now or filter)
+        // Get Professors for dropdown (reactive to school_id)
         $professors = [];
         if ($schoolId) {
             $professors = $userModel->getBySchoolId($schoolId, 'professor');
         }
+
+        // Get Classes for dropdown (reactive to school_id)
+        require_once __DIR__ . '/../Models/ClassModel.php';
+        $classModel = new ClassModel();
+        $classes = [];
+        if ($schoolId) {
+            $classes = $classModel->getBySchoolId($schoolId);
+        }
+
+        // Get Bimesters (hardcoded for now)
+        $bimesters = [
+            ['id' => 1, 'name' => '1º Bimestre'],
+            ['id' => 2, 'name' => '2º Bimestre'],
+            ['id' => 3, 'name' => '3º Bimestre'],
+            ['id' => 4, 'name' => '4º Bimestre']
+        ];
 
         // Get available years (simple hardcode or distinct query)
         $years = range(date('Y'), 2024); 
@@ -82,6 +102,8 @@ class HistoryController extends Controller {
             'documents' => $documents,
             'schools' => $schools,
             'professors' => $professors,
+            'classes' => $classes,
+            'bimesters' => $bimesters,
             'years' => $years,
             'filters' => $filters,
             'user' => $user

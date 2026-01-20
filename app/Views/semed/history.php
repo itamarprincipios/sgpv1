@@ -54,6 +54,30 @@
                     </select>
                 </div>
 
+                <div class="form-group mb-0">
+                    <label>Bimestre</label>
+                    <select name="bimester_id" class="form-control">
+                        <option value="">Todos</option>
+                        <?php foreach ($bimesters as $bim): ?>
+                            <option value="<?= $bim['id'] ?>" <?= $filters['bimester_id'] == $bim['id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($bim['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group mb-0">
+                    <label>Turma</label>
+                    <select name="class_id" class="form-control">
+                        <option value="">Todas</option>
+                        <?php foreach ($classes as $class): ?>
+                            <option value="<?= $class['id'] ?>" <?= $filters['class_id'] == $class['id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($class['name']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Pesquisar</button>
             </form>
         </div>
@@ -108,4 +132,8 @@
         <p style="margin-top: 20px; text-align:center; color: #666;">Por favor, selecione uma escola para visualizar o histórico.</p>
     <?php endif; ?>
 </div>
+
+<!-- IANNE AI Widget -->
+<?php require __DIR__ . '/../partials/semed_ai_widget.php'; ?>
+
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
