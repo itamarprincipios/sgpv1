@@ -2,7 +2,7 @@
 
 <div class="dashboard-header">
     <h2>Editar Professor</h2>
-    <a href="<?= url('school/dashboard') ?>" class="btn btn-secondary">Voltar</a>
+    <a href="<?= url('school/professors') ?>" class="btn btn-secondary">Voltar</a>
 </div>
 
 <div class="content-row">

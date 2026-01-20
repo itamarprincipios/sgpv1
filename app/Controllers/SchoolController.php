@@ -400,7 +400,7 @@ class SchoolController extends Controller {
             
             if (!in_array($targetSchoolId, $assigned)) {
                  $_SESSION['error'] = "Você não tem permissão para esta escola.";
-                 redirect('school/dashboard');
+                 redirect('school/professors');
             }
 
             // Basic validation skipped for MVP
@@ -415,14 +415,14 @@ class SchoolController extends Controller {
                 'is_monitor' => isset($_POST['is_monitor']) ? 1 : 0
             ];
             $userModel->createProfessor($data);
-            redirect('school/dashboard?tab=professors');
+            redirect('school/professors');
         }
     }
 
     public function editProfessor() {
         checkAuth(['coordinator', 'director']);
         $id = $_GET['id'] ?? null;
-        if(!$id) redirect('school/dashboard');
+        if(!$id) redirect('school/professors');
 
         $userModel = new User();
         $professor = $userModel->findById($id);
@@ -451,7 +451,7 @@ class SchoolController extends Controller {
             ];
             $userModel->update($_POST['id'], $data);
             $_SESSION['success'] = "Professor atualizado com sucesso!";
-            redirect('school/dashboard');
+            redirect('school/professors');
         }
     }
 
@@ -460,7 +460,7 @@ class SchoolController extends Controller {
         if (isset($_GET['id'])) {
            $userModel = new User();
            $userModel->delete($_GET['id']); // Add security check
-           redirect('school/dashboard');
+           redirect('school/professors');
         }
     }
 
