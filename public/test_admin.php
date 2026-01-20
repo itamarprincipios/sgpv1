@@ -44,9 +44,27 @@ if (isset($_POST['fix_admin_role'])) {
     try {
         require_once __DIR__ . '/../app/Core/Database.php';
         $db = Database::getInstance()->getConnection();
+        
+        // 1. Check Schema First
+        $desc = $db->query("DESCRIBE users role")->fetch(PDO::FETCH_ASSOC);
+        echo "<div class='warning'><strong>🔍 Schema da coluna ROLE:</strong> <pre>" . print_r($desc, true) . "</pre></div>";
+
         $stmt = $db->prepare("UPDATE users SET role = 'admin' WHERE email = 'admin@sgp.com'");
         if ($stmt->execute()) {
-             echo "<div class='success'><strong>✅ Role corrigida com sucesso para 'admin'!</strong> Atualize a página.</div>";
+             echo "<div class='success'><strong>✅ UPDATE executado!</strong></div>";
+             
+             // Check for warnings (like truncated data for ENUM)
+             $warnings = $db->query("SHOW WARNINGS")->fetchAll(PDO::FETCH_ASSOC);
+             if ($warnings) {
+                 echo "<div class='error'><strong>⚠️ Avisos do MySQL:</strong> <pre>" . print_r($warnings, true) . "</pre></div>";
+                 echo "<p>Isso geralmente significa que 'admin' não é um valor válido para esta coluna (ENUM).</p>";
+                 
+                 // Fallback: try 'Administrador' if 'admin' failed
+                 echo "<p>Tentando reverter para 'Administrador'...</p>";
+                 $db->exec("UPDATE users SET role = 'Administrador' WHERE email = 'admin@sgp.com'");
+             } else {
+                 echo "<div class='success'>Nenhum aviso do MySQL. Atualize a página.</div>";
+             }
         } else {
              echo "<div class='error'>❌ Falha ao atualizar role.</div>";
         }
@@ -65,6 +83,15 @@ try {
 
     $db = Database::getInstance()->getConnection();
     
+    echo "<div class='section'>";
+    echo "<h2>SCHEMA DATABASE</h2>";
+    $stm = $db->query("DESCRIBE users");
+    $schema = $stm->fetchAll(PDO::FETCH_ASSOC);
+    echo "<pre style='max-height: 200px; overflow:auto;'>" . print_r($schema, true) . "</pre>";
+    echo "</div>";
+
+    echo "<div class='section'>";
+    echo "<h2>2️⃣ Verificação do Banco de Dados</h2>";
     echo "<div class='success'><strong>✅ Conexão com banco OK</strong></div>";
     
     // Buscar usuário admin
@@ -92,7 +119,7 @@ try {
             echo "<form method='post' style='margin-top:10px;'>
                     <input type='hidden' name='fix_admin_role' value='1'>
                     <button type='submit' style='background:#dc3545; color:white; border:none; padding:10px 20px; border-radius:5px; cursor:pointer; font-size:16px;'>
-                        🚨 clique aqui para CORRIGIR ROLE AGORA
+                        🚨 DEBUG & CORRIGIR ROLE (Check ENUM)
                     </button>
                   </form>";
         }
