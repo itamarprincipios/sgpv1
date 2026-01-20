@@ -151,7 +151,16 @@ class SemedController extends Controller {
         $classModel = new ClassModel();
         
         // Get assigned schools for filtering
-        $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        $assignedSchoolIds = [];
+        if (isAdminSemed()) {
+             // Admin SEMED sees all (empty array = no filter)
+        } else {
+             $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+             if (empty($assignedSchoolIds)) {
+                 $assignedSchoolIds = [-1]; // Prevent full access if no schools assigned
+             }
+        }
+        
         $schools = $schoolModel->all(); // For filter dropdown
         
         // Apply school filter if provided
