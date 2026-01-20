@@ -10,6 +10,7 @@ require_once __DIR__ . '/../Core/Model.php';
 require_once __DIR__ . '/../Models/Document.php';
 require_once __DIR__ . '/../Models/User.php';
 require_once __DIR__ . '/../Models/School.php';
+require_once __DIR__ . '/../Models/ClassModel.php'; // Added ClassModel
 
 class ContextBuilder {
     
