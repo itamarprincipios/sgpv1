@@ -101,34 +101,38 @@
                     <span>Dashboard</span>
                 </a>
                 <!-- Cadastros Hub -->
-    <a href="<?= url('semed/cadastros') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/cadastros') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/schools') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/coordinators') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/directors') !== false || strpos($_SERVER['REQUEST_URI'], 'admin/semed-users') !== false ? 'active' : '' ?>">
-        <i class="fas fa-folder-open"></i>
-        <span>Cadastros</span>
-    </a>
-    
-    <!-- Admin-level access for Professors (Pesquisa Only) -->
-    <a href="<?= url('admin/professors') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/professors') !== false ? 'active' : '' ?>">
-        <i class="fas fa-chalkboard-teacher"></i>
-        <span>Professores</span>
-    </a>
-
-    <!-- Admin-level access for Reports -->
-    <a href="<?= url('admin/reports') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/reports') !== false ? 'active' : '' ?>">
-        <i class="fas fa-chart-pie"></i>
-        <span>Relatórios</span>
-    </a>
-    
-    <?php if (isAdminSemed()): ?>
-    <!-- Lotação (Staffing Allocation) - Only for Admin SEMED -->
-    <a href="<?= url('semed/lotacao') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/lotacao') !== false ? 'active' : '' ?>" style="position: relative;">
-        <i class="fas fa-users-cog"></i>
-        <span>Lotação</span>
-        <?php if ($vacantClassCount > 0): ?>
-            <span style="position: absolute; top: -5px; right: -5px; background: #dc2626; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
-                <?= $vacantClassCount ?>
-            </span>
-        <?php endif; ?>
-    </a>
+                <?php 
+                    $cadastrosUrl = isAdminSemed() ? url('adminsemed/cadastros') : url('semed/cadastros');
+                    $lotacaoUrl = isAdminSemed() ? url('adminsemed/lotacao') : url('semed/lotacao');
+                ?>
+                <a href="<?= $cadastrosUrl ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'cadastros') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/schools') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/coordinators') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/directors') !== false || strpos($_SERVER['REQUEST_URI'], 'admin/semed-users') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Cadastros</span>
+                </a>
+                
+                <!-- Admin-level access for Professors (Pesquisa Only) -->
+                <a href="<?= url('admin/professors') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/professors') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Professores</span>
+                </a>
+            
+                <!-- Admin-level access for Reports -->
+                <a href="<?= url('admin/reports') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/reports') !== false ? 'active' : '' ?>">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Relatórios</span>
+                </a>
+                
+                <?php if (isAdminSemed()): ?>
+                <!-- Lotação (Staffing Allocation) - Only for Admin SEMED -->
+                <a href="<?= $lotacaoUrl ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'lotacao') !== false ? 'active' : '' ?>" style="position: relative;">
+                    <i class="fas fa-users-cog"></i>
+                    <span>Lotação</span>
+                    <?php if ($vacantClassCount > 0): ?>
+                        <span style="position: absolute; top: -5px; right: -5px; background: #dc2626; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                            <?= $vacantClassCount ?>
+                        </span>
+                    <?php endif; ?>
+                </a>
                 <a href="<?= url('semed/history') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/history') !== false ? 'active' : '' ?>">
                     <i class="fas fa-history"></i>
                     <span>Banco de Planejamentos</span>

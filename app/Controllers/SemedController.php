@@ -51,6 +51,67 @@ class SemedController extends Controller {
     }
 
     /**
+     * Registrations Hub explicit for Admin SEMED
+     */
+    public function adminRegistrations() {
+        checkAuth('semed');
+        if (!isAdminSemed()) redirect('semed/dashboard');
+
+        $userModel = new User();
+        $schoolModel = new School();
+
+        // Count all records for stats (Admin SEMED sees all)
+        // Passing empty array means GLOBAL/ALL
+        $schoolCount = $schoolModel->countAll([]); 
+        $directorCount = $userModel->countDirectors([]); 
+        $coordinatorCount = $userModel->countCoordinators([]);
+        $semedUserCount = $userModel->countSemedUsers(); // Logic inside model should already count all
+
+        $stats = [
+            'schools' => $schoolCount,
+            'directors' => $directorCount,
+            'coordinators' => $coordinatorCount,
+            'semed_users' => $semedUserCount
+        ];
+        
+        $this->view('dashboard/registrations', ['stats' => $stats]);
+    }
+
+    /**
+     * Staffing Allocation explicit for Admin SEMED
+     */
+    public function adminAllocation() {
+        checkAuth('semed');
+        if (!isAdminSemed()) redirect('semed/dashboard');
+
+        $classModel = new ClassModel();
+        $schoolModel = new School();
+        
+        // Admin SEMED sees all schools for dropdown
+        $schools = $schoolModel->all(); 
+        
+        // Apply school filter if provided via GET, otherwise show ALL
+        $schoolId = $_GET['school_id'] ?? null;
+        
+        if ($schoolId) {
+            $allocations = $classModel->getAllWithAllocation($schoolId);
+        } else {
+            // Null schoolId and empty array for schoolIds = Global All
+            $allocations = $classModel->getAllWithAllocation(null, []);
+        }
+        
+        // Count vacant classes globally
+        $vacantCount = $classModel->countVacantClasses([]);
+        
+        $this->view('dashboard/allocation', [
+            'allocations' => $allocations,
+            'schools' => $schools,
+            'selectedSchoolId' => $schoolId,
+            'vacantCount' => $vacantCount
+        ]);
+    }
+
+    /**
      * Dashboard for SEMED Team Members (filtered by assigned schools)
      */
     public function dashboard() {
