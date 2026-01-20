@@ -21,12 +21,27 @@
             $role = $user['role'] ?? '';
             
             // Fetch vacant class count for SEMED users (for badge)
+            // Fetch vacant class count for SEMED users (for badge)
             $vacantClassCount = 0;
             if ($role === 'semed') {
-                $userModel = new User();
+                require_once __DIR__ . '/../../Helpers/functions.php'; // Ensure helpers are loaded
                 $classModel = new ClassModel();
-                $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
-                $vacantClassCount = $classModel->countVacantClasses($assignedSchoolIds);
+                
+                if (isAdminSemed()) {
+                    // Admin SEMED sees ALL vacant classes
+                    $vacantClassCount = $classModel->countVacantClasses([]); 
+                } else {
+                    // Team members see only their assigned schools
+                    $userModel = new User();
+                    $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+                    
+                    if (!empty($assignedSchoolIds)) {
+                        $vacantClassCount = $classModel->countVacantClasses($assignedSchoolIds);
+                    } else {
+                         // No schools assigned code for team member = 0 count
+                        $vacantClassCount = 0;
+                    }
+                }
             }
             
             if($role == 'coordinator') echo 'Coordenador';
