@@ -539,7 +539,8 @@ class SemedController extends Controller {
                 'email' => $_POST['email'],
                 'whatsapp' => $_POST['whatsapp'],
                 'address' => $_POST['address'],
-                'school_id' => $_POST['school_id']
+                'school_id' => $_POST['school_id'],
+                'is_vice_director' => isset($_POST['is_vice_director']) ? 1 : 0
             ];
             
             // Note: For Directors we might not be using pivot table `user_schools` yet, primarily `school_id`.

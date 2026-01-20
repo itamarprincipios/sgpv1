@@ -32,6 +32,14 @@
             <label>Endereço</label>
             <input type="text" name="address" value="<?= htmlspecialchars($director['address'] ?? '') ?>">
         </div>
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" name="is_vice_director" value="1" <?= !empty($director['is_vice_director']) ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                <span style="font-weight: 600; color: #6366f1;">
+                    <i class="fas fa-user-shield" style="color: #6366f1;"></i> Vice-Diretor
+                </span>
+            </label>
+        </div>
         <button type="submit" class="btn btn-primary">Salvar Alterações</button>
     </form>
 </div>
