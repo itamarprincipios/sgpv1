@@ -231,64 +231,114 @@
         </div>
         
         <div class="info-grid">
+            <!-- DIREÇÃO -->
             <div class="info-box">
                 <div class="info-label">Direção</div>
-                <div class="info-value"><?= htmlspecialchars($reportData['school']['director_name'] ?? 'Não informado') ?></div>
-                <div style="font-size: 0.9rem; margin-top: 5px;"><i class="fas fa-phone"></i> <?= htmlspecialchars($reportData['school']['director_phone'] ?? '-') ?></div>
+                
+                <?php 
+                    $director = $reportData['director_user'] ?? null;
+                    if ($director): // Se temos usuário diretor vinculado
+                        $directorName = $director['name'];
+                        $directorPhone = $director['whatsapp'] ?? $director['director_phone'] ?? null;
+                        
+                        // Avatar logic
+                        $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($directorName) . "&background=random&color=fff&size=64";
+                        if (!empty($director['profile_photo']) && file_exists(__DIR__ . '/../../public/uploads/avatars/' . $director['profile_photo'])) {
+                             $avatarUrl = url('uploads/avatars/' . $director['profile_photo']);
+                        }
+                ?>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img src="<?= $avatarUrl ?>" alt="Foto Diretor" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0;">
+                        <div>
+                            <div class="info-value"><?= htmlspecialchars($directorName) ?></div>
+                            <?php if ($directorPhone): ?>
+                                <a href="https://wa.me/55<?= preg_replace('/[^0-9]/', '', $directorPhone) ?>" target="_blank" style="font-size: 0.9rem; color: #22c55e; text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                                    <i class="fab fa-whatsapp"></i> WhatsApp
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                <?php else: // Apenas dados da tabela schools ?>
+                    <div class="info-value"><?= htmlspecialchars($reportData['school']['director_name'] ?? 'Não informado') ?></div>
+                    <div style="font-size: 0.9rem; margin-top: 5px;"><i class="fas fa-phone"></i> <?= htmlspecialchars($reportData['school']['director_phone'] ?? '-') ?></div>
+                <?php endif; ?>
             </div>
+
+            <!-- SUPERVISÃO SEMED -->
             <div class="info-box" style="border-left-color: #8b5cf6;">
                 <div class="info-label">Supervisão SEMED</div>
                 <?php if(!empty($reportData['semed_users'])): ?>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
                     <?php foreach($reportData['semed_users'] as $su): ?>
-                        <div class="info-value" style="margin-bottom: 5px;">
-                            <?= htmlspecialchars($su['name']) ?>
-                            <a href="<?= url('admin/reports?type=semed_user&id='.$su['id']) ?>" style="font-size: 0.8rem; color: #3b82f6;"><i class="fas fa-link"></i></a>
+                        <?php 
+                            $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($su['name']) . "&background=random&color=fff&size=64";
+                            if (!empty($su['profile_photo']) && file_exists(__DIR__ . '/../../public/uploads/avatars/' . $su['profile_photo'])) {
+                                 $avatarUrl = url('uploads/avatars/' . $su['profile_photo']);
+                            }
+                        ?>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                             <img src="<?= $avatarUrl ?>" alt="Foto Supervisor" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                             <div>
+                                <div class="info-value" style="font-size: 1rem;"><?= htmlspecialchars($su['name']) ?></div>
+                                <?php if (!empty($su['whatsapp'])): ?>
+                                    <a href="https://wa.me/55<?= preg_replace('/[^0-9]/', '', $su['whatsapp']) ?>" target="_blank" style="font-size: 0.8rem; color: #22c55e; text-decoration: none;">
+                                        <i class="fab fa-whatsapp"></i> Contato
+                                    </a>
+                                <?php endif; ?>
+                             </div>
                         </div>
                     <?php endforeach; ?>
+                    </div>
                 <?php else: ?>
                     <div class="info-value" style="color: #94a3b8;">Ninguém vinculado</div>
                 <?php endif; ?>
             </div>
+
+            <!-- LOCALIDADE -->
             <div class="info-box" style="border-left-color: #f59e0b;">
                 <div class="info-label">Localidade</div>
                 <div class="info-value"><?= htmlspecialchars($reportData['school']['address'] ?? 'Não informado') ?></div>
             </div>
         </div>
         
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div>
-                <h4 style="margin-bottom: 15px; color: #475569;">Coordenadores (<?= count($reportData['coordinators']) ?>)</h4>
-                <?php if(!empty($reportData['coordinators'])): ?>
-                    <ul style="list-style: none; padding: 0;">
-                        <?php foreach($reportData['coordinators'] as $c): ?>
-                            <li style="padding: 10px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
-                                <span><?= htmlspecialchars($c['name']) ?></span>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php else: ?>
-                    <p style="color: #94a3b8; font-style: italic;">Nenhum coordenador encontrado.</p>
-                <?php endif; ?>
-            </div>
+        <!-- COORDENADORES -->
+        <div>
+            <h4 style="margin-bottom: 20px; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+                Coordenadores Pedagógicos (<?= count($reportData['coordinators']) ?>)
+            </h4>
             
-            <div>
-                <h4 style="margin-bottom: 15px; color: #475569;">Professores (<?= count($reportData['professors']) ?>)</h4>
-                 <?php if(!empty($reportData['professors'])): ?>
-                    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
-                        <table class="data-table-clean">
-                            <?php foreach($reportData['professors'] as $p): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($p['name']) ?></td>
-                                    <!-- Add Class info here if queried -->
-                                </tr>
-                            <?php endforeach; ?>
-                        </table>
-                    </div>
-                <?php else: ?>
-                    <p style="color: #94a3b8; font-style: italic;">Nenhum professor encontrado.</p>
-                <?php endif; ?>
-            </div>
+            <?php if(!empty($reportData['coordinators'])): ?>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px;">
+                    <?php foreach($reportData['coordinators'] as $c): ?>
+                         <?php 
+                            $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($c['name']) . "&background=random&color=fff&size=64";
+                            if (!empty($c['profile_photo']) && file_exists(__DIR__ . '/../../public/uploads/avatars/' . $c['profile_photo'])) {
+                                 $avatarUrl = url('uploads/avatars/' . $c['profile_photo']);
+                            }
+                        ?>
+                        <div style="padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; gap: 15px;">
+                             <img src="<?= $avatarUrl ?>" alt="Foto Coordenador" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                             <div>
+                                 <div style="font-weight: 600; color: #1e293b;"><?= htmlspecialchars($c['name']) ?></div>
+                                 <div style="font-size: 0.85rem; color: #64748b;"><?= htmlspecialchars($c['email']) ?></div>
+                                 <?php if (!empty($c['whatsapp'])): ?>
+                                    <div style="margin-top: 5px;">
+                                        <a href="https://wa.me/55<?= preg_replace('/[^0-9]/', '', $c['whatsapp']) ?>" target="_blank" style="font-size: 0.9rem; color: #22c55e; text-decoration: none; font-weight: 500;">
+                                            <i class="fab fa-whatsapp"></i> Enviar Mensagem
+                                        </a>
+                                    </div>
+                                 <?php endif; ?>
+                             </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <p style="color: #94a3b8; font-style: italic;">Nenhum coordenador vinculado a esta escola.</p>
+            <?php endif; ?>
         </div>
+        
+        <!-- PROFESSORS REMOVED HERE -->
+
     </div>
 
 <?php elseif ($type === 'semed_user' && isset($reportData['user'])): ?>

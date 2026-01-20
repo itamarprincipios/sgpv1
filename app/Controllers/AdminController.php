@@ -283,9 +283,36 @@ class AdminController extends Controller {
             if ($school) {
                 $title = "Relatório: " . $school['name'];
                 $reportData['school'] = $school;
+                
+                // Try to find the director user
+                $directorUser = $userModel->getByRole('director'); 
+                // Filter manually or query DB. getByRole returns array. 
+                // Faster: Query directly.
+                $directorUser = null;
+                // We don't have a direct method for this in User model yet, let's just use raw query here or add method.
+                // Or loop through all directors (not efficient but works for MVP if few users).
+                // Better: simple query.
+                $db = $userModel->getDb(); // Hack access or use a new method?
+                // Let's add a quick findDirectorBySchool method or just query here if simple.
+                // Actually, User::getByRole returns all directors. We can filter.
+                
+                // Let's rely on adding a method to School or User model to keep controller clean?
+                // Or just use getByRole filtered.
+                $allDirectors = $userModel->getByRole('director');
+                foreach($allDirectors as $d) {
+                    // Check logic: director linked to school via pivot or school_id?
+                    // Usually director is 1-to-1 with school via school_id in users table or director_name in schools.
+                    // Implementation of Director User linking is: school_id column in users table (mostly).
+                    if (($d['school_id'] == $id) || (isset($d['school_ids_raw']) && in_array($id, explode(',', $d['school_ids_raw'])))) {
+                         $directorUser = $d;
+                         break;
+                    }
+                }
+                $reportData['director_user'] = $directorUser;
+
                 $reportData['semed_users'] = $schoolModel->getSemedUsers($id);
                 $reportData['coordinators'] = $schoolModel->getCoordinators($id);
-                $reportData['professors'] = $schoolModel->getProfessors($id);
+                // $reportData['professors'] = $schoolModel->getProfessors($id); // REMOVED per user request
             }
         } elseif ($type === 'semed_user' && $id) {
             $user = $userModel->findById($id);
