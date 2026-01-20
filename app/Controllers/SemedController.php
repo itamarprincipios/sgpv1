@@ -656,9 +656,6 @@ class SemedController extends Controller {
         ]);
     }
 
-        ]);
-    }
-
     public function relatorios() {
         checkAuth('semed');
         $type = $_GET['type'] ?? 'submissions';
