@@ -275,7 +275,7 @@
         </div>
 
         <div>
-            <h1>🎯 Painel Deaps</h1>
+            <h1>🎯 Painel Equipe Semed</h1>
             <p>Visão completa da rede municipal de educação em tempo real</p>
         </div>
     </div>
