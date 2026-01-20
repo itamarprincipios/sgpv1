@@ -325,7 +325,7 @@ class SemedController extends Controller {
             
             // Allow selecting only from assigned schools
             $placeholders = implode(',', array_map('intval', $assignedIds));
-            $schools = $schoolModel->db->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
+            $schools = $schoolModel->getDb()->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
             $schoolIds = $assignedIds;
         }
         
@@ -481,7 +481,7 @@ class SemedController extends Controller {
             
             // Filter schools dropdown
             $placeholders = implode(',', array_map('intval', $assignedIds));
-            $schools = $schoolModel->db->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
+            $schools = $schoolModel->getDb()->query("SELECT * FROM schools WHERE id IN ($placeholders) ORDER BY name ASC")->fetchAll();
         }
         
         $this->view('dashboard/semed_directors', [
