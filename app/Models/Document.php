@@ -235,12 +235,20 @@ class Document extends Model {
                 LEFT JOIN periods p ON d.period_id = p.id
                 WHERE u.role = 'professor'";
         
+        $params = [];
         if ($schoolId) {
-            $sql .= " AND s.id = :school_id";
-            return $this->db->query($sql . " GROUP BY u.id ORDER BY s.name, u.name", ['school_id' => $schoolId])->fetchAll();
+            if (is_array($schoolId)) {
+                if (!empty($schoolId)) {
+                    $placeholders = implode(',', array_map('intval', $schoolId));
+                    $sql .= " AND s.id IN ($placeholders)";
+                }
+            } else {
+                $sql .= " AND s.id = :school_id";
+                $params['school_id'] = $schoolId;
+            }
         }
         
-        return $this->db->query($sql . " GROUP BY u.id ORDER BY s.name, u.name")->fetchAll();
+        return $this->db->query($sql . " GROUP BY u.id ORDER BY s.name, u.name", $params)->fetchAll();
     }
 
     public function getProfessorStats($professorId, $periodFilter = 'annual') {
@@ -297,23 +305,45 @@ class Document extends Model {
                   AND d.id IS NULL
                   AND p.school_id = u.school_id";
         
+        $params = [];
         if ($schoolId) {
-            $sql .= " AND s.id = :school_id";
-            return $this->db->query($sql . " ORDER BY days_late DESC", ['school_id' => $schoolId])->fetchAll();
+            if (is_array($schoolId)) {
+                if (!empty($schoolId)) {
+                    $placeholders = implode(',', array_map('intval', $schoolId));
+                    $sql .= " AND s.id IN ($placeholders)";
+                }
+            } else {
+                $sql .= " AND s.id = :school_id";
+                $params['school_id'] = $schoolId;
+            }
         }
         
-        return $this->db->query($sql . " ORDER BY days_late DESC")->fetchAll();
+        return $this->db->query($sql . " ORDER BY days_late DESC", $params)->fetchAll();
     }
 
-    public function getSchoolPunctuality() {
+    public function getSchoolPunctuality($schoolId = null) {
         $sql = "SELECT s.name as school_name, AVG(d.score_final) as avg_score, COUNT(d.id) as total_docs
                 FROM schools s
                 JOIN users u ON s.id = u.school_id
                 JOIN documents d ON u.id = d.user_id
-                WHERE d.status IN ('aprovado', 'ajustado', 'enviado')
-                GROUP BY s.id
-                ORDER BY avg_score DESC";
-        return $this->db->query($sql)->fetchAll();
+                WHERE d.status IN ('aprovado', 'ajustado', 'enviado')";
+        
+        $params = [];
+        if ($schoolId) {
+            if (is_array($schoolId)) {
+                if (!empty($schoolId)) {
+                    $placeholders = implode(',', array_map('intval', $schoolId));
+                    $sql .= " AND s.id IN ($placeholders)";
+                }
+            } else {
+                $sql .= " AND s.id = :school_id";
+                $params['school_id'] = $schoolId;
+            }
+        }
+
+        $sql .= " GROUP BY s.id ORDER BY avg_score DESC";
+
+        return $this->db->query($sql, $params)->fetchAll();
     }
 
     public function getProfessorPunctualityBySchool($schoolId) {

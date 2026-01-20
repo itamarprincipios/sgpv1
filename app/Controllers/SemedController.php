@@ -698,9 +698,8 @@ class SemedController extends Controller {
         if ($schoolId) {
             $professors = $userModel->getBySchoolId($schoolId, 'professor');
         } else {
-             // If no specific school selected, limit professors/data to assigned schools
-             // This part might need deep Model refactoring for strict data security, 
-             // but visually we are limiting the scope.
+             // If no specific school selected, we must limit to assigned schools
+             // This is the new restricted view
         }
 
         if ($professorId) {
@@ -708,13 +707,19 @@ class SemedController extends Controller {
             $data = $docModel->getProfessorStats($professorId, $period);
         } elseif ($type === 'pendencies') {
             // Get professors with pending/delayed documents
-            $data = $docModel->getGlobalPendencies($schoolId);
+            // Pass assigned schools array if no specific school selected
+            $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
+            $data = $docModel->getGlobalPendencies($targetSchools);
         } elseif ($type === 'punctuality') {
             // Get averaging scores per school
-            $data = $docModel->getSchoolPunctuality();
+            // Pass assigned schools array if no specific school selected
+            $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
+            $data = $docModel->getSchoolPunctuality($targetSchools);
         } else {
             // Default: Submissions summary
-            $data = $docModel->getSubmissionsReport($schoolId);
+            // Pass assigned schools array if no specific school selected
+            $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
+            $data = $docModel->getSubmissionsReport($targetSchools);
         }
         
         $this->view('dashboard/semed_reports', [
