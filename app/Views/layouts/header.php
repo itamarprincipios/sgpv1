@@ -23,8 +23,6 @@
             // Fetch vacant class count for SEMED users (for badge)
             $vacantClassCount = 0;
             if ($role === 'semed') {
-                require_once __DIR__ . '/../../app/Models/User.php';
-                require_once __DIR__ . '/../../app/Models/ClassModel.php';
                 $userModel = new User();
                 $classModel = new ClassModel();
                 $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
