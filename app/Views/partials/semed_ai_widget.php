@@ -121,7 +121,7 @@ function askIanneSemed() {
         filters.school_id = parseInt(schoolId);
     }
     
-    fetch('<?= url('rag/query') ?>', {
+    fetch('/api/rag.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question, filters })
