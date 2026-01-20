@@ -19,6 +19,11 @@
         </div>
 
         <div class="form-group">
+            <label class="modern-label">Código INEP (Opcional)</label>
+            <input type="text" name="inep_code" class="modern-input" placeholder="Ex: 12345678">
+        </div>
+
+        <div class="form-group">
             <label class="modern-label">Nome do Diretor(a)</label>
             <input type="text" name="director_name" class="modern-input" placeholder="Ex: Maria Souza">
         </div>
