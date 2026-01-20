@@ -23,7 +23,7 @@
             elseif($role == 'director') echo 'Diretor';
             elseif($role == 'semed') echo 'SEMED';
             elseif($role == 'professor') echo 'Professor';
-            elseif($role == 'admin') echo 'Admin';
+            elseif($role == 'admin' || $role == 'Administrador') echo 'Admin';
             elseif($role == 'supervisor_edfis') echo 'Supervisão de Educação Física';
             elseif($role == 'supervisor_monitor') echo 'Supervisão de Monitores';
         ?></div>
@@ -37,7 +37,7 @@
         </button>
         <?php endif; ?>
         <div class="nav-tabs" id="nav-menu" style="display: flex; gap: 15px; flex-wrap: wrap;">
-            <?php if ($role === 'admin'): ?>
+            <?php if ($role === 'admin' || $role === 'Administrador'): ?>
                 <a href="<?= url('admin/dashboard') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/dashboard') !== false ? 'active' : '' ?>">
                     <i class="fas fa-shield-alt"></i>
                     <span>Painel Admin</span>

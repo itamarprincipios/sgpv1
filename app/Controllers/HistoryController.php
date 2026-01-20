@@ -9,7 +9,7 @@ class HistoryController extends Controller {
     public function index() {
         $user = auth();
         $isSemed = $user['role'] === 'semed';
-        $isAdmin = $user['role'] === 'admin';
+        $isAdmin = $user['role'] === 'admin' || $user['role'] === 'Administrador';
 
         if (!$isSemed && !$isAdmin) {
             redirect('login');
