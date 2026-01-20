@@ -87,4 +87,20 @@ class School extends Model {
         // Implementation might prefer 'deactivating' instead of hard delete.
         return $this->db->query("DELETE FROM schools WHERE id = :id", ['id' => $id]);
     }
+
+    /**
+     * Count total schools, optionally filtered by IDs
+     * @param array $schoolIds List of school IDs to filter by (or empty for all)
+     * @return int
+     */
+    public function countAll($schoolIds = []) {
+        $sql = "SELECT COUNT(*) as count FROM schools";
+        
+        if (!empty($schoolIds)) {
+            $placeholders = implode(',', array_map('intval', $schoolIds));
+            $sql .= " WHERE id IN ($placeholders)";
+        }
+        
+        return $this->db->query($sql)->fetch()['count'];
+    }
 }
