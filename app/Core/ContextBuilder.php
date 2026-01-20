@@ -206,6 +206,7 @@ class ContextBuilder {
         $documentModel = new Document();
         $schoolModel = new School();
         $userModel = new User();
+        $classModel = new ClassModel(); // Added ClassModel
         
         $stats = $documentModel->getGlobalStats();
         $schools = $schoolModel->all();
@@ -216,15 +217,67 @@ class ContextBuilder {
         // Buscar todos os professores
         $professors = $userModel->getByRole('professor');
         
+        // 1. Buscar Turmas Sem Professor (Lotação)
+        // Pass empty array for global
+        $allClasses = $classModel->getAllWithAllocation(null, []); 
+        $vacantClasses = array_filter($allClasses, function($c) {
+            return $c['is_vacant'] == 1;
+        });
+        
+        // Format Vacant Classes for AI
+        $vacantClassesFormatted = array_map(function($c) {
+            return [
+                'escola' => $c['school_name'],
+                'turma' => $c['class_name']
+            ];
+        }, $vacantClasses);
+        
+        // 2. Buscar Monitores
+        // We can filter the $professors list if getByRole returns everything, 
+        // OR use the specific filter method if available. 
+        // Let's use getProfessorsWithFilters for precision if we trust it, 
+        // or just filter the already fetched $professors list if 'is_monitor' is in the result.
+        // User::getByRole usually does SELECT * FROM users WHERE role='professor'. 
+        // Let's check if 'is_monitor' is in the $professors array. Yes, SELECT * fetches it.
+        
+        $monitors = array_filter($professors, function($p) {
+            return isset($p['is_monitor']) && $p['is_monitor'] == 1;
+        });
+        
+        $monitorsFormatted = array_map(function($m) {
+            return [
+                'nome' => $m['name'],
+                'escola' => $m['school_name'] ?? 'N/A', // getByRole might not have school_name joined unless modified. 
+                // Wait, User::getByRole is just "SELECT * ...". It does NOT join schools.
+                // We need school names for context.
+                // Let's use getProfessorsWithFilters for monitors to get school names.
+            ];
+        }, $monitors);
+
+        // Better: Fetch monitors explicitly with school names
+        $monitorsComplete = $userModel->getProfessorsWithFilters(['function' => 'monitor']);
+        $monitorsFormatted = array_map(function($m) {
+            return [
+                'nome' => $m['name'],
+                'escola' => $m['school_name'],
+                'whatsapp' => $m['whatsapp'] ?? 'N/A'
+            ];
+        }, $monitorsComplete);
+
+        
         return [
             'tipo' => 'rede_municipal',
             'estatisticas_globais' => [
                 'total_escolas' => $stats['total_schools'],
                 'total_professores' => $stats['total_professors'],
+                'total_monitores' => count($monitorsComplete),
                 'total_coordenadores' => count($coordinators),
                 'total_planejamentos' => $stats['total_docs'],
-                'total_periodos' => $stats['total_plannings']
+                'total_periodos' => $stats['total_plannings'],
+                'turmas_sem_professor' => count($vacantClasses)
             ],
+            'turmas_vagas' => array_values($vacantClassesFormatted), // Reset keys
+            'monitores' => $monitorsFormatted,
             'escolas' => $this->extractSchoolsInfo($schools),
             'coordenadores' => $this->extractCoordinatorsInfo($coordinators),
             'professores_resumo' => array_slice($this->extractProfessorsInfo($professors), 0, 20)
