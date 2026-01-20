@@ -110,6 +110,19 @@ class AdminController extends Controller {
             $classes = $classModel->getBySchoolId($filters['school_id']);
         }
         
+        if (isSemedTeam()) {
+             // Security: Enforce school restriction for query
+            $assignedIds = $userModel->getAssignedSchoolIds(auth()['id']);
+            if (empty($assignedIds)) $assignedIds = [-1]; // Prevent full access if no schools
+            
+            $filters['allowed_school_ids'] = $assignedIds;
+            
+            // Security: If specific school requested, ensure it is assigned
+            if ($filters['school_id'] && !in_array($filters['school_id'], $assignedIds)) {
+                $filters['school_id'] = null; // Reset if trying to access unauthorized school
+            }
+        }
+
         // Use new method with filters
         $professors = $userModel->getProfessorsWithFilters($filters);
         

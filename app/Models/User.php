@@ -71,6 +71,12 @@ class User extends Model {
         if (!empty($filters['school_id'])) {
             $sql .= " AND (u.school_id = :school_id OR us.school_id = :school_id)";
             $params['school_id'] = $filters['school_id'];
+        } elseif (!empty($filters['allowed_school_ids'])) {
+            // New logic: restricted global view
+            $placeholders = implode(',', array_map('intval', $filters['allowed_school_ids']));
+            if (!empty($placeholders)) {
+                 $sql .= " AND (u.school_id IN ($placeholders) OR us.school_id IN ($placeholders))";
+            }
         }
 
         // Filter by Class
