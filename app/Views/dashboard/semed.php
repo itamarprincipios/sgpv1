@@ -287,7 +287,6 @@
     <div style="display: flex; gap: 10px; align-items: center;">
         
         <div class="filter-group">
-            <i class="fas fa-calendar-alt filter-icon"></i>
             <select name="filter" id="periodFilter" onchange="updateDashboard(this.value)" class="filter-select">
                 <option value="annual" <?= $filter == 'annual' ? 'selected' : '' ?>>Anual</option>
                 <option value="1" <?= $filter == '1' ? 'selected' : '' ?>>1º Bimestre</option>
@@ -315,6 +314,14 @@
         <div class="stat-icon"><i class="fas fa-school"></i></div>
         <div class="stat-label">Escolas Ativas</div>
         <div class="stat-value"><?= $stats['total_schools'] ?></div>
+    </div>
+    
+    <div class="stat-card purple">
+        <div class="stat-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <div class="stat-label">Diretores</div>
+        <div class="stat-value"><?= $stats['total_directors'] ?></div>
     </div>
     
     <div class="stat-card green">
