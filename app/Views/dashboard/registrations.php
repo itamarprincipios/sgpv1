@@ -168,22 +168,27 @@
     -->
     
     <div class="nav-shortcuts">
+        <?php if (isAdminSemed()): ?>
         <a href="<?= url('admin/schools') ?>" class="shortcut-btn">
             <i class="fas fa-school shortcut-icon"></i> Escolas
         </a>
+        <?php endif; ?>
         <a href="<?= url('semed/coordinators') ?>" class="shortcut-btn">
             <i class="fas fa-user-tie shortcut-icon"></i> Coordenadores
         </a>
         <a href="<?= url('semed/directors') ?>" class="shortcut-btn">
             <i class="fas fa-user-check shortcut-icon"></i> Diretores
         </a>
+        <?php if (isAdminSemed()): ?>
         <a href="<?= url('admin/semed-users') ?>" class="shortcut-btn">
             <i class="fas fa-users-cog shortcut-icon"></i> DEAPS
         </a>
+        <?php endif; ?>
     </div>
 
     <div class="registration-grid">
-        <!-- Schools Card -->
+        <?php if (isAdminSemed()): ?>
+        <!-- Schools Card - Only Admin SEMED -->
         <a href="<?= url('admin/schools') ?>" class="reg-card blue">
             <div class="reg-icon-wrapper">
                 <i class="fas fa-school"></i>
@@ -194,6 +199,7 @@
             </div>
             <div class="action-btn">Gerenciar Escolas <i class="fas fa-arrow-right" style="margin-left:5px; font-size: 0.8em;"></i></div>
         </a>
+        <?php endif; ?>
 
         <!-- Directors Card -->
         <a href="<?= url('semed/directors') ?>" class="reg-card purple">
@@ -219,7 +225,8 @@
             <div class="action-btn">Gerenciar Coordenadores <i class="fas fa-arrow-right" style="margin-left:5px; font-size: 0.8em;"></i></div>
         </a>
 
-        <!-- DEAPS Users Card -->
+        <?php if (isAdminSemed()): ?>
+        <!-- DEAPS Users Card - Only Admin SEMED -->
         <a href="<?= url('admin/semed-users') ?>" class="reg-card green">
             <div class="reg-icon-wrapper">
                 <i class="fas fa-users-cog"></i>
@@ -230,6 +237,7 @@
             </div>
             <div class="action-btn">Gerenciar Equipe <i class="fas fa-arrow-right" style="margin-left:5px; font-size: 0.8em;"></i></div>
         </a>
+        <?php endif; ?>
     </div>
 </div>
 

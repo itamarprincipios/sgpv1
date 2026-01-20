@@ -77,3 +77,21 @@ function checkAuth($role = null) {
         }
     }
 }
+
+/**
+ * Check if current user is Admin SEMED (DEAPS)
+ * @return bool
+ */
+function isAdminSemed() {
+    $user = auth();
+    return $user && $user['role'] === 'semed' && !empty($user['is_admin_semed']);
+}
+
+/**
+ * Check if current user is SEMED Team Member (limited access)
+ * @return bool
+ */
+function isSemedTeam() {
+    $user = auth();
+    return $user && $user['role'] === 'semed' && empty($user['is_admin_semed']);
+}

@@ -103,7 +103,8 @@
         <span>Relatórios</span>
     </a>
     
-    <!-- Lotação (Staffing Allocation) with Vacancy Alert Badge -->
+    <?php if (isAdminSemed()): ?>
+    <!-- Lotação (Staffing Allocation) - Only for Admin SEMED -->
     <a href="<?= url('semed/lotacao') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/lotacao') !== false ? 'active' : '' ?>" style="position: relative;">
         <i class="fas fa-users-cog"></i>
         <span>Lotação</span>
@@ -117,6 +118,7 @@
                     <i class="fas fa-history"></i>
                     <span>Banco de Planejamentos</span>
                 </a>
+    <?php endif; ?>
             <?php elseif ($role === 'coordinator' || $role === 'director'): ?>
                 <a href="<?= url('school/dashboard') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'school/dashboard') !== false ? 'active' : '' ?>">
                     <i class="fas fa-th-large"></i>

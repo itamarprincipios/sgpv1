@@ -124,8 +124,22 @@
             <input type="text" name="whatsapp" class="modern-input" placeholder="Ex: 5511999999999">
         </div>
         
+        <?php if (auth()['role'] === 'admin'): ?>
         <div class="form-group" style="grid-column: 1 / -1;">
-            <label class="modern-label">Escolas Vinculadas</label>
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; background: #fef3c7; padding: 12px; border-radius: 8px; border: 2px solid #fbbf24;">
+                <input type="checkbox" name="is_admin_semed" value="1" style="width: 20px; height: 20px;">
+                <span style="font-weight: 600; color: #92400e;">
+                    <i class="fas fa-crown" style="color: #f59e0b;"></i> Admin SEMED (DEAPS) - Acesso Total ao Sistema
+                </span>
+            </label>
+            <span class="input-hint" style="margin-left: 30px; color: #92400e;">
+                ⚠️ Marque apenas para usuários com permissão administrativa total. Usuários normais terão acesso limitado às escolas vinculadas.
+            </span>
+        </div>
+        <?php endif; ?>
+        
+        <div class="form-group" style="grid-column: 1 / -1;">
+            <label class="modern-label">Escolas Vinculadas <span style="color: #94a3b8; font-weight: normal;">(Opcional para Admin SEMED)</span></label>
             
             <div class="school-selector-container" style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 15px;">
                 <div style="display: flex; gap: 10px; margin-bottom: 0;">
