@@ -333,12 +333,12 @@ class SchoolController extends Controller {
             
             if (!in_array($targetSchoolId, $assigned)) {
                  $_SESSION['error'] = "Você não tem permissão para esta escola.";
-                 redirect('school/dashboard');
+                 redirect('school/classes');
             }
 
             $classModel = new ClassModel();
             $classModel->create($targetSchoolId, $name);
-            redirect('school/dashboard?tab=classes');
+            redirect('school/classes');
         }
     }
 
@@ -368,7 +368,7 @@ class SchoolController extends Controller {
                 $classModel->update($id, $name);
             }
 
-            redirect('school/dashboard');
+            redirect('school/classes');
         }
     }
 
@@ -383,7 +383,7 @@ class SchoolController extends Controller {
                 $classModel->delete($id);
             }
         }
-        redirect('school/dashboard');
+        redirect('school/classes');
     }
 
     // --- Professor CRUD ---
