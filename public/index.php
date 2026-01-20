@@ -93,6 +93,7 @@ $routes = [
     'semed/password/reset' => 'SemedController@resetPassword',
     'semed/plannings' => 'SemedController@plannings',
     'semed/reports' => 'SemedController@reports',
+    'semed/relatorios' => 'SemedController@relatorios',
     'semed/password/change' => 'SemedController@changePassword',
     'professor/password/change' => 'ProfessorController@changePassword',
     'professor/photo/upload' => 'ProfessorController@uploadPhoto', // NEW

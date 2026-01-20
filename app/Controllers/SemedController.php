@@ -656,6 +656,77 @@ class SemedController extends Controller {
         ]);
     }
 
+        ]);
+    }
+
+    public function relatorios() {
+        checkAuth('semed');
+        $type = $_GET['type'] ?? 'submissions';
+        $schoolId = $_GET['school_id'] ?? null;
+        $professorId = $_GET['professor_id'] ?? null;
+        $period = $_GET['period'] ?? 'annual';
+        
+        $docModel = new Document();
+        $schoolModel = new School();
+        $userModel = new User();
+
+        $schools = $schoolModel->all();
+        
+        // Filter schools for the current SEMED user
+        $user = auth();
+        $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        
+        // Fallback: If no schools assigned in user_schools table, get all schools
+        if (empty($assignedSchoolIds)) {
+            $allSchools = $schoolModel->all();
+            $assignedSchoolIds = array_column($allSchools, 'id');
+        }
+        
+        if (!empty($assignedSchoolIds)) {
+            $schools = array_filter($schools, function($s) use ($assignedSchoolIds) {
+                return in_array($s['id'], $assignedSchoolIds);
+            });
+            $schools = array_values($schools); // Re-index
+
+            // Security: If schoolId param is requested but not in assigned list, clear it
+            if ($schoolId && !in_array($schoolId, $assignedSchoolIds)) {
+                $schoolId = null; 
+            }
+        }
+        
+        $professors = [];
+        $data = [];
+        
+        if ($schoolId) {
+            $professors = $userModel->getBySchoolId($schoolId, 'professor');
+        }
+
+        if ($professorId) {
+            // Detailed professor report
+            $data = $docModel->getProfessorStats($professorId, $period);
+        } elseif ($type === 'pendencies') {
+            $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
+            $data = $docModel->getGlobalPendencies($targetSchools);
+        } elseif ($type === 'punctuality') {
+            $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
+            $data = $docModel->getSchoolPunctuality($targetSchools);
+        } else {
+            $targetSchools = $schoolId ? $schoolId : $assignedSchoolIds;
+            $data = $docModel->getSubmissionsReport($targetSchools);
+        }
+        
+        $this->view('dashboard/school_reports', [
+            'type' => $type,
+            'data' => $data,
+            'schools' => $schools,
+            'professors' => $professors,
+            'schoolId' => $schoolId,
+            'professorId' => $professorId,
+            'period' => $period,
+            'user' => $user
+        ]);
+    }
+
     public function reports() {
         checkAuth('semed');
         $type = $_GET['type'] ?? 'submissions';

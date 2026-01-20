@@ -118,8 +118,8 @@
             
                 <!-- Admin-level access for Reports -->
                 <!-- Reports Link: Admin SEMED -> Global Admin View, Team -> Director View -->
-                <?php $reportsUrl = isAdminSemed() ? url('admin/reports') : url('semed/reports'); ?>
-                <a href="<?= $reportsUrl ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">
+                <?php $reportsUrl = isAdminSemed() ? url('admin/reports') : url('semed/relatorios'); ?>
+                <a href="<?= $reportsUrl ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'relatorios') !== false || strpos($_SERVER['REQUEST_URI'], 'reports') !== false ? 'active' : '' ?>">
                     <i class="fas fa-chart-pie"></i>
                     <span>Relatórios</span>
                 </a>

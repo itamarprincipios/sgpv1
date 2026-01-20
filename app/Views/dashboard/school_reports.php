@@ -4,10 +4,17 @@
     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <h2>Relatórios da Rede</h2>
         <div style="display: flex; gap: 10px;">
+        <?php 
+            // Determine base URL based on user role
+            $baseReportUrl = 'school/reports';
+            if (isset($user) && $user['role'] === 'semed') {
+                $baseReportUrl = 'semed/relatorios';
+            }
+        ?>
         <div style="display: flex; gap: 10px;">
-            <a href="<?= url('school/reports?type=submissions') ?>" class="btn <?= ($type === 'submissions') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Envios</a>
-            <a href="<?= url('school/reports?type=pendencies') ?>" class="btn <?= ($type === 'pendencies') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Pendências</a>
-            <a href="<?= url('school/reports?type=punctuality') ?>" class="btn <?= ($type === 'punctuality') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Pontualidade</a>
+            <a href="<?= url($baseReportUrl . '?type=submissions') ?>" class="btn <?= ($type === 'submissions') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Envios</a>
+            <a href="<?= url($baseReportUrl . '?type=pendencies') ?>" class="btn <?= ($type === 'pendencies') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Pendências</a>
+            <a href="<?= url($baseReportUrl . '?type=punctuality') ?>" class="btn <?= ($type === 'punctuality') ? 'btn-primary' : 'btn-secondary' ?>" style="width: auto;">Pontualidade</a>
         </div>
         </div>
     </div>
