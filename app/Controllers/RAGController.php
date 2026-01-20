@@ -84,18 +84,30 @@ class RAGController {
                 
             } elseif ($_SESSION['user']['role'] === 'semed') {
                 // SEMED pode selecionar escola específica ou consultar todas suas escolas
-                if (isset($filters['school_id']) && !empty($filters['school_id'])) {
-                    // Validar se escola pertence ao SEMED
-                    if (!$this->validateSemedSchoolAccess($_SESSION['user']['id'], $filters['school_id'])) {
-                        throw new Exception('Você não tem acesso a esta escola.');
+                
+                // DEAPS/Admin SEMED: Global Network Access
+                if (function_exists('isAdminSemed') && isAdminSemed()) {
+                    if (isset($filters['school_id']) && !empty($filters['school_id'])) {
+                        // Viewing specific school - no validation needed for Admin
+                    } else {
+                        // Viewing Global Network
+                        $filters['context_type'] = 'network';
                     }
                 } else {
-                    // Se não selecionou, agregar todas as escolas do SEMED
-                    $schoolIds = $this->getSemedSchoolIds($_SESSION['user']['id']);
-                    if (empty($schoolIds)) {
-                        throw new Exception('Usuário SEMED não está vinculado a nenhuma escola.');
+                    // Regular SEMED Team: Restricted to assigned schools
+                    if (isset($filters['school_id']) && !empty($filters['school_id'])) {
+                        // Validar se escola pertence ao SEMED
+                        if (!$this->validateSemedSchoolAccess($_SESSION['user']['id'], $filters['school_id'])) {
+                            throw new Exception('Você não tem acesso a esta escola.');
+                        }
+                    } else {
+                        // Se não selecionou, agregar todas as escolas do SEMED
+                        $schoolIds = $this->getSemedSchoolIds($_SESSION['user']['id']);
+                        if (empty($schoolIds)) {
+                            throw new Exception('Usuário SEMED não está vinculado a nenhuma escola.');
+                        }
+                        $filters['school_ids'] = $schoolIds;
                     }
-                    $filters['school_ids'] = $schoolIds;
                 }
                 
             } elseif ($_SESSION['user']['role'] === 'superadmin') {

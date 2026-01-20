@@ -9,9 +9,20 @@ if (!$user || $user['role'] !== 'semed') {
     return;
 }
 
-// Buscar escolas do usuário SEMED
+// Busca escolas do usuário SEMED
 $userModel = new User();
-$semedSchools = $userModel->getSemedSchools($user['id']);
+$schoolModel = new School(); // Needed for Admin global fetch
+
+$semedSchools = [];
+$defaultOptionLabel = "Todas as minhas escolas";
+
+if (function_exists('isAdminSemed') && isAdminSemed()) {
+    $semedSchools = $schoolModel->all();
+    $defaultOptionLabel = "Todas as Escolas (Rede Global)";
+} else {
+    $semedSchools = $userModel->getSemedSchools($user['id']);
+    $defaultOptionLabel = "Todas as minhas escolas (" . count($semedSchools) . ")";
+}
 ?>
 
 <!-- IANNE Floating Avatar Widget -->
@@ -46,7 +57,7 @@ $semedSchools = $userModel->getSemedSchools($user['id']);
                     <i class="fas fa-school"></i> Filtrar por escola:
                 </label>
                 <select id="ianne-school-filter" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.95rem; background: white; cursor: pointer;">
-                    <option value="">📊 Todas as minhas escolas (<?= count($semedSchools) ?>)</option>
+                    <option value="">📊 <?= $defaultOptionLabel ?></option>
                     <?php foreach ($semedSchools as $school): ?>
                         <option value="<?= $school['id'] ?>">
                             <?= htmlspecialchars($school['name']) ?>
