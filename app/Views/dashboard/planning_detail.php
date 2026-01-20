@@ -6,7 +6,7 @@
             <h2 style="margin-bottom: 5px;"><?= htmlspecialchars($planning['name']) ?></h2>
             <p style="color: #666;"><?= htmlspecialchars($planning['description']) ?> | Prazo: <?= date('d/m/Y', strtotime($planning['deadline'])) ?></p>
         </div>
-        <a href="<?= url('school/dashboard') ?>" class="btn btn-secondary" style="width: auto; background-color: #6c757d;">Voltar</a>
+        <a href="<?= url('school/plannings') ?>" class="btn btn-secondary" style="width: auto; background-color: #6c757d;">Voltar</a>
     </div>
 </div>
 

@@ -3,7 +3,7 @@
 <div class="dashboard-header">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Cadastrar Novo Planejamento</h2>
-        <a href="<?= url('school/dashboard') ?>" class="btn btn-secondary" style="width: auto; background-color: #6c757d;">Voltar</a>
+        <a href="<?= url('school/plannings') ?>" class="btn btn-secondary" style="width: auto; background-color: #6c757d;">Voltar</a>
     </div>
 </div>
 
