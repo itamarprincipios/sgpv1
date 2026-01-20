@@ -64,6 +64,7 @@ $routes = [
     'school/planning/associate-bimester' => 'SchoolController@associateToBimester',
     'school/document/review' => 'SchoolController@reviewDocument',
     'semed/dashboard' => 'SemedController@dashboard',
+    'semed/cadastros' => 'SemedController@registrations', // NEW HUD
     'semed/schools' => 'SemedController@schools',
     'semed/school/store' => 'SemedController@storeSchool',
     'semed/school/edit' => 'SemedController@editSchool',

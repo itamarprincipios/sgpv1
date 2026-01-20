@@ -75,36 +75,23 @@
                     <i class="fas fa-chart-line"></i>
                     <span>Dashboard</span>
                 </a>
-                <!-- Admin-level access for Schools -->
-                <a href="<?= url('admin/schools') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/schools') !== false ? 'active' : '' ?>">
-                    <i class="fas fa-school"></i>
-                    <span>Escolas</span>
-                </a>
-                <!-- Keep existing Coordinators (SEMED version) -->
-                <a href="<?= url('semed/coordinators') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/coordinators') !== false ? 'active' : '' ?>">
-                    <i class="fas fa-user-tie"></i>
-                    <span>Coordenadores</span>
-                </a>
-                <!-- Keep existing Directors (SEMED version) -->
-                <a href="<?= url('semed/directors') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/directors') !== false ? 'active' : '' ?>">
-                    <i class="fas fa-user-check"></i>
-                    <span>Diretores</span>
-                </a>
-                <!-- Admin-level access for Professors -->
-                <a href="<?= url('admin/professors') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/professors') !== false ? 'active' : '' ?>">
-                    <i class="fas fa-chalkboard-teacher"></i>
-                    <span>Professores</span>
-                </a>
-                 <!-- Admin-level access for SEMED Users -->
-                <a href="<?= url('admin/semed-users') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/semed-users') !== false ? 'active' : '' ?>">
-                    <i class="fas fa-users-cog"></i>
-                    <span>SEMED</span>
-                </a>
-                 <!-- Admin-level access for Reports -->
-                <a href="<?= url('admin/reports') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/reports') !== false ? 'active' : '' ?>">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Relatórios</span>
-                </a>
+                <!-- Cadastros Hub -->
+    <a href="<?= url('semed/cadastros') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/cadastros') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/schools') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/coordinators') !== false || strpos($_SERVER['REQUEST_URI'], 'semed/directors') !== false || strpos($_SERVER['REQUEST_URI'], 'admin/semed-users') !== false ? 'active' : '' ?>">
+        <i class="fas fa-folder-open"></i>
+        <span>Cadastros</span>
+    </a>
+    
+    <!-- Admin-level access for Professors (Pesquisa Only) -->
+    <a href="<?= url('admin/professors') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/professors') !== false ? 'active' : '' ?>">
+        <i class="fas fa-chalkboard-teacher"></i>
+        <span>Professores</span>
+    </a>
+
+    <!-- Admin-level access for Reports -->
+    <a href="<?= url('admin/reports') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'admin/reports') !== false ? 'active' : '' ?>">
+        <i class="fas fa-chart-pie"></i>
+        <span>Relatórios</span>
+    </a>            </a>
                 <a href="<?= url('semed/history') ?>" class="semed-nav-btn <?= strpos($_SERVER['REQUEST_URI'], 'semed/history') !== false ? 'active' : '' ?>">
                     <i class="fas fa-history"></i>
                     <span>Banco de Planejamentos</span>

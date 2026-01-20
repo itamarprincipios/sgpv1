@@ -356,4 +356,21 @@ class User extends Model {
         $sql = "SELECT COUNT(*) as count FROM users WHERE role = 'director' $whereClause";
         return $this->db->query($sql)->fetch()['count'];
     }
+
+    public function countCoordinators($schoolIds = []) {
+        $whereClause = "";
+        if (!empty($schoolIds)) {
+            $placeholders = implode(',', array_map('intval', $schoolIds));
+            // Coordinators might be linked via user_schools, but let's check basic school_id or user_schools join
+            // For MVP simpler check on main school_id if that's how they are stored primarily
+            // Or better, check both. But existing logic often checks school_id
+            $whereClause = " AND school_id IN ($placeholders)";
+        }
+        $sql = "SELECT COUNT(*) as count FROM users WHERE role = 'coordinator' $whereClause";
+        return $this->db->query($sql)->fetch()['count'];
+    }
+
+    public function countSemedUsers() {
+        return $this->db->query("SELECT COUNT(*) as count FROM users WHERE role = 'semed'")->fetch()['count'];
+    }
 }

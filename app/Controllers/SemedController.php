@@ -62,9 +62,26 @@ class SemedController extends Controller {
             $schoolModel = new School();
             $schoolModel->create($_POST);
             // Ideally link to current user, but schema separate for now.
-            $_SESSION['success'] = "Escola cadastrada com sucesso!";
+             redirect('semed/schools');
         }
-        redirect('semed/schools');
+        $this->view('dashboard/semed_school_form');
+    }
+
+    public function registrations() {
+        checkAuth('semed');
+        $user = auth();
+        $userModel = new User();
+        $docModel = new Document();
+        
+        $assignedSchoolIds = $userModel->getAssignedSchoolIds($user['id']);
+        $stats = $docModel->getGlobalStats($assignedSchoolIds);
+        
+        // Add specific registration counts
+        $stats['total_directors'] = $userModel->countDirectors($assignedSchoolIds);
+        $stats['total_coordinators'] = $userModel->countCoordinators($assignedSchoolIds);
+        $stats['total_semed'] = $userModel->countSemedUsers();
+        
+        $this->view('dashboard/registrations', ['stats' => $stats]);
     }
 
     public function editSchool() {
