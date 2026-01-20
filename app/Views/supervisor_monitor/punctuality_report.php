@@ -456,15 +456,42 @@
             <!-- Escola -->
             <div class="filter-group" style="flex: 2;">
                 <label for="school_id" class="filter-label">Filtrar por Escola</label>
-                <select name="school_id" id="school_id" class="filter-select cursor-pointer">
+                <select name="school_id" id="school_id" class="filter-select cursor-pointer" onchange="this.form.submit()">
                     <option value="">Todas as Escolas</option>
                     <?php foreach ($schools as $school): ?>
-                        <option value="<?= $school['id'] ?>" <?= (isset($schoolIdFilter) && $schoolIdFilter == $school['id']) ? 'selected' : '' ?>>
+                        <option value="<?= $school['id'] ?>" <?= (isset($schoolId) && $schoolId == $school['id']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($school['name']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
             </div>
+
+            <!-- Professor Monitor (só aparece se escola selecionada) -->
+            <?php if ($schoolId): ?>
+            <div class="filter-group" style="flex: 2;">
+                <label for="professor_id" class="filter-label">Professor Monitor</label>
+                <select name="professor_id" id="professor_id" class="filter-select cursor-pointer" onchange="this.form.submit()">
+                    <option value="">Todos os Professores</option>
+                    <?php foreach ($professors as $prof): ?>
+                        <option value="<?= $prof['id'] ?>" <?= (isset($professorId) && $professorId == $prof['id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($prof['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <?php endif; ?>
+
+            <!-- Período (só aparece se professor selecionado) -->
+            <?php if (isset($professorId) && $professorId): ?>
+            <div class="filter-group" style="flex: 0 0 150px; min-width: 150px;">
+                <label for="period" class="filter-label">Período</label>
+                <select name="period" id="period" class="filter-select cursor-pointer" onchange="this.form.submit()">
+                    <option value="annual" <?= ($period == 'annual') ? 'selected' : '' ?>>Anual</option>
+                    <option value="monthly" <?= ($period == 'monthly') ? 'selected' : '' ?>>Mensal (Atual)</option>
+                    <option value="bimonthly" <?= ($period == 'bimonthly') ? 'selected' : '' ?>>Bimestral</option>
+                </select>
+            </div>
+            <?php endif; ?>
 
             <!-- Botão Filtrar -->
             <div style="padding-bottom: 2px;">
@@ -475,7 +502,7 @@
 
             <!-- Botão Limpar -->
             <div style="padding-bottom: 2px;">
-                 <?php if(!empty($schoolIdFilter)): ?>
+                 <?php if(!empty($schoolId) || !empty($professorId)): ?>
                     <a href="<?= url('supervisor-monitor/punctuality_report') ?>" class="btn-clear text-decoration-none">
                         <i class="fas fa-times"></i> Limpar
                     </a>
@@ -484,7 +511,113 @@
         </form>
     </div>
 
-    <!-- Tabela de Relatório -->
+    <!-- Dashboard Individual do Professor Monitor -->
+    <?php if (isset($professorId) && $professorId && isset($data['stats'])): ?>
+        <?php 
+            $stats = $data['stats']; 
+            $submissions = $data['submissions'];
+            
+            $profName = $selectedProf['name'] ?? 'Professor';
+            $profPhoto = $selectedProf['profile_photo'] ?? null;
+            
+            if ($profPhoto && file_exists(__DIR__ . '/../../public/uploads/avatars/' . $profPhoto)) {
+                $avatarUrl = url('uploads/avatars/' . $profPhoto);
+            } else {
+                $avatarUrl = "https://ui-avatars.com/api/?name=" . urlencode($profName) . "&background=random&color=fff&size=128";
+            }
+        ?>
+        
+        <div class="list-section">
+            <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+                <img src="<?= $avatarUrl ?>" alt="Foto do Professor" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 4px solid #ddd; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div>
+                    <h3 style="margin: 0; color: #2c3e50; font-size: 2rem;">
+                        <?= htmlspecialchars($profName) ?>
+                        <span style="background-color: #17a2b8; color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 0.9rem; margin-left: 10px;">M.A.E</span>
+                    </h3>
+                    <span style="color: #666; font-size: 1.1rem; display: block; margin-top: 5px;">
+                        Monitor de Aluno Especial - Dashboard de Desempenho
+                    </span>
+                    <?php if (!empty($selectedProf['whatsapp'])): ?>
+                        <div style="margin-top: 10px; font-size: 0.9rem; color: #555;">
+                            <div><i class="fab fa-whatsapp"></i> <?= htmlspecialchars($selectedProf['whatsapp']) ?></div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #ddd;">
+                    <div style="font-size: 0.9rem; color: #666;">Total Enviado</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #333;"><?= $stats['total_sent'] ?></div>
+                </div>
+                <div style="background: #e6fffa; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #b2f5ea;">
+                    <div style="font-size: 0.9rem; color: #234e52;">No Prazo</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #285e61;"><?= $stats['on_time'] ?></div>
+                </div>
+                <div style="background: #fff5f5; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #feb2b2;">
+                    <div style="font-size: 0.9rem; color: #742a2a;">Com Atraso</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #9b2c2c;"><?= $stats['late_docs'] ?></div>
+                </div>
+                <div style="background: #f0fff4; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #9ae6b4;">
+                    <div style="font-size: 0.9rem; color: #22543d;">Aprovados</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #276749;"><?= $stats['approved'] ?></div>
+                </div>
+                <div style="background: #fffaf0; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #fbd38d;">
+                    <div style="font-size: 0.9rem; color: #744210;">Com Ajustes</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #975a16;"><?= $stats['adjusted'] ?></div>
+                </div>
+                <div style="background: #fff5f7; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #feb2b2;">
+                    <div style="font-size: 0.9rem; color: #742a2a;">Reprovados</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #c53030;"><?= $stats['rejected'] ?></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="list-section">
+            <h3>Histórico de Envios Detalhado</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Planejamento</th>
+                        <th>Envio</th>
+                        <th>Prazo</th>
+                        <th>Status</th>
+                        <th style="text-align: center;">Pontuação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if(empty($submissions)): ?>
+                         <tr><td colspan="5" style="text-align: center; padding: 20px; color: #666;">Nenhum envio encontrado neste período.</td></tr>
+                    <?php else: ?>
+                        <?php foreach($submissions as $sub): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($sub['period_name']) ?></td>
+                                <td>
+                                    <?= date('d/m/Y H:i', strtotime($sub['submitted_at'])) ?>
+                                    <?php if(strtotime($sub['submitted_at']) > strtotime($sub['deadline'])): ?>
+                                        <span style="font-size: 0.8rem; background: #fff5f5; color: #c53030; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">Atrasado</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><?= date('d/m/Y', strtotime($sub['deadline'])) ?></td>
+                                <td>
+                                    <span class="status-badge status-<?= $sub['status'] ?>">
+                                        <?= ucfirst($sub['status']) ?>
+                                    </span>
+                                </td>
+                                <td style="text-align: center; font-weight: bold;">
+                                    <?= $sub['score_final'] ?? '-' ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+    <?php else: ?>
+    
+    <!-- Tabela de Relatório Geral -->
     <div class="list-section p-0 overflow-hidden">
         <div class="table-responsive">
             <table class="data-table">
@@ -556,6 +689,7 @@
             </table>
         </div>
     </div>
+    <?php endif; ?>
 
 </div>
 

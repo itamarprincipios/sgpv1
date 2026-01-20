@@ -270,25 +270,106 @@ class SupervisorMonitorController extends Controller {
         // Buscar todas as escolas para o filtro
         $schools = $schoolModel->all();
         
-        // Capturar filtro
-        $schoolIdFilter = $_GET['school_id'] ?? '';
+        // Capturar filtros
+        $schoolId = $_GET['school_id'] ?? '';
+        $professorId = $_GET['professor_id'] ?? '';
+        $period = $_GET['period'] ?? 'annual';
         
-        // Buscar todos professores Monitores
-        $professors = $userModel->getMonitorProfessors();
+        // Buscar professores monitores da escola selecionada (para o dropdown)
+        $professors = [];
+        if ($schoolId) {
+            $allMonitors = $userModel->getMonitorProfessors();
+            $professors = array_filter($allMonitors, function($p) use ($schoolId) {
+                return isset($p['school_id']) && $p['school_id'] == $schoolId;
+            });
+        }
         
-        if ($schoolIdFilter) {
-            $professors = array_filter($professors, function($p) use ($schoolIdFilter) {
-                return isset($p['school_id']) && $p['school_id'] == $schoolIdFilter;
+        // Se professor específico selecionado, mostrar dashboard individual
+        if ($professorId) {
+            // Buscar dados do professor
+            $selectedProf = $userModel->findById($professorId);
+            
+            // Validar se é monitor
+            if (!$selectedProf || !$selectedProf['is_monitor']) {
+                $_SESSION['error'] = 'Professor não é monitor.';
+                redirect('supervisor-monitor/punctuality_report');
+            }
+            
+            // Buscar todos os documentos do professor
+            $allSubmissions = $documentModel->getByUserId($professorId);
+            
+            // Filtrar por período se necessário
+            $submissions = $allSubmissions;
+            if ($period === 'monthly') {
+                $currentMonth = date('m');
+                $currentYear = date('Y');
+                $submissions = array_filter($allSubmissions, function($sub) use ($currentMonth, $currentYear) {
+                    return date('m', strtotime($sub['submitted_at'])) == $currentMonth 
+                        && date('Y', strtotime($sub['submitted_at'])) == $currentYear;
+                });
+            } elseif ($period === 'bimonthly') {
+                $currentBimester = ceil(date('m') / 2);
+                $currentYear = date('Y');
+                $submissions = array_filter($allSubmissions, function($sub) use ($currentBimester, $currentYear) {
+                    $subBimester = ceil(date('m', strtotime($sub['submitted_at'])) / 2);
+                    return $subBimester == $currentBimester 
+                        && date('Y', strtotime($sub['submitted_at'])) == $currentYear;
+                });
+            }
+            
+            // Calcular estatísticas
+            $stats = [
+                'total_sent' => count($submissions),
+                'on_time' => 0,
+                'late_docs' => 0,
+                'approved' => 0,
+                'adjusted' => 0,
+                'rejected' => 0
+            ];
+            
+            foreach ($submissions as $sub) {
+                // Pontualidade
+                if (isset($sub['submitted_at']) && isset($sub['deadline'])) {
+                    if (strtotime($sub['submitted_at']) <= strtotime($sub['deadline'])) {
+                        $stats['on_time']++;
+                    } else {
+                        $stats['late_docs']++;
+                    }
+                }
+                
+                // Status
+                if (isset($sub['status'])) {
+                    if ($sub['status'] === 'aprovado') $stats['approved']++;
+                    elseif ($sub['status'] === 'ajustado') $stats['adjusted']++;
+                    elseif ($sub['status'] === 'rejeitado') $stats['rejected']++;
+                }
+            }
+            
+            $data = [
+                'stats' => $stats,
+                'submissions' => $submissions
+            ];
+            
+            require __DIR__ . '/../Views/supervisor_monitor/punctuality_report.php';
+            return;
+        }
+        
+        // Buscar todos professores Monitores (para listagem geral)
+        $allProfessors = $userModel->getMonitorProfessors();
+        
+        if ($schoolId) {
+            $allProfessors = array_filter($allProfessors, function($p) use ($schoolId) {
+                return isset($p['school_id']) && $p['school_id'] == $schoolId;
             });
         }
         
         $report = [];
         
-        foreach ($professors as $prof) {
+        foreach ($allProfessors as $prof) {
             $planningsData = $documentModel->getByUserId($prof['id']);
             
             $onTime = 0;
-            $total = count($planningsData); // Renomeado para evitar conflito
+            $total = count($planningsData);
             
             foreach ($planningsData as $plan) {
                 if (isset($plan['submitted_at']) && isset($plan['deadline'])) {
