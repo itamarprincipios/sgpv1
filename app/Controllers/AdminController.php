@@ -68,7 +68,7 @@ class AdminController extends Controller {
             return empty($user['is_admin_semed']);
         });
         
-        $schools = $schoolModel->getAvailableSchools(); // For the registration form
+        $schools = $schoolModel->all(); // Use all() to allow assigning any school
         
         $this->view('admin/semed_users', [
             'semedUsers' => $semedUsers, 
@@ -153,7 +153,13 @@ class AdminController extends Controller {
 
             $_SESSION['success'] = "Usuário criado com sucesso!";
         }
-        redirect('admin/semed-users');
+        
+        // Redirect based on role
+        if (function_exists('isAdminSemed') && isAdminSemed()) {
+            redirect('adminsemed/equipe');
+        } else {
+            redirect('admin/semed-users');
+        }
     }
     
     public function editUser() {
@@ -202,7 +208,13 @@ class AdminController extends Controller {
 
             $_SESSION['success'] = "Usuário atualizado com sucesso!";
         }
-        redirect('admin/dashboard');
+        
+        // Redirect based on role
+        if (function_exists('isAdminSemed') && isAdminSemed()) {
+            redirect('adminsemed/equipe');
+        } else {
+            redirect('admin/dashboard');
+        }
     }
     
     public function deleteUser() {
