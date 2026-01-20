@@ -696,6 +696,14 @@ class SemedController extends Controller {
         
         if ($schoolId) {
             $professors = $userModel->getBySchoolId($schoolId, 'professor');
+        } else {
+            // Load professors from all assigned schools
+            foreach ($assignedSchoolIds as $sid) {
+                $schoolProfs = $userModel->getBySchoolId($sid, 'professor');
+                if ($schoolProfs) {
+                    $professors = array_merge($professors, $schoolProfs);
+                }
+            }
         }
 
         if ($professorId) {

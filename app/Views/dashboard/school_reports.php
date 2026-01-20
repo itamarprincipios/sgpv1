@@ -39,7 +39,6 @@
         </div>
         <?php endif; ?>
 
-        <?php if ($schoolId): ?>
         <div class="filter-group">
             <label class="filter-label">Professor</label>
             <select name="professor_id" class="filter-select" onchange="this.form.submit()">
@@ -49,7 +48,6 @@
                 <?php endforeach; ?>
             </select>
         </div>
-        <?php endif; ?>
 
         <?php if ($professorId): ?>
         <div class="filter-group" style="flex: 0 0 150px; min-width: 150px;">
@@ -206,7 +204,11 @@
                 <?php foreach($data as $row): ?>
                     <tr>
                         <td><?= htmlspecialchars($row['school_name']) ?></td>
-                        <td><?= htmlspecialchars($row['professor_name']) ?></td>
+                        <td>
+                            <a href="<?= url($baseReportUrl . '?type=' . $type . '&professor_id=' . $row['professor_id'] . ($schoolId ? '&school_id=' . $schoolId : '')) ?>" style="color: #3498db; text-decoration: none;">
+                                <?= htmlspecialchars($row['professor_name']) ?>
+                            </a>
+                        </td>
                         <td style="text-align: center;"><?= $row['total_sent'] ?></td>
                         <td style="text-align: center; color: green;"><?= $row['approved'] ?></td>
                         <td style="text-align: center; color: red;"><?= $row['late_docs'] ?></td>
