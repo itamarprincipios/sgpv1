@@ -197,7 +197,7 @@
     </div>
 
     <div class="stats-cards">
-        <div class="card card-blue" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white;">
+        <div class="card card-blue" style="background: linear-gradient(135deg, #87CEEB 0%, #ADD8E6 100%); color: #1e3c72;">
             <h3>Minha Pontuação</h3>
             <p style="font-size: 2rem; font-weight: bold;"><?= number_format($totalPoints, 1) ?> pts</p>
         </div>
