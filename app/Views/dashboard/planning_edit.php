@@ -38,6 +38,11 @@
                 <label for="is_monitor" style="margin: 0; cursor: pointer;">Este planejamento é exclusivo para <strong>Professor Monitor</strong>?</label>
             </div>
 
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                <input type="checkbox" name="is_first_grade" id="is_first_grade" value="1" <?= ($planning['is_first_grade'] ?? 0) ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                <label for="is_first_grade" style="margin: 0; cursor: pointer;">Este planejamento é exclusivo para <strong>1º Ano</strong>?</label>
+            </div>
+
             <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Salvar Alterações</button>
         </form>
     </div>

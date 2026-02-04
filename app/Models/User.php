@@ -15,14 +15,14 @@ class User extends Model {
 
     public function createProfessor($data) {
         // 'role' is hardcoded in SQL, so we don't need it in parameters
-        $fields = ['school_id', 'name', 'email', 'password', 'whatsapp', 'class_id', 'is_physical_education', 'is_monitor'];
+        $fields = ['school_id', 'name', 'email', 'password', 'whatsapp', 'class_id', 'is_physical_education', 'is_monitor', 'is_first_grade'];
         $dbData = [];
         foreach ($fields as $field) {
             $dbData[$field] = $data[$field] ?? null;
         }
         
-        $sql = "INSERT INTO users (school_id, name, email, password, role, whatsapp, class_id, is_physical_education, is_monitor) 
-                VALUES (:school_id, :name, :email, :password, 'professor', :whatsapp, :class_id, :is_physical_education, :is_monitor)";
+        $sql = "INSERT INTO users (school_id, name, email, password, role, whatsapp, class_id, is_physical_education, is_monitor, is_first_grade) 
+                VALUES (:school_id, :name, :email, :password, 'professor', :whatsapp, :class_id, :is_physical_education, :is_monitor, :is_first_grade)";
         
         return $this->db->query($sql, $dbData);
     }

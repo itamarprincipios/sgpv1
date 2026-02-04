@@ -45,6 +45,10 @@
                 <input type="checkbox" name="is_monitor" id="prof_is_monitor" value="1" <?= ($professor['is_monitor'] ?? 0) ? 'checked' : '' ?> style="width: 18px; height: 18px;">
                 <label for="prof_is_monitor" style="margin: 0; cursor: pointer;">Professor Monitor?</label>
             </div>
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                <input type="checkbox" name="is_first_grade" id="prof_is_first_grade" value="1" <?= ($professor['is_first_grade'] ?? 0) ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                <label for="prof_is_first_grade" style="margin: 0; cursor: pointer;">Professor do 1º Ano?</label>
+            </div>
             
             <button type="submit" class="btn btn-primary">Salvar Alterações</button>
         </form>
