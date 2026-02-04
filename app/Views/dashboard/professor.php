@@ -221,7 +221,7 @@
 </div>
 
     <div class="upload-section" style="width: 100%; margin-bottom: 2rem;">
-        <h3>Envio de Planejamento</h3>
+        <h3>Envios</h3>
         
         <?php if(empty($periods)): ?>
             <p>Nenhuma solicitação de planejamento em aberto.</p>
