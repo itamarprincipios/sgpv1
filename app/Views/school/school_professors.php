@@ -1,4 +1,5 @@
 <?php require __DIR__ . '/../layouts/header.php'; ?>
+<?php $showSchool = isset($schools) && count($schools) > 1; ?>
 
 <div class="content-row">
     <div class="upload-section">

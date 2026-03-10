@@ -28,9 +28,10 @@ class User extends Model {
     }
 
     public function getProfessorsBySchoolWithClass($schoolId) {
-        $sql = "SELECT u.*, c.name as class_name 
+        $sql = "SELECT u.*, c.name as class_name, mc.name as monitor_class_name 
                 FROM users u 
                 LEFT JOIN classes c ON u.class_id = c.id 
+                LEFT JOIN classes mc ON u.monitor_class_id = mc.id
                 WHERE u.school_id = :school_id AND u.role = 'professor' 
                 ORDER BY c.name ASC, u.name ASC";
         return $this->db->query($sql, ['school_id' => $schoolId])->fetchAll();
