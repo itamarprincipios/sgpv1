@@ -72,6 +72,7 @@
                     <?php if($showSchool): ?><th>Escola</th><?php endif; ?>
                     <th>Nome</th>
                     <th>Turma</th>
+                    <th>Email</th>
                     <th>WhatsApp</th>
                     <th>Ações</th>
                 </tr>
@@ -97,6 +98,7 @@
                             }
                             ?>
                         </td>
+                        <td><?= htmlspecialchars($prof['email'] ?? '') ?></td>
                         <td><?= htmlspecialchars($prof['whatsapp']) ?></td>
                         <td>
                             <a href="<?= url('school/professor/edit?id='.$prof['id']) ?>" class="btn-icon" title="Editar"><i class="fas fa-edit"></i></a>
@@ -186,7 +188,7 @@
         }
 
         .print-header-anchor::after {
-            content: "Escola: " attr(data-school-name) "\A Diretor(a): " attr(data-director-name) "\A Emitido em: " attr(data-print-date);
+            content: "Escola: " attr(data-school-name) "\A Diretor(a): " attr(data-director-name) "\A Coordenador(a): " attr(data-coordinator-name) "\A Emitido em: " attr(data-print-date);
             display: block;
             text-align: left;
             font-size: 11px;
@@ -258,17 +260,22 @@
         /* Column widths */
         .data-table th:nth-child(1),
         .data-table td:nth-child(1) {
-            width: 35%;
+            width: 30%;
         }
         
         .data-table th:nth-child(2),
         .data-table td:nth-child(2) {
-            width: 30%;
+            width: 20%;
         }
         
         .data-table th:nth-child(3),
         .data-table td:nth-child(3) {
-            width: 35%;
+            width: 28%;
+        }
+
+        .data-table th:nth-child(4),
+        .data-table td:nth-child(4) {
+            width: 22%;
         }
         
         /* Hide actions column */
@@ -322,13 +329,20 @@
             <?php if (isset($schools) && !empty($schools)): ?>
                 anchor.setAttribute('data-school-name', '<?= htmlspecialchars($schools[0]['name'] ?? 'N/A') ?>');
             <?php endif; ?>
-            
-            // Get director name from user session
-            <?php 
+
+            // Get director name from school record
+            <?php if (isset($school) && !empty($school['director_name'])): ?>
+                anchor.setAttribute('data-director-name', '<?= htmlspecialchars($school['director_name']) ?>');
+            <?php else: ?>
+                anchor.setAttribute('data-director-name', 'N/A');
+            <?php endif; ?>
+
+            // Get coordinator name from logged-in user
+            <?php
             $user = auth();
-            if (isset($user)): 
+            if (isset($user)):
             ?>
-                anchor.setAttribute('data-director-name', '<?= htmlspecialchars($user['name'] ?? 'N/A') ?>');
+                anchor.setAttribute('data-coordinator-name', '<?= htmlspecialchars($user['name'] ?? 'N/A') ?>');
             <?php endif; ?>
         }
     });
