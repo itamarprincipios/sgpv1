@@ -15,14 +15,14 @@ class User extends Model {
 
     public function createProfessor($data) {
         // 'role' is hardcoded in SQL, so we don't need it in parameters
-        $fields = ['school_id', 'name', 'email', 'password', 'whatsapp', 'class_id', 'is_physical_education', 'is_monitor', 'is_first_grade'];
+        $fields = ['school_id', 'name', 'email', 'password', 'whatsapp', 'class_id', 'monitor_class_id', 'is_physical_education', 'is_monitor', 'is_first_grade'];
         $dbData = [];
         foreach ($fields as $field) {
             $dbData[$field] = $data[$field] ?? null;
         }
         
-        $sql = "INSERT INTO users (school_id, name, email, password, role, whatsapp, class_id, is_physical_education, is_monitor, is_first_grade) 
-                VALUES (:school_id, :name, :email, :password, 'professor', :whatsapp, :class_id, :is_physical_education, :is_monitor, :is_first_grade)";
+        $sql = "INSERT INTO users (school_id, name, email, password, role, whatsapp, class_id, monitor_class_id, is_physical_education, is_monitor, is_first_grade) 
+                VALUES (:school_id, :name, :email, :password, 'professor', :whatsapp, :class_id, :monitor_class_id, :is_physical_education, :is_monitor, :is_first_grade)";
         
         return $this->db->query($sql, $dbData);
     }
@@ -59,10 +59,12 @@ class User extends Model {
                         CASE WHEN COUNT(s_extra.id) > 0 THEN ', ' ELSE '' END,
                         COALESCE(GROUP_CONCAT(s_extra.name SEPARATOR ', '), '')
                     )) as school_name,
-                    c.name as class_name
+                    c.name as class_name,
+                    mc.name as monitor_class_name
                 FROM users u 
                 LEFT JOIN schools s ON u.school_id = s.id 
                 LEFT JOIN classes c ON u.class_id = c.id
+                LEFT JOIN classes mc ON u.monitor_class_id = mc.id
                 LEFT JOIN user_schools us ON u.id = us.user_id
                 LEFT JOIN schools s_extra ON us.school_id = s_extra.id
                 WHERE u.role = 'professor'";

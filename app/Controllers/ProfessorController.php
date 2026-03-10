@@ -19,7 +19,37 @@ class ProfessorController extends Controller {
         $documents = $docModel->getByUserId($user['id']);
         
         $planningModel = new Planning();
-        $periods = $planningModel->getReleasedBySchoolIdAndType($user['school_id'], $user['is_physical_education'] ?? 0, $user['is_monitor'] ?? 0, $user['is_first_grade'] ?? 0);
+        
+        // --- PROFILE SWITCH LOGIC ---
+        $activeProfile = $_SESSION['active_profile'] ?? 'titular';
+        
+        // If teacher is NOT a monitor but active_profile is set to monitor (shouldn't happen), force titular
+        if ($activeProfile === 'monitor' && empty($user['monitor_class_id'])) {
+            $activeProfile = 'titular';
+            $_SESSION['active_profile'] = 'titular';
+        }
+
+        if ($activeProfile === 'monitor') {
+            // Monitor context
+            $currentClassId = $user['monitor_class_id'];
+            $isMonitorFlag = 1;
+            $isPEFlag = 0; // Monitor usually isn't PE context simultaneously in MAE? Or keep user's flag?
+            // User request implies distinct roles. Usually MAE is not PE.
+            $isFirstGradeFlag = 0; 
+        } else {
+            // Titular context
+            $currentClassId = $user['class_id'];
+            $isMonitorFlag = 0; // Even if they are monitor, in titular view they see titular plannings
+            $isPEFlag = $user['is_physical_education'] ?? 0;
+            $isFirstGradeFlag = $user['is_first_grade'] ?? 0;
+        }
+
+        $periods = $planningModel->getReleasedBySchoolIdAndType(
+            $user['school_id'], 
+            $isPEFlag, 
+            $isMonitorFlag, 
+            $isFirstGradeFlag
+        );
 
         require_once __DIR__ . '/../Models/RankingModel.php';
         $rankingModel = new RankingModel();
@@ -40,7 +70,14 @@ class ProfessorController extends Controller {
         
         $className = 'Não vinculada';
         
-        if (!empty($user['is_physical_education'])) {
+        if ($activeProfile === 'monitor' && !empty($user['monitor_class_id'])) {
+            require_once __DIR__ . '/../Models/ClassModel.php';
+            $classModel = new ClassModel();
+            $classData = $classModel->findById($user['monitor_class_id']);
+            if ($classData) {
+                $className = $classData['name'] . ' (Monitoria M.A.E)';
+            }
+        } elseif (!empty($user['is_physical_education'])) {
             $className = 'Educação Física';
         } elseif (!empty($user['class_id'])) {
             require_once __DIR__ . '/../Models/ClassModel.php';
@@ -69,8 +106,20 @@ class ProfessorController extends Controller {
             'totalPoints' => $totalPoints,
             'schoolData' => $schoolData,
             'className' => $className,
-            'coordinatorPhone' => $coordinatorPhone
+            'coordinatorPhone' => $coordinatorPhone,
+            'activeProfile' => $activeProfile
         ]);
+    }
+
+    public function switchProfile() {
+        checkAuth('professor');
+        $target = $_GET['to'] ?? 'titular';
+        
+        if (in_array($target, ['titular', 'monitor'])) {
+            $_SESSION['active_profile'] = $target;
+        }
+        
+        redirect('professor/dashboard');
     }
 
 

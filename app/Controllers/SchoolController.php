@@ -413,6 +413,7 @@ class SchoolController extends Controller {
                 'password' => password_hash('professor123', PASSWORD_DEFAULT), // Default password fixed
                 'whatsapp' => $_POST['whatsapp'],
                 'class_id' => !empty($_POST['class_id']) ? $_POST['class_id'] : null,
+                'monitor_class_id' => !empty($_POST['monitor_class_id']) ? $_POST['monitor_class_id'] : null,
                 'is_physical_education' => isset($_POST['is_physical_education']) ? 1 : 0,
                 'is_monitor' => isset($_POST['is_monitor']) ? 1 : 0,
                 'is_first_grade' => isset($_POST['is_first_grade']) ? 1 : 0
@@ -449,6 +450,7 @@ class SchoolController extends Controller {
                 'email' => $_POST['email'],
                 'whatsapp' => $_POST['whatsapp'],
                 'class_id' => !empty($_POST['class_id']) ? $_POST['class_id'] : null,
+                'monitor_class_id' => !empty($_POST['monitor_class_id']) ? $_POST['monitor_class_id'] : null,
                 'is_physical_education' => isset($_POST['is_physical_education']) ? 1 : 0,
                 'is_monitor' => isset($_POST['is_monitor']) ? 1 : 0,
                 'is_first_grade' => isset($_POST['is_first_grade']) ? 1 : 0

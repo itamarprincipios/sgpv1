@@ -26,7 +26,7 @@
             </div>
             
             <div class="form-group">
-                <label>Vincular a Turma</label>
+                <label>Vincular a Turma (Titular)</label>
                 <select name="class_id">
                     <option value="">Selecione uma turma...</option>
                     <?php foreach($classes as $c): ?>
@@ -35,6 +35,19 @@
                         </option>
                     <?php endforeach; ?>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label>Vincular a Turma (Monitoria M.A.E)</label>
+                <select name="monitor_class_id">
+                    <option value="">Selecione uma turma...</option>
+                    <?php foreach($classes as $c): ?>
+                        <option value="<?= $c['id'] ?>" <?= ($professor['monitor_class_id'] ?? null) == $c['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($c['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <small style="color: #666;">Preencha apenas se o professor também for monitor.</small>
             </div>
 
             <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
