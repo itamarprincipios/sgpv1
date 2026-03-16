@@ -1,4 +1,5 @@
 <?php require __DIR__ . '/../layouts/header.php'; ?>
+<?php $showSchool = isset($schools) && count($schools) > 1; ?>
 
 <div class="content-row">
     <div class="upload-section">
@@ -30,11 +31,10 @@
                 <input type="text" name="whatsapp" placeholder="Ex: 5511999999999">
             </div>
             <div class="form-group">
-                <label>Vincular a Turma</label>
+                <label>Vincular a Turma (Titular)</label>
                 <select name="class_id">
                     <option value="">Selecione uma turma...</option>
                     <?php 
-                    $showSchool = isset($schools) && count($schools) > 1;
                     foreach($classes as $c): 
                     ?>
                         <option value="<?= $c['id'] ?>">
@@ -43,6 +43,22 @@
                         </option>
                     <?php endforeach; ?>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label>Vincular a Turma (Monitoria M.A.E)</label>
+                <select name="monitor_class_id">
+                    <option value="">Selecione uma turma...</option>
+                    <?php 
+                    foreach($classes as $c): 
+                    ?>
+                        <option value="<?= $c['id'] ?>">
+                            <?php if($showSchool) echo '[' . htmlspecialchars($c['school_name'] ?? '') . '] '; ?>
+                            <?= htmlspecialchars($c['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <small style="color: #666; display: block; margin-top: 4px;">Utilize apenas se o professor também for monitor especial.</small>
             </div>
             <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
                 <input type="checkbox" name="is_physical_education" id="prof_is_pe" value="1" style="width: 18px; height: 18px;">
@@ -88,13 +104,16 @@
                             <?php 
                             if ($prof['is_physical_education'] == 1) {
                                 echo '<span style="color: #10b981; font-weight: 600;">Educação Física</span>';
-                            } elseif ($prof['class_name']) {
-                                echo htmlspecialchars($prof['class_name']);
-                                if (!empty($prof['is_monitor'])) {
-                                    echo ' <span style="background-color: #17a2b8; color: #fff; padding: 2px 5px; border-radius: 4px; font-size: 11px; margin-left: 5px;">M.A.E</span>';
-                                }
                             } else {
-                                echo '<span style="color:red">Sem Turma</span>';
+                                if ($prof['class_name']) {
+                                    echo '<div><strong>Titular:</strong> ' . htmlspecialchars($prof['class_name']) . '</div>';
+                                }
+                                if ($prof['monitor_class_name']) {
+                                    echo '<div style="margin-top: 4px;"><strong>Monitor:</strong> ' . htmlspecialchars($prof['monitor_class_name']) . ' <span style="background-color: #17a2b8; color: #fff; padding: 1px 4px; border-radius: 3px; font-size: 10px;">M.A.E</span></div>';
+                                }
+                                if (!$prof['class_name'] && !$prof['monitor_class_name']) {
+                                    echo '<span style="color:red">Sem Turma</span>';
+                                }
                             }
                             ?>
                         </td>

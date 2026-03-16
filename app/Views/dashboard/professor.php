@@ -178,7 +178,21 @@
             </div>
         </div>
         
-        <button onclick="document.getElementById('password-form').style.display = document.getElementById('password-form').style.display == 'none' ? 'block' : 'none'" class="btn btn-secondary" style="width:auto; font-size:0.8rem;">Alterar Senha</button>
+        <div style="display: flex; gap: 10px;">
+            <?php if (!empty($user['monitor_class_id'])): ?>
+                <?php if ($activeProfile === 'titular'): ?>
+                    <a href="<?= url('professor/switch-profile?to=monitor') ?>" class="btn btn-primary" style="width:auto; font-size:0.8rem; background-color: #17a2b8; border-color: #17a2b8;">
+                        <i class="fas fa-exchange-alt"></i> Alternar para Monitor M.A.E
+                    </a>
+                <?php else: ?>
+                    <a href="<?= url('professor/switch-profile?to=titular') ?>" class="btn btn-primary" style="width:auto; font-size:0.8rem; background-color: #4f46e5; border-color: #4f46e5;">
+                        <i class="fas fa-exchange-alt"></i> Alternar para Professor Titular
+                    </a>
+                <?php endif; ?>
+            <?php endif; ?>
+            
+            <button onclick="document.getElementById('password-form').style.display = document.getElementById('password-form').style.display == 'none' ? 'block' : 'none'" class="btn btn-secondary" style="width:auto; font-size:0.8rem;">Alterar Senha</button>
+        </div>
     </div>
     
     <div id="password-form" style="display:none; background:var(--card-bg); padding:15px; border:1px solid var(--border-color); margin-top:10px; border-radius:5px;">

@@ -98,6 +98,7 @@ $routes = [
     'professor/password/change' => 'ProfessorController@changePassword',
     'professor/photo/upload' => 'ProfessorController@uploadPhoto', // NEW
     'professor/upload/delete' => 'ProfessorController@deleteUpload',
+    'professor/switch-profile' => 'ProfessorController@switchProfile',
     'school/mark-viewed' => 'SchoolController@markUploadsAsViewed',
     'school/password/change' => 'SchoolController@changePassword',
     'school/photo/upload' => 'SchoolController@uploadPhoto', // NEW
