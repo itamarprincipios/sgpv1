@@ -712,7 +712,7 @@ class SchoolController extends Controller {
         $newPass = password_hash('123456', PASSWORD_DEFAULT);
         
         // Direct SQL update to avoid validations in update method if any
-        $db = new Database();
+        $db = Database::getInstance();
         $db->query("UPDATE users SET password = :pass WHERE id = :id", ['pass' => $newPass, 'id' => $id]);
         
         $_SESSION['success'] = "Senha resetada para 123456 com sucesso!";
