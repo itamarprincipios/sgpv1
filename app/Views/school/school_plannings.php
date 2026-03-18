@@ -10,6 +10,11 @@
     
     <?php $showSchool = isset($schools) && count($schools) > 1; ?>
     
+    <div class="tabs-container" style="margin-bottom: 20px; display: flex; gap: 10px;">
+        <button class="btn btn-primary" id="tab-active" onclick="filterPlannings('active')" style="border-radius: 20px; padding: 8px 20px;">Ativos (Em Andamento)</button>
+        <button class="btn" id="tab-closed" onclick="filterPlannings('closed')" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-color); border-radius: 20px; padding: 8px 20px;">Encerrados (Histórico)</button>
+    </div>
+    
     <table class="data-table">
         <thead>
             <tr>
@@ -22,10 +27,15 @@
         </thead>
         <tbody>
             <?php if(empty($plannings)): ?>
-                <tr><td colspan="<?= $showSchool ? 5 : 4 ?>">Nenhum planejamento criado.</td></tr>
+                <tr id="empty-row"><td colspan="<?= $showSchool ? 5 : 4 ?>">Nenhum planejamento encontrado.</td></tr>
             <?php else: ?>
+                <tr id="empty-row" style="display: none;"><td colspan="<?= $showSchool ? 5 : 4 ?>">Nenhum planejamento encontrado.</td></tr>
                 <?php foreach($plannings as $p): ?>
-                    <tr>
+                    <?php 
+                        $isClosed = strtotime($p['deadline']) < strtotime('today'); 
+                        $status = $isClosed ? 'closed' : 'active';
+                    ?>
+                    <tr class="planning-row" data-status="<?= $status ?>">
                         <?php if($showSchool): ?>
                             <td><small class="badge" style="background: #e2e8f0; color: #333;"><?= htmlspecialchars($p['school_name']) ?></small></td>
                         <?php endif; ?>
@@ -47,5 +57,59 @@
         </tbody>
     </table>
 </div>
+
+<script>
+function filterPlannings(status) {
+    const tabActive = document.getElementById('tab-active');
+    const tabClosed = document.getElementById('tab-closed');
+    
+    if (status === 'active') {
+        tabActive.className = 'btn btn-primary';
+        tabActive.style.background = '';
+        tabActive.style.color = '';
+        tabActive.style.border = '';
+        
+        tabClosed.className = 'btn';
+        tabClosed.style.background = 'transparent';
+        tabClosed.style.border = '1px solid var(--border-color)';
+        tabClosed.style.color = 'var(--text-color)';
+    } else {
+        tabClosed.className = 'btn btn-primary';
+        tabClosed.style.background = '';
+        tabClosed.style.color = '';
+        tabClosed.style.border = '';
+
+        tabActive.className = 'btn';
+        tabActive.style.background = 'transparent';
+        tabActive.style.border = '1px solid var(--border-color)';
+        tabActive.style.color = 'var(--text-color)';
+    }
+
+    const rows = document.querySelectorAll('.planning-row');
+    let visibleCount = 0;
+    rows.forEach(row => {
+        if (row.getAttribute('data-status') === status) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    const emptyRow = document.getElementById('empty-row');
+    if (emptyRow) {
+        if (visibleCount === 0 && rows.length > 0) {
+            emptyRow.style.display = '';
+            emptyRow.querySelector('td').textContent = status === 'active' ? 'Nenhum planejamento em andamento.' : 'Nenhum planejamento encerrado.';
+        } else if (rows.length > 0) {
+            emptyRow.style.display = 'none';
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    filterPlannings('active');
+});
+</script>
 
 <?php require __DIR__ . '/../layouts/footer.php'; ?>
